@@ -3203,6 +3203,68 @@ function MediaUnlockTest_MXPlayer() {
     echo -n -e "\r MXPlayer:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
 }
 
+function MediaUnlockTest_ClipTV() {
+    local result=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -sSL --max-time 10 "https://cliptv.vn/the-forgiven-2022,lvDoN0JrP/Jx52YAKL2v" 2>&1)
+    if [[ "$result" == *"curl"* ]] && [[ "$1" == "6" ]]; then
+        echo -n -e "\r Clip TV:\t\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
+        return
+    elif [[ "$result" == *"curl"* ]]; then
+        echo -n -e "\r Clip TV:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+    if [[ "$result" == *"Sorry, this video is not available in your country."* ]]; then
+        echo -n -e "\r Clip TV:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        return
+    else
+        echo -n -e "\r Clip TV:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+        return
+    fi
+        
+    echo -n -e "\r Clip TV:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+}
+
+function MediaUnlockTest_GalaxyPlay() {
+    local result=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -sSL --max-time 10 "https://api.glxplay.io/account/device/new" 2>&1)
+    if [[ "$result" == *"curl"* ]] && [[ "$1" == "6" ]]; then
+        echo -n -e "\r Galaxy Play:\t\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
+        return
+    elif [[ "$result" == *"curl"* ]]; then
+        echo -n -e "\r Galaxy Play:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+    if [[ "$result" == *"495"* ]]; then
+        echo -n -e "\r Galaxy Play:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        return
+    else
+        echo -n -e "\r Galaxy Play:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+        return
+    fi
+        
+    echo -n -e "\r Galaxy Play:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+}
+
+function MediaUnlockTest_MYTV() {
+    local result=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -sSL --max-time 10 "https://webapi.mytv.vn/api/v1/movie/138546/play?" -X POST -d "partition=1" 2>&1)
+    if [[ "$result" == *"curl"* ]] && [[ "$1" == "6" ]]; then
+        echo -n -e "\r MYTV:\t\t\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
+        return
+    elif [[ "$result" == *"curl"* ]]; then
+        echo -n -e "\r MYTV:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+    local result1="$(echo "${result}" | python -m json.tool | grep 'result' | awk '{print $2}'| tr -d "," )"
+    if [[ "$result1" == "103" ]]; then
+        echo -n -e "\r MYTV:\t\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        return
+    else
+        echo -n -e "\r MYTV:\t\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+        return
+    fi
+        
+    echo -n -e "\r MYTV:\t\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+}
+
+
 function echo_Result() {
     for((i=0;i<${#array[@]};i++)) 
     do
@@ -3579,10 +3641,13 @@ function SEA_UnlockTest(){
     ShowRegion VN
     local result=$(
     # MediaUnlockTest_VTVcab ${1} &
+    MediaUnlockTest_MYTV ${1} &
+    MediaUnlockTest_ClipTV ${1} &
+    MediaUnlockTest_GalaxyPlay ${1} &
     MediaUnblockTest_BGlobalVN ${1} &
     )
     wait
-    local array=("B-Global Việt Nam Only" ) 
+    local array=("MYTV" "Clip TV" "Galaxy Play" "B-Global Việt Nam Only" ) 
     echo_Result ${result} ${array}
     ShowRegion IN
     local result=$(
