@@ -73,9 +73,9 @@ countRunTimes() {
     else
         count_file=$(mktemp --suffix=RRC)
     fi
-    RunTimes=$(curl -s --max-time 10 "https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fcheck.unclock.media&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=visit&edge_flat=false" >"${count_file}")
+    RunTimes=$(curl -s --max-time 10 "https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2F1-stream%2FRegionRestrictionCheck&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false" >"${count_file}")
     TodayRunTimes=$(cat "${count_file}" | tail -3 | head -n 1 | awk '{print $5}')
-    TotalRunTimes=$(($(cat "${count_file}" | tail -3 | head -n 1 | awk '{print $7}') + 2527395))
+    TotalRunTimes=$(($(cat "${count_file}" | tail -3 | head -n 1 | awk '{print $7}') + 0))
 }
 countRunTimes
 
@@ -244,23 +244,6 @@ function MediaUnlockTest_BahamutAnime() {
         echo -n -e "\r Bahamut Anime:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
     else
         echo -n -e "\r Bahamut Anime:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
-    fi
-}
-
-function MediaUnlockTest_BilibiliChinaMainland() {
-    local randsession="$(cat /dev/urandom | head -n 32 | md5sum | head -c 32)"
-    local result=$(curl $curlArgs --user-agent "${UA_Browser}" -${1} -fsSL --max-time 10 "https://api.bilibili.com/pgc/player/web/playurl?avid=82846771&qn=0&type=&otype=json&ep_id=307247&fourk=1&fnver=0&fnval=16&session=${randsession}&module=bangumi" 2>&1)
-    if [[ "$result" != "curl"* ]]; then
-        local result="$(echo "${result}" | python -m json.tool 2>/dev/null | grep '"code"' | head -1 | awk '{print $2}' | cut -d ',' -f1)"
-        if [ "${result}" = "0" ]; then
-            echo -n -e "\r BiliBili China Mainland Only:\t\t${Font_Green}Yes${Font_Suffix}\n"
-        elif [ "${result}" = "-10403" ]; then
-            echo -n -e "\r BiliBili China Mainland Only:\t\t${Font_Red}No${Font_Suffix}\n"
-        else
-            echo -n -e "\r BiliBili China Mainland Only:\t\t${Font_Red}Failed${Font_Suffix} ${Font_SkyBlue}(${result})${Font_Suffix}\n"
-        fi
-    else
-        echo -n -e "\r BiliBili China Mainland Only:\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
     fi
 }
 
@@ -1384,28 +1367,6 @@ function MediaUnlockTest_HBOGO_ASIA() {
 
 }
 
-function MediaUnlockTest_HBOGO_EUROPE() {
-
-    local tmpresult=$(curl $curlArgs -${1} -s --max-time 10 "https://api.ugw.hbogo.eu/v3.0/GeoCheck/json/HUN" 2>&1)
-    if [ -z "$tmpresult" ]; then
-        echo -n -e "\r HBO GO Europe:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
-        return
-    fi
-
-    local result=$(echo $tmpresult | python -m json.tool 2>/dev/null | grep allow | awk '{print $2}' | cut -f1 -d",")
-    if [[ "$result" == "1" ]]; then
-        echo -n -e "\r HBO GO Europe:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
-        return
-    elif [[ "$result" == "0" ]]; then
-        echo -n -e "\r HBO GO Europe:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
-        return
-    else
-        echo -n -e "\r HBO GO Europe:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
-        return
-    fi
-
-}
-
 function MediaUnlockTest_EPIX() {
     tmpToken=$(curl $curlArgs -${1} -s -X POST --max-time 10 "https://api.epix.com/v2/sessions" -H "Content-Type: application/json" -d '{"device":{"guid":"e2add88e-2d92-4392-9724-326c2336013b","format":"console","os":"web","app_version":"1.0.2","model":"browser","manufacturer":"google"},"apikey":"f07debfcdf0f442bab197b517a5126ec","oauth":{"token":null}}' 2>&1)
     if [ -z "$tmpToken" ]; then
@@ -1952,27 +1913,6 @@ function MediaUnlockTest_SkyGo() {
         echo -n -e "\r Sky Go:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
     fi
 
-}
-
-function MediaUnlockTest_ElevenSportsTW() {
-    local tmpresult=$(curl $curlArgs --user-agent "${UA_Browser}" -${1} -s --max-time 10 "https://apis.v-saas.com:9501/member/api/viewAuthorization?contentId=1&memberId=384030&menuId=3&platform=5&imei=c959b475-f846-4a86-8e9b-508048372508" 2>&1)
-    local qq=$(echo $tmpresult | python -m json.tool 2>/dev/null | grep '"qq"' | cut -f4 -d'"')
-    local st=$(echo $tmpresult | python -m json.tool 2>/dev/null | grep '"st"' | cut -f4 -d'"')
-    local m3u_RUL=$(echo $tmpresult | python -m json.tool 2>/dev/null | grep boostStreamUrl | cut -f4 -d'"')
-    local result=$(curl $curlArgs --user-agent "${UA_Browser}" -${1} -fsL --write-out %{http_code} --output /dev/null --max-time 10 "${m3u_RUL}?st=${st}&qq=${qq}")
-    if [ "$result" = "000" ]; then
-        echo -n -e "\r Eleven Sports TW:\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
-        return
-    elif [ "$result" = "200" ]; then
-        echo -n -e "\r Eleven Sports TW:\t\t\t${Font_Green}Yes${Font_Suffix}\n"
-        return
-    elif [ "$result" = "403" ]; then
-        echo -n -e "\r Eleven Sports TW:\t\t\t${Font_Red}No${Font_Suffix}\n"
-        return
-    else
-        echo -n -e "\r Eleven Sports TW:\t\t\t${Font_Red}Failed (Unexpected Result: $result)${Font_Suffix}\n"
-        return
-    fi
 }
 
 function MediaUnlockTest_StarPlus() {
@@ -3665,7 +3605,6 @@ function Sport_UnlockTest() {
     MediaUnlockTest_FuboTV ${1} &
     MediaUnlockTest_MolaTV ${1} &
     MediaUnlockTest_SetantaSports ${1} &
-    #MediaUnlockTest_ElevenSportsTW ${1}
     MediaUnlockTest_OptusSports ${1} &
     MediaUnlockTest_BeinConnect ${1} &
     MediaUnlockTest_EurosportRO ${1} &
