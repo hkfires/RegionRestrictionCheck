@@ -77,7 +77,7 @@ countRunTimes() {
     TodayRunTimes=$(cat "${count_file}" | tail -3 | head -n 1 | awk '{print $5}')
     TotalRunTimes=$(($(cat "${count_file}" | tail -3 | head -n 1 | awk '{print $7}') + 2527395))
 }
-countRunTimes &
+countRunTimes
 
 checkOS() {
     ifTermux=$(echo $PWD | grep termux)
@@ -109,7 +109,7 @@ checkOS() {
         InstallMethod="brew"
     fi
 }
-checkOS &
+checkOS
 
 checkCPU() {
     CPUArch=$(uname -m)
@@ -123,7 +123,7 @@ checkCPU() {
         arch=_darwin
     fi
 }
-checkCPU &
+checkCPU
 
 checkDependencies() {
 
@@ -156,7 +156,7 @@ checkDependencies() {
                 alias python="python3"
 
             elif [ "$is_macos" == 1 ]; then
-                echo -e "${Font_Green}Installing python${Font_Suffix}"
+                echo -e "${Font_Green}Installing python3${Font_Suffix}"
                 $InstallMethod install python3
                 alias python="python3"
             fi
@@ -3139,11 +3139,135 @@ function MediaUnlockTest_AISPlay() {
     echo -n -e "\r AIS Play:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
 }
 
+function MediaUnlockTest_TrueID() {
+    local result=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -sSL --max-time 10 "https://movie.trueid.net/apis/auth/checkedplay" -X POST -d '{"lang":"th","cmsId":"gROjxLzNBJb6","contentType":"movie"}' -H "Authorization: Basic YmJjNjI5Yzk3OTEzMDNhMmNjYzcyMWQzYTJlNGRkOGFiZWZkN2ZhNzoxMzAzYTJjY2M3MjFkM2EyZTRkZDhhYmVmZDdmYTc=" 2>&1)
+    if [[ "$result" == "curl"* ]] && [[ "$1" == "6" ]]; then
+        echo -n -e "\r TrueID:\t\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
+        return
+    elif [[ "$result" == "curl"* ]]; then
+        echo -n -e "\r TrueID:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+    local result1="$(echo "${result}" | python -m json.tool | grep 'billboardType' | awk '{print $2}' )"
+    if [[ "$result1" == *"GEO_BLOCK"* ]]; then
+        echo -n -e "\r TrueID:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        return
+    else
+        echo -n -e "\r TrueID:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+        return
+    fi
+        
+    echo -n -e "\r TrueID:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+}
+
+function MediaUnlockTest_meWATCH() {
+    local result=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -sSL --max-time 10 "https://cdn.mewatch.sg/api/items/362414/videos?delivery=stream%2Cprogressive&ff=idp%2Cldp%2Crpt%2Ccd&lang=en&resolution=External&segments=all" 2>&1)
+    if [[ "$result" == "curl"* ]] && [[ "$1" == "6" ]]; then
+        echo -n -e "\r meWATCH:\t\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
+        return
+    elif [[ "$result" == "curl"* ]]; then
+        echo -n -e "\r meWATCH:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+    if [[ "$result" == *"location that is not permitted"* ]]; then
+        echo -n -e "\r meWATCH:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        return
+    else
+        echo -n -e "\r meWATCH:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+        return
+    fi
+        
+    echo -n -e "\r meWATCH:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+}
+
+function MediaUnlockTest_VTVcab() {
+    #未完成。
+    local token=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -sSLI --max-time 10 "https://www.vtvcab.vn/" 2>&1 | grep "token" | grep -Eo 'token=([^;]*)' | tr -d "token=")
+    local result=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -sSL --max-time 10 "https://apigwon.gviet.vn/sdp-vod/api/v1/source" -H "authorization: ${token}" 2>&1)
+    if [[ "$result" == "curl"* ]] && [[ "$1" == "6" ]]; then
+        echo -n -e "\r VTVcab:\t\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
+        return
+    elif [[ "$result" == "curl"* ]]; then
+        echo -n -e "\r VTVcab:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+    echo $result > debug.logs
+    if [[ "$result" == *"4006"* ]]; then
+        echo -n -e "\r VTVcab:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        return
+    else
+        echo -n -e "\r VTVcab:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+        return
+    fi
+        
+    echo -n -e "\r VTVcab:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+}
+
+function MediaUnlockTest_Vidio() {
+    local result=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://geo-id-media-001-vidio-com.akamaized.net/2x2.png" 2>&1)
+    if [[ "$result" == "000" ]] && [[ "$1" == "6" ]]; then
+        echo -n -e "\r Vidio:\t\t\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
+        return
+    elif [[ "$result" == "000" ]]; then
+        echo -n -e "\r Vidio:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+    if [[ "$result" == "200" ]]; then
+        echo -n -e "\r Vidio:\t\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+        return
+    else
+        echo -n -e "\r Vidio:\t\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        return
+    fi
+        
+    echo -n -e "\r Vidio:\t\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+}
+
+function MediaUnlockTest_TataPlay() {
+    local result=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://watch.tataplay.com/" 2>&1)
+    if [[ "$result" == "000" ]] && [[ "$1" == "6" ]]; then
+        echo -n -e "\r Tata Play:\t\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
+        return
+    elif [[ "$result" == "000" ]]; then
+        echo -n -e "\r Tata Play:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+    if [[ "$result" == "200" ]]; then
+        echo -n -e "\r Tata Play:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+        return
+    else
+        echo -n -e "\r Tata Play:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        return
+    fi
+        
+    echo -n -e "\r Tata Play:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+}
+
+function MediaUnlockTest_MXPlayer() {
+    local result=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -sSL --max-time 10 "https://www.mxplayer.in/" 2>&1)
+    if [[ "$result" == *"curl"* ]] && [[ "$1" == "6" ]]; then
+        echo -n -e "\r MXPlayer:\t\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
+        return
+    elif [[ "$result" == *"curl"* ]]; then
+        echo -n -e "\r MXPlayer:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+    if [[ "$result" == *"We are currently not available in your region"* ]]; then
+        echo -n -e "\r MXPlayer:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        return
+    else
+        echo -n -e "\r MXPlayer:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+        return
+    fi
+        
+    echo -n -e "\r MXPlayer:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+}
+
 function echo_Result() {
     for((i=0;i<${#array[@]};i++)) 
     do
         echo "$result" | grep "${array[i]}"
-        sleep 0.03
+        # sleep 0.03
     done;
 }
 
@@ -3488,28 +3612,45 @@ function SEA_UnlockTest(){
     wait
     local array=("HBO GO Asia:" "B-Global SouthEastAsia:") 
     echo_Result ${result} ${array}
-    # ShowRegion SG
+    ShowRegion SG
+    local result=$(
+        MediaUnlockTest_meWATCH ${1} &
+    )
+    wait
+    local array=("meWATCH") 
+    echo_Result ${result} ${array}
     ShowRegion TH
     local result=$(
+    MediaUnlockTest_TrueID ${1} &
     MediaUnlockTest_AISPlay ${1} &
     MediaUnblockTest_BGlobalTH ${1} &
     )
     wait
-    local array=("AIS Play" "B-Global Thailand Only") 
+    local array=("TrueID" "AIS Play" "B-Global Thailand Only") 
     echo_Result ${result} ${array}
     ShowRegion ID
     local result=$(
+    MediaUnlockTest_Vidio ${1} &
     MediaUnblockTest_BGlobalID ${1} &
     )
     wait
-    local array=("B-Global Indonesia Only") 
+    local array=("Vidio" "B-Global Indonesia Only") 
     echo_Result ${result} ${array}
     ShowRegion VN
     local result=$(
+    # MediaUnlockTest_VTVcab ${1} &
     MediaUnblockTest_BGlobalVN ${1} &
     )
     wait
-    local array=("B-Global Việt Nam Only") 
+    local array=("B-Global Việt Nam Only" ) 
+    echo_Result ${result} ${array}
+    ShowRegion IN
+    local result=$(
+    MediaUnlockTest_MXPlayer ${1} &
+    MediaUnlockTest_TataPlay ${1} &
+    )
+    wait
+    local array=("MXPlayer" "Tata Play" ) 
     echo_Result ${result} ${array}
     echo "======================================="
 }
