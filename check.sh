@@ -3796,7 +3796,7 @@ function CheckV6() {
             fi
         else
             check6_1=$(curl $useNIC -fsL --write-out %{http_code} --output /dev/null --max-time 10 -6 "https://cloudflare.com/cdn-cgi/trace")
-            if [[ "$check6_1" -ne "000" ]] || [[ "$check6_2" -ne "000" ]]; then
+            if [[ "$check6_1" -ne "000" ]]; then
                 echo ""
                 echo ""
                 echo -e " ${Font_SkyBlue}** 正在测试IPv6解锁情况${Font_Suffix} "
