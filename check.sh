@@ -3773,9 +3773,8 @@ function CheckV6() {
                 echo -e "${Font_SkyBlue}User Choose to Test Only IPv4 Results, Skipping IPv6 Testing...${Font_Suffix}"
             fi
         else
-            check6_1=$(curl $useNIC -fsL --write-out %{http_code} --output /dev/null --max-time 10 ipv6.google.com)
-            check6_2=$(curl $useNIC -fsL --write-out %{http_code} --output /dev/null --max-time 10 ipv6.ip.sb)
-            if [[ "$check6_1" -ne "000" ]] || [[ "$check6_2" -ne "000" ]]; then
+            check6_1=$(curl $useNIC -fsL --write-out %{http_code} --output /dev/null --max-time 10 -6 "https://cloudflare.com/cdn-cgi/trace" )
+            if [[ "$check6_1" -ne "000" ]]; then
                 echo ""
                 echo ""
                 echo -e " ${Font_SkyBlue}** Checking Results Under IPv6${Font_Suffix} "
@@ -3796,8 +3795,7 @@ function CheckV6() {
                 echo -e "${Font_SkyBlue}用户选择只检测IPv4结果，跳过IPv6检测...${Font_Suffix}"
             fi
         else
-            check6_1=$(curl $useNIC -fsL --write-out %{http_code} --output /dev/null --max-time 10 ipv6.google.com)
-            check6_2=$(curl $useNIC -fsL --write-out %{http_code} --output /dev/null --max-time 10 ipv6.ip.sb)
+            check6_1=$(curl $useNIC -fsL --write-out %{http_code} --output /dev/null --max-time 10 -6 "https://cloudflare.com/cdn-cgi/trace")
             if [[ "$check6_1" -ne "000" ]] || [[ "$check6_2" -ne "000" ]]; then
                 echo ""
                 echo ""
