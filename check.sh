@@ -3405,13 +3405,17 @@ function EU_UnlockTest() {
 
 function HK_UnlockTest() {
     echo "=============[ Hong Kong ]============="
-    local result=$(
-    MediaUnlockTest_NowE ${1} &
-    MediaUnlockTest_ViuTV ${1} &
-    MediaUnlockTest_MyTVSuper ${1} &
-    MediaUnlockTest_HBOGO_ASIA ${1} &
-    MediaUnlockTest_BilibiliHKMCTW ${1} &
-    )
+       if [[ "$1" == 4 ]];then
+	local result=$(
+	    MediaUnlockTest_NowE ${1} &
+	    MediaUnlockTest_ViuTV ${1} &
+	    MediaUnlockTest_MyTVSuper ${1} &
+	    MediaUnlockTest_HBOGO_ASIA ${1} &
+	    MediaUnlockTest_BilibiliHKMCTW ${1} &
+	)
+    else
+	echo -e "${Font_Green}此区域无IPv6可用流媒体，跳过……${Font_Suffix}" 
+    fi
     wait
     local array=("Now E:" "Viu.TV:" "MyTVSuper:" "HBO GO Asia:" "BiliBili Hongkong/Macau/Taiwan:")
     echo_Result ${result} ${array}
