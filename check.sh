@@ -3684,6 +3684,26 @@ function Sport_UnlockTest() {
     echo "======================================="
 }
 
+function Openai_UnlockTest() {
+    echo "==============[ Openai ]==============="
+    local tmpresult=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fsLI --output /dev/null --max-time 10 "https://chat.openai.com" 2>&1)
+    if [[ "$tmpresult" == "curl"* ]]; then
+        echo -n -e "\r Openai:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+    
+    local result1=$(echo "$tmpresult" | grep 'cf-mitigated' )
+    if [ ! -n "$result1" ]; then
+    	echo -n -e "\r Openai:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+    else
+    	local region1=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fsL --max-time 10 "https://chat.openai.com/cdn-cgi/trace" 2>&1 | grep "loc=" | awk -F= '{print $2}')
+        echo -n -e "\r Openai:\t\t\t\t${Font_Green}Yes (Region: ${region1})${Font_Suffix}\n"
+    fi
+
+    echo "======================================="
+}
+
+
 function CheckPROXY() {
     if [ -n "$usePROXY" ]; then
         local proxy=$(echo $usePROXY | tr A-Z a-z)
@@ -3879,6 +3899,7 @@ function Start() {
         echo -e "${Font_SkyBlue}输入数字  [7]: [跨国平台+大洋洲平台]检测${Font_Suffix}"
         echo -e "${Font_SkyBlue}输入数字  [8]: [ 跨国平台+韩国平台 ]检测${Font_Suffix}"
         echo -e "${Font_SkyBlue}输入数字  [9]: [跨国平台+东南亚平台]检测${Font_Suffix}"
+        echo -e "${Font_SkyBlue}输入数字  [10]: [      OpenAI      ]检测${Font_Suffix}"
         echo -e "${Font_SkyBlue}输入数字  [0]: [   只进行跨国平台  ]检测${Font_Suffix}"
         echo -e "${Font_SkyBlue}输入数字 [99]: [   体育直播平台    ]检测${Font_Suffix}"
         read -p "请输入正确数字或直接按回车:" num
@@ -4022,6 +4043,20 @@ function RunScript() {
                 SEA_UnlockTest 6
             fi
             Goodbye
+
+        elif [[ "$num" -eq 10 ]]; then
+            clear
+            ScriptTitle
+            CheckV4
+            if [[ "$isv4" -eq 1 ]]; then
+                Openai_UnlockTest 4
+            fi
+            CheckV6
+            if [[ "$isv6" -eq 1 ]]; then
+                Openai_UnlockTest 6
+            fi
+            Goodbye
+
 
         elif [[ "$num" -eq 99 ]]; then
             clear
