@@ -3686,7 +3686,7 @@ function Sport_UnlockTest() {
 
 function Openai_UnlockTest() {
     echo "==============[ Openai ]==============="
-    local tmpresult=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -SsLI --output /dev/null --max-time 10 "https://chat.openai.com" 2>&1)
+    local tmpresult=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -SsLI --max-time 10 "https://chat.openai.com" 2>&1)
     if [[ "$tmpresult" == "curl"* ]]; then
         echo -n -e "\r Openai:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
