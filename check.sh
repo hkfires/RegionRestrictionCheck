@@ -733,6 +733,30 @@ function MediaUnlockTest_HBOMax() {
 
 }
 
+function MediaUnlockTest_MaxCom() {
+    local tmpresult=$(curl $curlArgs -${1} -sS -o /dev/null -L --max-time 10 -w '%{url_effective}\n' "https://www.max.com/" 2>&1)
+    if [[ "$tmpresult" == "curl"* ]]; then
+        echo -n -e "\r Max.com:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+    local isUnavailable=$(echo $tmpresult | grep 'geo-availability')
+    local region=$(echo $tmpresult | cut -f4 -d"/" | tr [:lower:] [:upper:])
+    if [ -n "$isUnavailable" ]; then
+        echo -n -e "\r Max.com:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        return
+    elif [ -z "$isUnavailable" ] && [ -n "$region" ]; then
+        echo -n -e "\r Max.com:\t\t\t\t${Font_Green}Yes (Region: $region)${Font_Suffix}\n"
+        return
+    elif [ -z "$isUnavailable" ] && [ -z "$region" ]; then
+        echo -n -e "\r Max.com:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+        return
+    fi
+
+    echo -n -e "\r Max.com:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+    return
+
+}
+
 function MediaUnlockTest_Channel4() {
     local result=$(curl $curlArgs -${1} -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://www.channel4.com/simulcast/channels/C4" 2>&1)
 
@@ -3285,9 +3309,10 @@ function NA_UnlockTest() {
     MediaUnlockTest_Philo ${1} &
     MediaUnlockTest_FXNOW ${1} &
     MediaUnlockTest_HBOMax ${1} &
+    MediaUnlockTest_MaxCom ${1} &
     )
     wait
-    local array=("FOX:" "Hulu:" "NFL+" "ESPN+:" "Epix:" "Starz:" "Philo:" "FXNOW:")
+    local array=("FOX:" "Hulu:" "NFL+" "ESPN+:" "Epix:" "Starz:" "Philo:" "FXNOW:" "Max.com")
     echo_Result ${result} ${array}
     MediaUnlockTest_TLCGO ${1}
     echo "$result" | grep "HBO Max:"
