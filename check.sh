@@ -1990,7 +1990,7 @@ function MediaUnlockTest_DirecTVGO() {
 }
 
 function MediaUnlockTest_DAM() {
-    local result=$(curl $curlArgs --user-agent "${UA_Browser}" -${1} -fsL --write-out %{http_code} --output /dev/null --max-time 10 "http://cds1.clubdam.com/vhls-cds1/site/xbox/sample_1.mp4.m3u8" 2>&1)
+    local result=$(curl $curlArgs --user-agent "${UA_Browser}" -${1} -fsL -k --write-out %{http_code} --output /dev/null --max-time 10 "https://cds1.clubdam.com/vhls-cds1/site/xbox/sample_1.mp4.m3u8" 2>&1)
     if [[ "$result" == "000" ]]; then
         echo -n -e "\r Karaoke@DAM:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
     elif [ "$result" = "200" ]; then
