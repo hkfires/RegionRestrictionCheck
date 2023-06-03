@@ -3471,7 +3471,7 @@ function TW_UnlockTest() {
 function JP_UnlockTest() {
     echo "===============[ Japan ]==============="
     local result=$(
-    MediaUnlockTest_DMM ${1} &
+    #MediaUnlockTest_DMM ${1} &
     MediaUnlockTest_DMMTV ${1} &
     MediaUnlockTest_AbemaTV_IPTest ${1} &
     MediaUnlockTest_Niconico ${1} &
@@ -3482,7 +3482,7 @@ function JP_UnlockTest() {
     MediaUnlockTest_HuluJP ${1} &
     )
     wait
-    local array=("DMM:" "DMM TV:" "Abema.TV:" "Niconico:" "music.jp:" "Telasa:" "Paravi:" "U-NEXT:" "Hulu Japan:") 
+    local array=("DMM TV:" "Abema.TV:" "Niconico:" "music.jp:" "Telasa:" "Paravi:" "U-NEXT:" "Hulu Japan:") 
     echo_Result ${result} ${array}
     local result=$(
     MediaUnlockTest_TVer ${1} &
