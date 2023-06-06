@@ -64,7 +64,6 @@ UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
 UA_Dalvik="Dalvik/2.1.0 (Linux; U; Android 9; ALP-AL00 Build/HUAWEIALP-AL00)"
 Media_Cookie=$(curl -s --retry 3 --max-time 10 "https://raw.githubusercontent.com/1-stream/RegionRestrictionCheck/main/cookies")
 IATACode=$(curl -s --retry 3 --max-time 10 "https://raw.githubusercontent.com/1-stream/RegionRestrictionCheck/main/reference/IATACode.txt")
-WOWOW_Cookie=$(echo "$Media_Cookie" | awk 'NR==3')
 TVer_Cookie="Accept: application/json;pk=BCpkADawqM0_rzsjsYbC1k1wlJLU4HiAtfzjxdUmfvvLUQB-Ax6VA-p-9wOEZbCEm3u95qq2Y1CQQW1K9tPaMma9iAqUqhpISCmyXrgnlpx9soEmoVNuQpiyGsTpePGumWxSs1YoKziYB6Wz"
 
 countRunTimes() {
@@ -592,17 +591,17 @@ function MediaUnlockTest_Paravi() {
 }
 
 function MediaUnlockTest_wowow() {
-    local tmpresult=$(curl $curlArgs --user-agent "${UA_Browser}" -${1} -Ss --max-time 10 -b "${WOWOW_Cookie}" -H "x-wod-app-version: 91.0.4472.106" -H "x-wod-model: Chrome" -H "x-wod-os: Windows" -H "x-wod-os-version: 10" -H "x-wod-platform: Windows" "https://wod.wowow.co.jp/api/streaming/url?contentId=&channel=Live" 2>&1)
+    local tmpresult=$(curl $useNIC $usePROXY $xForward --user-agent "${UA_Browser}" -${1} -s -X POST --max-time 10 -d '{"meta_id":79408,"vuid":"92103b2769ca4362b2f8ded33228d5c3","device_code":1,"app_id":1,"ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36","user_id":3690522,"wol_access_token":"1685025374WMwI8VibQdysjJnt966Kn8BiPetNWl6CFB"}' -H "Content-Type: application/json;charset=UTF-8" "https://mapi.wowow.co.jp/api/v1/playback/auth" 2>&1)
     if [[ "$tmpresult" == "curl"* ]]; then
         echo -n -e "\r WOWOW:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
 
-    checkfailed=$(echo $tmpresult | python -m json.tool 2>/dev/null | grep code | cut -f4 -d'"')
-    if [[ "$checkfailed" == "E0004" ]]; then
+    checkfailed=$(echo $tmpresult | python -m json.tool 2>/dev/null | grep code | awk '{print $2}' | cut -f1 -d',')
+    if [[ "$checkfailed" == "2055" ]]; then
         echo -n -e "\r WOWOW:\t\t\t\t\t${Font_Red}No${Font_Suffix}\n"
         return
-    elif [[ "$checkfailed" == "E5101" ]]; then
+    elif [[ "$checkfailed" == "2041" ]]; then
         echo -n -e "\r WOWOW:\t\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
         return
     else
