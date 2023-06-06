@@ -3287,6 +3287,24 @@ function MediaUnlockTest_MYTV() {
     echo -n -e "\r MYTV:\t\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
 }
 
+function MediaUnlockTest_Google() {
+    local result=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -sSL --max-time 10 "https://www.google.com/async/lbsc" 2>&1)
+    if [[ "$result" == *"curl"* ]]; then
+        echo -n -e "\r Google Location:\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+    if [[ "$result" == *"websearch/answer/86640"* ]]; then
+        echo -n -e "\r Google Location:\t\t\t${Font_Red}Failed (Unusual Traffic)${Font_Suffix}\n"
+        return
+    fi 
+    local result1="$(echo "${result}" | grep "location_address" | python -m json.tool | grep 'location_address' | awk  -F '"' '{print $4}' )"
+    if [[ -n "$result1" ]]; then
+        echo -n -e "\r Google Location:\t\t\t${Font_Green}$result1${Font_Suffix}\n"
+        return
+    fi
+    echo -n -e "\r Google Location:\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+}
+
 
 function echo_Result() {
     for((i=0;i<${#array[@]};i++)) 
@@ -3531,6 +3549,7 @@ function Global_UnlockTest() {
         MediaUnlockTest_Spotify ${1} &
         #MediaUnlockTest_Instagram.Music ${1}
         GameTest_Steam ${1} &
+        MediaUnlockTest_Google ${1} &
         )
     else
         local result=$(
@@ -3548,10 +3567,11 @@ function Global_UnlockTest() {
         MediaUnlockTest_Spotify ${1} &
         #MediaUnlockTest_Instagram.Music ${1}
         # GameTest_Steam ${1} &
+        MediaUnlockTest_Google ${1} &
         )
     fi
     wait
-    local array=("Dazn:" "HotStar:" "Disney+:" "Netflix:" "YouTube Premium:" "Amazon Prime Video:" "TVBAnywhere+:" "iQyi Oversea Region:" "Viu.com:" "YouTube CDN:" "YouTube Region:" "Netflix Preferred CDN:" "Spotify Registration:" "Steam Currency:")
+    local array=("Dazn:" "HotStar:" "Disney+:" "Netflix:" "YouTube Premium:" "Google" "Amazon Prime Video:" "TVBAnywhere+:" "iQyi Oversea Region:" "Viu.com:" "YouTube CDN:" "YouTube Region:" "Netflix Preferred CDN:" "Spotify Registration:" "Steam Currency:")
     echo_Result ${result} ${array}
     echo "======================================="
 }
@@ -3931,6 +3951,7 @@ function Start() {
 Start
 
 function RunScript() {
+    
     if [[ -n "${num}" ]]; then
         if [[ "$num" -eq 1 ]]; then
             clear
