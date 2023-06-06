@@ -3392,7 +3392,7 @@ function EU_UnlockTest() {
     echo_Result ${result} ${array}
     ShowRegion FR
     local result=$(
-    MediaUnlockTest_Salto ${1} &
+    #MediaUnlockTest_Salto ${1} &
     MediaUnlockTest_CanalPlus ${1} &
     MediaUnlockTest_Molotov ${1} &
     MediaUnlockTest_Joyn ${1} &
@@ -3400,7 +3400,7 @@ function EU_UnlockTest() {
     MediaUnlockTest_ZDF ${1} &
     )
     wait
-    local array=("Salto:" "Canal+:" "Molotov:")
+    local array=("Canal+:" "Molotov:")
     echo_Result ${result} ${array}
     ShowRegion DE
     local array=("Joyn:" "Sky:" "ZDF:") 
