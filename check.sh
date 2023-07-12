@@ -3684,10 +3684,11 @@ function SEA_UnlockTest(){
     echo_Result ${result} ${array}
     ShowRegion SG
     local result=$(
+        MediaUnlockTest_Catchplay ${1} &
         MediaUnlockTest_meWATCH ${1} &
     )
     wait
-    local array=("meWATCH") 
+    local array=("meWATCH" "CatchPlay+:") 
     echo_Result ${result} ${array}
     ShowRegion TH
     local result=$(
