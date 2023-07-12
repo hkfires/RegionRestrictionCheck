@@ -378,15 +378,15 @@ function MediaUnlockTest_BBCiPLAYER() {
 function MediaUnlockTest_Netflix() {
     local result1=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://www.netflix.com/title/81280792" 2>&1)
     local result2=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://www.netflix.com/title/70143836" 2>&1)
+    local region=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/80018499" 2>&1 | cut -d '/' -f4 | cut -d '-' -f1 | tr [:lower:] [:upper:])
     
     if [[ "$result1" == "404" ]] && [[ "$result2" == "404" ]]; then
-        echo -n -e "\r Netflix:\t\t\t\t${Font_Yellow}Originals Only${Font_Suffix}\n"
+        echo -n -e "\r Netflix:\t\t\t\t${Font_Yellow}Originals Only (Region: ${region})${Font_Suffix}\n"
         return
     elif [[ "$result1" == "403" ]] && [[ "$result2" == "403" ]]; then
         echo -n -e "\r Netflix:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
         return
     elif [[ "$result1" == "200" ]] || [[ "$result2" == "200" ]]; then
-        local region=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/80018499" 2>&1 | cut -d '/' -f4 | cut -d '-' -f1 | tr [:lower:] [:upper:])
         if [[ ! -n "$region" ]]; then
             region="US"
         fi
@@ -791,28 +791,31 @@ function MediaUnlockTest_ITVHUB() {
 }
 
 function MediaUnlockTest_iQYI_Region() {
-    curl $curlArgs -${1} -s -I --max-time 10 "https://www.iq.com/" >~/iqiyi
+    local tmpresult=$(curl $curlArgs -${1} -s -I --max-time 10 "https://www.iq.com/")
 
-    if [ $? -eq 1 ]; then
-        echo -n -e "\r iQyi Oversea Region:\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+    if [[ "$tmpresult" == "curl"* ]]; then
+        echo -n -e "\r Crackle:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    elif [ -z "$tmpresult" ]; then
+        echo -n -e "\r Crackle:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
         return
     fi
-
-    result=$(cat ~/iqiyi | grep 'mod=' | awk '{print $2}' | cut -f2 -d'=' | cut -f1 -d';')
-    rm ~/iqiyi >/dev/null 2>&1
+    result=$(echo "$tmpresult" | grep 'mod=' | awk '{print $2}' | cut -f2 -d'=' | cut -f1 -d';')
 
     if [ -n "$result" ]; then
-        if [[ "$result" == "ntw" ]]; then
+        if [[ "$result" == "intl" ]]; then
+            echo -n -e "\r iQyi Oversea:\t\t\t${Font_Red}No (Intl)${Font_Suffix}\n"
+        elif [[ "$result" == "ntw" ]]; then
             result=TW
-            echo -n -e "\r iQyi Oversea Region:\t\t\t${Font_Green}${result}${Font_Suffix}\n"
+            echo -n -e "\r iQyi Oversea:\t\t\t${Font_Green}Yes (Region: ${result})${Font_Suffix}\n"
             return
         else
             result=$(echo $result | tr [:lower:] [:upper:])
-            echo -n -e "\r iQyi Oversea Region:\t\t\t${Font_Green}${result}${Font_Suffix}\n"
+            echo -n -e "\r iQyi Oversea:\t\t\t${Font_Green}Yes (Region: ${result})${Font_Suffix}\n"
             return
         fi
     else
-        echo -n -e "\r iQyi Oversea Region:\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+        echo -n -e "\r iQyi Oversea:\t\t\t${Font_Red}Failed${Font_Suffix}\n"
         return
     fi
 }
@@ -1716,13 +1719,13 @@ function MediaUnlockTest_TVBAnywhere() {
         echo -n -e "\r TVBAnywhere+:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
-
+    local region=$(echo $tmpresult | python -m json.tool 2>/dev/null | grep 'country' | awk '{print $2}' | head -1 | tr -d "," | tr -d "\"")
     local result=$(echo $tmpresult | python -m json.tool 2>/dev/null | grep 'allow_in_this_country' | awk '{print $2}' | cut -f1 -d",")
     if [[ "$result" == "true" ]]; then
-        echo -n -e "\r TVBAnywhere+:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+        echo -n -e "\r TVBAnywhere+:\t\t\t\t${Font_Green}Yes (Region: ${region})${Font_Suffix}\n"
         return
     elif [[ "$result" == "false" ]]; then
-        echo -n -e "\r TVBAnywhere+:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        echo -n -e "\r TVBAnywhere+:\t\t\t\t${Font_Red}No (Region: ${region})${Font_Suffix}\n"
         return
     else
         echo -n -e "\r TVBAnywhere+:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
@@ -1822,6 +1825,23 @@ function MediaUnlockTest_CineMax() {
 }
 
 function MediaUnlockTest_NetflixCDN() {
+    if [[ "$1" == "6" ]]; then
+        local nf_web_ip=$(dig www.netflix.com AAAA +short)
+    else
+        local nf_web_ip=$(dig www.netflix.com A +short)
+    fi
+    if [ ! -n "$nf_web_ip" ]; then
+        echo -n -e "\r Netflix Preferred CDN:\t\t\t${Font_Red}Null${Font_Suffix}\n"
+        return
+    else
+        local tmp=$(curl $curlArgs --user-agent "${UA_Browser}" -s --max-time 20 "https://api.ip.sb/geoip/$nf_web_ip" 2>&1)
+        local nf_web_asn=$(echo $tmp | python -m json.tool 2>/dev/null | grep 'asn' | head -1 | awk '{print $2}' | tr -d ",")
+        local nf_web_isp=$(echo $tmp | python -m json.tool 2>/dev/null | grep 'isp' | cut -f4 -d'"')
+        if [[ ! "$nf_web_asn" == "16509" ]]; then
+            echo -n -e "\r Netflix Preferred CDN:\t\t\t${Font_Yellow}Hijacked with [$nf_web_isp]${Font_Suffix}\n"
+            return
+        fi
+    fi
     local tmpresult=$(curl $curlArgs -${1} -s --max-time 10 "https://api.fast.com/netflix/speedtest/v2?https=true&token=YXNkZmFzZGxmbnNkYWZoYXNkZmhrYWxm&urlCount=1" 2>&1)
     if [ -z "$tmpresult" ]; then
         echo -n -e "\r Netflix Preferred CDN:\t\t\t${Font_Red}Failed${Font_Suffix}\n"
@@ -3571,7 +3591,7 @@ function Global_UnlockTest() {
         )
     fi
     wait
-    local array=("Dazn:" "HotStar:" "Disney+:" "Netflix:" "YouTube Premium:" "Google" "Amazon Prime Video:" "TVBAnywhere+:" "iQyi Oversea Region:" "Viu.com:" "YouTube CDN:" "YouTube Region:" "Netflix Preferred CDN:" "Spotify Registration:" "Steam Currency:")
+    local array=("Dazn:" "HotStar:" "Disney+:" "Netflix:" "YouTube Premium:" "Amazon Prime Video:" "TVBAnywhere+:" "iQyi Oversea Region:" "Viu.com:" "YouTube CDN:" "Google" "YouTube Region:" "Netflix Preferred CDN:" "Spotify Registration:" "Steam Currency:")
     echo_Result ${result} ${array}
     echo "======================================="
 }
@@ -3747,54 +3767,17 @@ function Openai_UnlockTest() {
     echo "======================================="
 }
 
-
-function CheckPROXY() {
-    if [ -n "$usePROXY" ]; then
-        local proxy=$(echo $usePROXY | tr A-Z a-z)
-        if [[ "$proxy" == *"socks:"* ]] ; then
-            proxyType=Socks
-        elif [[ "$proxy" == *"socks4:"* ]]; then
-            proxyType=Socks4
-        elif [[ "$proxy" == *"socks5:"* ]]; then
-            proxyType=Socks5
-        elif [[ "$proxy" == *"http"* ]]; then
-            proxyType=http
-        else
-            proxyType=""
-        fi
-        local result1=$(curl $useNIC $usePROXY -sS --user-agent "${UA_Browser}" ip.sb 2>&1)
-        local result2=$(curl $useNIC $usePROXY -sS --user-agent "${UA_Browser}" https://1.0.0.1/cdn-cgi/trace 2>&1)
-        if [[ "$result1" == "curl"* ]] && [[ "$result2" == "curl"* ]] || [ -z "$proxyType" ]; then
-            isproxy=0
-        else
-            isproxy=1
-        fi
-    else
-        isproxy=0
-    fi
-}
-
 function CheckV4() {
-    CheckPROXY
     if [[ "$language" == "e" ]]; then
         if [[ "$NetworkType" == "6" ]]; then
             isv4=0
             echo -e "${Font_SkyBlue}User Choose to Test Only IPv6 Results, Skipping IPv4 Testing...${Font_Suffix}"
         else
-            if [ -n "$usePROXY" ] && [[ "$isproxy" -eq 1 ]]; then
-                echo -e " ${Font_SkyBlue}** Checking Results Under Proxy${Font_Suffix} "
-                isv6=0
-            elif [ -n "$usePROXY" ] && [[ "$isproxy" -eq 0 ]]; then
-                echo -e " ${Font_SkyBlue}** Unable to connect to this proxy${Font_Suffix} "
-                isv6=0
-                return
-            else
-                echo -e " ${Font_SkyBlue}** Checking Results Under IPv4${Font_Suffix} "
-                check4=$(ping 1.1.1.1 -c 1 2>&1)
-            fi
+            echo -e " ${Font_SkyBlue}** Checking Results Under IPv4${Font_Suffix} "
+            check4=$(curl $curlArgs cloudflare.com/cdn-cgi/trace -4 -s 2>&1)
             echo "--------------------------------"
             echo -e " ${Font_SkyBlue}** Your Network Provider: ${local_isp4} (${local_ipv4_asterisk})${Font_Suffix} "
-            if [[ "$check4" != *"unreachable"* ]] && [[ "$check4" != *"Unreachable"* ]]; then
+            if [ -n  "$check4"  ]; then   
                 isv4=1
             else
                 echo -e "${Font_SkyBlue}No IPv4 Connectivity Found, Abort IPv4 Testing...${Font_Suffix}"
@@ -3808,23 +3791,14 @@ function CheckV4() {
             isv4=0
             echo -e "${Font_SkyBlue}用户选择只检测IPv6结果，跳过IPv4检测...${Font_Suffix}"
         else
-            if [ -n "$usePROXY" ] && [[ "$isproxy" -eq 1 ]]; then
-                echo -e " ${Font_SkyBlue}** 正在测试代理解锁情况${Font_Suffix} "
-                isv6=0
-            elif [ -n "$usePROXY" ] && [[ "$isproxy" -eq 0 ]]; then
-                echo -e " ${Font_SkyBlue}** 无法连接到此${proxyType}代理${Font_Suffix} "
-                isv6=0
-                return
-            else
-                echo -e " ${Font_SkyBlue}** 正在测试IPv4解锁情况${Font_Suffix} "
-                check4=$(ping 1.1.1.1 -c 1 2>&1)
-            fi
+            echo -e " ${Font_SkyBlue}** 正在测试IPv4解锁情况${Font_Suffix} "
+            check4=$(curl $curlArgs cloudflare.com/cdn-cgi/trace -4 -s 2>&1)
             echo "--------------------------------"
             echo -e " ${Font_SkyBlue}** 您的网络为: ${local_isp4} (${local_ipv4_asterisk})${Font_Suffix} "
-            if [[ "$check4" != *"unreachable"* ]] && [[ "$check4" != *"Unreachable"* ]]; then
+            if [ -n  "$check4"  ]; then   
                 isv4=1
             else
-                echo -e "${Font_SkyBlue}当前主机不支持IPv4,跳过...${Font_Suffix}"
+                echo -e "${Font_SkyBlue}当前网络不支持IPv4,跳过...${Font_Suffix}"
                 isv4=0
             fi
 
@@ -3841,8 +3815,8 @@ function CheckV6() {
                 echo -e "${Font_SkyBlue}User Choose to Test Only IPv4 Results, Skipping IPv6 Testing...${Font_Suffix}"
             fi
         else
-            check6_1=$(curl $useNIC -fsL --write-out %{http_code} --output /dev/null --max-time 10 -6 "https://cloudflare.com/cdn-cgi/trace" )
-            if [[ "$check6_1" -ne "000" ]]; then
+            check6=$(curl $curlArgs cloudflare.com/cdn-cgi/trace -6 -s 2>&1)
+            if [ -n  "$check6"  ]; then   
                 echo ""
                 echo ""
                 echo -e " ${Font_SkyBlue}** Checking Results Under IPv6${Font_Suffix} "
@@ -3863,8 +3837,8 @@ function CheckV6() {
                 echo -e "${Font_SkyBlue}用户选择只检测IPv4结果，跳过IPv6检测...${Font_Suffix}"
             fi
         else
-            check6_1=$(curl $useNIC -fsL --write-out %{http_code} --output /dev/null --max-time 10 -6 "https://cloudflare.com/cdn-cgi/trace")
-            if [[ "$check6_1" -ne "000" ]]; then
+            check6=$(curl $curlArgs cloudflare.com/cdn-cgi/trace -6 -s 2>&1)
+            if [ -n  "$check6"  ]; then   
                 echo ""
                 echo ""
                 echo -e " ${Font_SkyBlue}** 正在测试IPv6解锁情况${Font_Suffix} "
@@ -3911,7 +3885,7 @@ function ScriptTitle() {
         echo -e "${Font_Green}[商家]TG群组${Font_Suffix} ${Font_Yellow}https://t.me/streamunblock1 ${Font_Suffix}"
         # echo -e "${Font_Purple}脚本适配OS: IDK${Font_Suffix}"
         echo ""
-        echo -e " ** 测试时间: $(date)"
+        echo -e " ** 测试时间: $(date '+%Y-%m-%d %H:%M:%S %Z')"
         echo ""
     fi
 }
@@ -3928,6 +3902,8 @@ function Start() {
         echo -e "${Font_SkyBlue}Input Number  [6]: [ Multination + Europe ]${Font_Suffix}"
         echo -e "${Font_SkyBlue}Input Number  [7]: [ Multination + Oceania ]${Font_Suffix}"
         echo -e "${Font_SkyBlue}Input Number  [8]: [ Multination + Korean ]${Font_Suffix}"
+        echo -e "${Font_SkyBlue}Input Number  [9]: [ Multination + SouthEastAsia ]检测${Font_Suffix}"
+        echo -e "${Font_SkyBlue}Input Number [10]: [ OpenAI ]检测${Font_Suffix}"
         echo -e "${Font_SkyBlue}Input Number  [0]: [ Multination Only ]${Font_Suffix}"
         echo -e "${Font_SkyBlue}Input Number [99]: [ Sport Platforms ]${Font_Suffix}"
         read -p "Please Input the Correct Number or Press ENTER:" num
@@ -3942,7 +3918,7 @@ function Start() {
         echo -e "${Font_SkyBlue}输入数字  [7]: [跨国平台+大洋洲平台]检测${Font_Suffix}"
         echo -e "${Font_SkyBlue}输入数字  [8]: [ 跨国平台+韩国平台 ]检测${Font_Suffix}"
         echo -e "${Font_SkyBlue}输入数字  [9]: [跨国平台+东南亚平台]检测${Font_Suffix}"
-        echo -e "${Font_SkyBlue}输入数字  [10]: [      OpenAI      ]检测${Font_Suffix}"
+        echo -e "${Font_SkyBlue}输入数字 [10]: [       OpenAI      ]检测${Font_Suffix}"
         echo -e "${Font_SkyBlue}输入数字  [0]: [   只进行跨国平台  ]检测${Font_Suffix}"
         echo -e "${Font_SkyBlue}输入数字 [99]: [   体育直播平台    ]检测${Font_Suffix}"
         read -p "请输入正确数字或直接按回车:" num
