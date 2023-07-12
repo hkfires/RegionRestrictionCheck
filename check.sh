@@ -1826,9 +1826,9 @@ function MediaUnlockTest_CineMax() {
 
 function MediaUnlockTest_NetflixCDN() {
     if [[ "$1" == "6" ]]; then
-        local nf_web_ip=$(dig www.netflix.com AAAA +short)
+        local nf_web_ip=$(dig www.netflix.com AAAA +noall +answer +nottl | grep -E "IN\s*AAAA" | awk '{print $4}')
     else
-        local nf_web_ip=$(dig www.netflix.com A +short)
+        local nf_web_ip=$(dig www.netflix.com A +noall +answer +nottl | grep -E "IN\s*A" | awk '{print $4}')
     fi
     if [ ! -n "$nf_web_ip" ]; then
         echo -n -e "\r Netflix Preferred CDN:\t\t\t${Font_Red}Null${Font_Suffix}\n"
