@@ -3706,7 +3706,7 @@ function SEA_UnlockTest(){
     echo_Result ${result} ${array}
     ShowRegion TH
     local result=$(
-    MediaUnlockTest_TrueID ${1} &
+    #MediaUnlockTest_TrueID ${1} &
     MediaUnlockTest_AISPlay ${1} &
     MediaUnblockTest_BGlobalTH ${1} &
     )
