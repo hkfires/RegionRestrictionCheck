@@ -10,7 +10,7 @@ Font_SkyBlue="\033[36m"
 Font_White="\033[37m"
 Font_Suffix="\033[0m"
 
-while getopts ":I:M:EX:P:" optname; do
+while getopts ":I:M:E:X:P:F:" optname; do
     case "$optname" in
     "I")
         iface="$OPTARG"
@@ -33,6 +33,9 @@ while getopts ":I:M:EX:P:" optname; do
     "P")
         proxy="$OPTARG"
         usePROXY="-x $proxy"
+    	;;
+    "F")
+        func="$OPTARG"
     	;;
     ":")
         echo "Unknown error while processing options"
@@ -1221,9 +1224,10 @@ function MediaUnlockTest_Catchplay() {
         return
     fi
     result=$(echo $tmpresult | python -m json.tool 2>/dev/null | grep 'code' | awk '{print $2}' | cut -f2 -d'"')
+    region=$(echo $tmpresult | python -m json.tool 2>/dev/null | grep 'isoCode' | awk '{print $2}' | cut -f2 -d'"')
     if [ -n "$result" ]; then
         if [ "$result" = "0" ]; then
-            echo -n -e "\r CatchPlay+:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+            echo -n -e "\r CatchPlay+:\t\t\t\t${Font_Green}Yes (Region: ${region})${Font_Suffix}\n"
             return
         elif [ "$result" = "100016" ]; then
             echo -n -e "\r CatchPlay+:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
@@ -3335,6 +3339,14 @@ function echo_Result() {
         # sleep 0.03
     done;
 }
+
+if [ -n "$func" ]; then
+    echo -e "${Font_Green}IPv4:${Font_Suffix}" 
+    $func 4
+    echo -e "${Font_Green}IPv6:${Font_Suffix}" 
+    $func 6
+    exit
+fi
 
 function NA_UnlockTest() {
     echo "===========[ North America ]==========="
