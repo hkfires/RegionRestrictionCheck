@@ -1843,7 +1843,7 @@ function MediaUnlockTest_NetflixCDN() {
         local tmp=$(curl $curlArgs --user-agent "${UA_Browser}" -s --max-time 20 "https://api.ip.sb/geoip/$nf_web_ip" 2>&1)
         local nf_web_asn=$(echo $tmp | python -m json.tool 2>/dev/null | grep 'asn' | head -1 | awk '{print $2}' | tr -d ",")
         local nf_web_isp=$(echo $tmp | python -m json.tool 2>/dev/null | grep 'isp' | cut -f4 -d'"')
-        if [[ ! "$nf_web_asn" == "16509" ]]; then
+        if [[ ! "$nf_web_asn" == "16509" ]] && [[ ! "$nf_web_asn" == "14618" ]]; then
             echo -n -e "\r Netflix Preferred CDN:\t\t\t${Font_Yellow}Hijacked with [$nf_web_isp]${Font_Suffix}\n"
             return
         fi
