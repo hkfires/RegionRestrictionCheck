@@ -3330,6 +3330,28 @@ function MediaUnlockTest_Google() {
     echo -n -e "\r Google Location:\t\t\t${Font_Red}Failed${Font_Suffix}\n"
 }
 
+function MediaUnlockTest_NHKPlus() {
+    local result=$(curl $curlArgs --user-agent "${UA_Browser}" -${1} -fsSL --max-time 10 "https://location-plus.nhk.jp/geoip/area.json" 2>&1)
+    if [[ "$result" == "curl"* ]] && [[ "$1" == "6" ]]; then
+        echo -n -e "\r NHK+:\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
+        return
+    elif [[ "$result" == "curl"* ]]; then
+        echo -n -e "\r NHK+:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+    local result1="$(echo "${result}" | python -m json.tool | grep "country_code" | awk '{print $2}' | cut -d '"' -f 2)"
+    if [[ "$result1" == "JP" ]]; then
+        echo -n -e "\r NHK+:\t\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+        return
+    else
+        echo -n -e "\r NHK+:\t\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        return
+    fi
+        
+    echo -n -e "\r NHK+:\t\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+}
+
+
 
 function echo_Result() {
     for((i=0;i<${#array[@]};i++)) 
@@ -3521,7 +3543,7 @@ function TW_UnlockTest() {
 function JP_UnlockTest() {
     echo "===============[ Japan ]==============="
     local result=$(
-    #MediaUnlockTest_DMM ${1} &
+    MediaUnlockTest_NHKPlus ${1} &
     MediaUnlockTest_DMMTV ${1} &
     MediaUnlockTest_AbemaTV_IPTest ${1} &
     MediaUnlockTest_Niconico ${1} &
@@ -3532,7 +3554,7 @@ function JP_UnlockTest() {
     MediaUnlockTest_HuluJP ${1} &
     )
     wait
-    local array=("DMM TV:" "Abema.TV:" "Niconico:" "music.jp:" "Telasa:" "Paravi:" "U-NEXT:" "Hulu Japan:") 
+    local array=("NHK+" "DMM TV:" "Abema.TV:" "Niconico:" "music.jp:" "Telasa:" "Paravi:" "U-NEXT:" "Hulu Japan:") 
     echo_Result ${result} ${array}
     local result=$(
     MediaUnlockTest_TVer ${1} &
