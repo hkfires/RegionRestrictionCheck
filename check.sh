@@ -55,8 +55,6 @@ fi
 
 if [ -z "$proxy" ]; then
     usePROXY=""
-elif [ -n "$proxy" ]; then
-    NetworkType=4
 fi
 
 if ! mktemp -u --suffix=RRC &>/dev/null; then
