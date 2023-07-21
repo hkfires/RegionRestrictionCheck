@@ -288,10 +288,10 @@ function MediaUnlockTest_BilibiliTW() {
 function MediaUnlockTest_AbemaTV_IPTest() {
     local tempresult=$(curl $curlArgs --user-agent "${UA_Dalvik}" -${1} -fsL --max-time 10 "https://api.abema.io/v1/ip/check?device=android" 2>&1)
     if [[ "$tempresult" == "curl"* ]] && [[ "$1" == "6" ]]; then
-        echo -n -e "\r Disney+:\t\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
+        echo -n -e "\r Abema.TV:\t\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
         return
     elif [[ "$tempresult" == "curl"* ]]; then
-        echo -n -e "\r Disney+:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        echo -n -e "\r Abema.TV:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
 
