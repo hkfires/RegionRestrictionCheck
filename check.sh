@@ -2328,6 +2328,7 @@ function MediaUnlockTest_Telasa() {
 
 function MediaUnlockTest_SetantaSports() {
     local tmpresult=$(curl $curlArgs -${1} -sS "https://dce-frontoffice.imggaming.com/api/v2/consent-prompt" -H "Realm: dce.adjara" -H "x-api-key: 857a1e5d-e35e-4fdf-805b-a87b6f8364bf" 2>&1)
+    local tmpresult1=$(curl $curlArgs -${1} -sS "https://dce-frontoffice.imggaming.com/api/v3/i18n/country-codes" -H "Realm: dce.adjara" -H "x-api-key: 857a1e5d-e35e-4fdf-805b-a87b6f8364bf" 2>&1)
     if [[ "$tmpresult" == "curl"* ]] && [[ "$1" == "6" ]]; then
         echo -n -e "\r Setanta Sports:\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
         return
@@ -2336,11 +2337,12 @@ function MediaUnlockTest_SetantaSports() {
         return
     fi
     local result=$(echo $tmpresult | python -m json.tool 2>/dev/null | grep outsideAllowedTerritories | awk '{print $2}' | cut -f1 -d",")
+    local region=$(echo $tmpresult1 | python -m json.tool 2>/dev/null | grep callerCountryCode | awk '{print $2}' | cut -f2 -d'"')
     if [[ "$result" == "true" ]]; then
-        echo -n -e "\r Setanta Sports:\t\t\t${Font_Red}No${Font_Suffix}\n"
+        echo -n -e "\r Setanta Sports:\t\t\t${Font_Red}No (Region: ${region})${Font_Suffix}\n"
         return
     elif [[ "$result" == "false" ]]; then
-        echo -n -e "\r Setanta Sports:\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+        echo -n -e "\r Setanta Sports:\t\t\t${Font_Green}Yes (Region: ${region})${Font_Suffix}\n"
         return
     fi
 
