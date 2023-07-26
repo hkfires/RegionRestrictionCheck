@@ -3477,11 +3477,11 @@ function EU_UnlockTest() {
     ShowRegion DE
     local array=("Joyn:" "Sky:" "ZDF:") 
     echo_Result ${result} ${array}
-    ShowRegion NL
+    # ShowRegion NL
     local result=$(
-    MediaUnlockTest_NLZIET ${1} &
-    MediaUnlockTest_videoland ${1} &
-    MediaUnlockTest_NPO_Start_Plus ${1} &
+    # MediaUnlockTest_NLZIET ${1} &
+    # MediaUnlockTest_videoland ${1} &
+    # MediaUnlockTest_NPO_Start_Plus ${1} &
     # MediaUnlockTest_HBO_Spain ${1}
     MediaUnlockTest_PANTAYA ${1} &
     MediaUnlockTest_RaiPlay ${1} &
