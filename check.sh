@@ -3476,7 +3476,7 @@ function EU_UnlockTest() {
     MediaUnlockTest_videoland ${1} &
     MediaUnlockTest_NPO_Start_Plus ${1} &
     # MediaUnlockTest_HBO_Spain ${1}
-    MediaUnlockTest_PANTAYA ${1} &
+    # MediaUnlockTest_PANTAYA ${1} &
     MediaUnlockTest_RaiPlay ${1} &
     #MediaUnlockTest_MegogoTV ${1}
     MediaUnlockTest_Amediateka ${1} &
@@ -3484,8 +3484,8 @@ function EU_UnlockTest() {
     wait
     local array=("NLZIET:" "videoland:" "NPO Start Plus:") 
     echo_Result ${result} ${array}
-    ShowRegion ES
-    echo "$result" | grep "PANTAYA:"
+    # ShowRegion ES
+    # echo "$result" | grep "PANTAYA:"
     ShowRegion IT
     echo "$result" | grep "Rai Play:"
     ShowRegion RU
