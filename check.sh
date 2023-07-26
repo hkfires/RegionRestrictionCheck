@@ -1454,21 +1454,18 @@ function MediaUnlockTest_NLZIET() {
 }
 
 function MediaUnlockTest_videoland() {
-    local tmpresult=$(curl $curlArgs -${1} -s --max-time 10 "https://www.videoland.com/api/v3/geo" 2>&1)
+    local onetrustresult=$(curl $curlArgs -${1} -sS --user-agent "${UA_Browser}" --max-time 10 "https://geolocation.onetrust.com/cookieconsentpub/v1/geo/location/dnsfeed" 2>&1)
     if [ -z "$tmpresult" ]; then
         echo -n -e "\r videoland:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
 
-    local result=$(echo $tmpresult | python -m json.tool 2>/dev/null | grep has_access | awk '{print $2}' | cut -f1 -d",")
-    if [[ "$result" == "true" ]]; then
-        echo -n -e "\r videoland:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
-        return
-    elif [[ "$result" == "false" ]]; then
+    local result=$(echo $onetrustresult | grep '"country":"NL"')
+    if [ -z "$result"]; then
         echo -n -e "\r videoland:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
         return
     else
-        echo -n -e "\r videoland:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+        echo -n -e "\r videoland:\t\t\t\t${Font_Red}Yes${Font_Suffix}\n"
     fi
 
 }
@@ -3476,7 +3473,7 @@ function EU_UnlockTest() {
     ShowRegion NL
     local result=$(
     # MediaUnlockTest_NLZIET ${1} &
-    # MediaUnlockTest_videoland ${1} &
+    MediaUnlockTest_videoland ${1} &
     MediaUnlockTest_NPO_Start_Plus ${1} &
     # MediaUnlockTest_HBO_Spain ${1}
     MediaUnlockTest_PANTAYA ${1} &
