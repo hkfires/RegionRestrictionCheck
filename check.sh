@@ -1455,7 +1455,7 @@ function MediaUnlockTest_NLZIET() {
 
 function MediaUnlockTest_videoland() {
     local onetrustresult=$(curl $curlArgs -${1} -sS --user-agent "${UA_Browser}" --max-time 10 "https://geolocation.onetrust.com/cookieconsentpub/v1/geo/location/dnsfeed" 2>&1)
-    if [ -z "$tmpresult" ]; then
+    if [[ "$tmpresult" == "curl"* ]]; then
         echo -n -e "\r videoland:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
