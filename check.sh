@@ -1461,11 +1461,11 @@ function MediaUnlockTest_videoland() {
     fi
 
     local result=$(echo $onetrustresult | grep '"country":"NL"')
-    if [ -z "$result"]; then
-        echo -n -e "\r videoland:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+    if [ -z "$result" ]; then
+        echo -n -e "\r videoland:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
         return
     else
-        echo -n -e "\r videoland:\t\t\t\t${Font_Red}Yes${Font_Suffix}\n"
+        echo -n -e "\r videoland:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
     fi
 
 }
