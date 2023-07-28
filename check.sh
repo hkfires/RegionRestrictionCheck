@@ -3785,7 +3785,7 @@ function Openai_UnlockTest() {
         return
     fi
     
-    local result1=$(echo "$tmpresult" | grep 'cf-mitigated' )
+    local result1=$(echo "$tmpresult" | grep 'location' )
     if [ ! -n "$result1" ]; then
     	echo -n -e "\r Openai:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
     else
