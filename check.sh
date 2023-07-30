@@ -2586,23 +2586,6 @@ function MediaUnlockTest_VideoMarket() {
     
 }
 
-function MediaUnlockTest_GYAO() {
-	if [ "$1" == "6" ]; then
-        echo -n -e "\r GYAO!:\t\t\t\t\t${Font_Red}IPv6 Not Supported${Font_Suffix}\n"
-		return
-	fi
-	local tmpresult=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -s --max-time 10 'https://gyao.yahoo.co.jp/apis/playback/graphql?appId=dj00aiZpPUNJeDh2cU1RazU3UCZzPWNvbnN1bWVyc2VjcmV0Jng9NTk-&query=%20query%20Playback(%24videoId%3A%20ID!%2C%20%24logicaAgent%3A%20LogicaAgent!%2C%20%24clientSpaceId%3A%20String!%2C%20%24os%3A%20Os!%2C%20%24device%3A%20Device!)%20%7B%20content(%20parameter%3A%20%7B%20contentId%3A%20%24videoId%20logicaAgent%3A%20%24logicaAgent%20clientSpaceId%3A%20%24clientSpaceId%20os%3A%20%24os%20device%3A%20%24device%20view%3A%20WEB%20%7D%20)%20%7B%20tracking%20%7B%20streamLog%20vrLog%20stLog%20%7D%20inStreamAd%20%7B%20forcePlayback%20source%20%7B%20__typename%20...%20on%20YjAds%20%7B%20ads%20%7B%20location%20time%20adRequests%20%7B%20__typename%20...%20on%20YjAdOnePfWeb%20%7B%20adDs%20placementCategoryId%20%7D%20...%20on%20YjAdOnePfProgrammaticWeb%20%7B%20adDs%20%7D%20...%20on%20YjAdAmobee%20%7B%20url%20%7D%20...%20on%20YjAdGam%20%7B%20url%20%7D%20%7D%20%7D%20%7D%20...%20on%20Vmap%20%7B%20url%20%7D%20...%20on%20CatchupVmap%20%7B%20url%20siteId%20%7D%20%7D%20%7D%20video%20%7B%20id%20title%20delivery%20%7B%20id%20drm%20%7D%20duration%20images%20%7B%20url%20width%20height%20%7D%20cpId%20playableAge%20maxPixel%20embeddingPermission%20playableAgents%20gyaoUrl%20%7D%20%7D%20%7D%20&variables=%7B%22videoId%22%3A%225fb4e68c-aef7-4f63-88e9-8cfeb35e9065%22%2C%22logicaAgent%22%3A%22PC_WEB%22%2C%22clientSpaceId%22%3A%221183050133%22%2C%22os%22%3A%22UNKNOWN%22%2C%22device%22%3A%22PC%22%7D' 2>&1)
-	local result=$(echo $tmpresult | python -m json.tool 2>/dev/null)
-	local isOutsideJapan=$(echo $result | grep "not in japan")
-	if [ -n "result" ] && [ -n "$isOutsideJapan" ];then
-		echo -n -e "\r GYAO!:\t\t\t\t\t${Font_Red}No${Font_Suffix}\n"
-	elif [ -n "result" ] && [ -z "$isOutsideJapan" ];then
-		echo -n -e "\r GYAO!:\t\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
-	else
-		echo -n -e "\r GYAO!:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
-	fi
-}
-
 function MediaUnlockTest_J:COM_ON_DEMAND() {
 	local result=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://id.zaq.ne.jp" 2>&1)
 	if [ "$result" = "000" ]; then
@@ -3556,7 +3539,6 @@ function JP_UnlockTest() {
     echo_Result ${result} ${array}
     local result=$(
     MediaUnlockTest_TVer ${1} &
-    MediaUnlockTest_GYAO ${1} &
     MediaUnlockTest_wowow ${1} &
     MediaUnlockTest_VideoMarket ${1} &
     MediaUnlockTest_FOD ${1} &
@@ -3565,7 +3547,7 @@ function JP_UnlockTest() {
     MediaUnlockTest_J:COM_ON_DEMAND ${1} &
     )
     wait
-    local array=("TVer:" "GYAO!:" "WOWOW:" "VideoMarket:" "FOD(Fuji TV):" "Radiko:" "Karaoke@DAM:" "J:com On Demand:") 
+    local array=("TVer:" "WOWOW:" "VideoMarket:" "FOD(Fuji TV):" "Radiko:" "Karaoke@DAM:" "J:com On Demand:") 
     echo_Result ${result} ${array}
     ShowRegion Game
     local result=$(
