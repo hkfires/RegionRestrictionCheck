@@ -618,13 +618,13 @@ function MediaUnlockTest_wowow() {
 }
 
 function MediaUnlockTest_TVer() {
-    local BCpktmp=$(curl $curlArgs --user-agent "${UA_Browser}" -${1} -Ss --max-time 10 https://players.brightcove.net/4394098882001/L3xqlxT7zF_default/index.min.js  2>&1)
+    local BCpktmp=$(curl $curlArgs --user-agent "${UA_Browser}" -${1} -Ss --max-time 10 "https://players.brightcove.net/4394098882001/L3xqlxT7zF_default/index.min.js"  2>&1)
     if [[ "$BCpktmp" == "curl"* ]]; then
         echo -n -e "\r TVer:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
     local BCpk=$(echo $BCpktmp |grep -Eo 'BCpk(.|)*"}},{name:"dock",autoInit:false}' | tr -d '"}},{name:"dock",autoInit:false}')
-    local tmpresult=$(curl $curlArgs --user-agent "${UA_Browser}" -${1} -Ss --max-time 10 -H "Accept: application/json;pk=$BCpk" "https://edge.api.brightcove.com/playback/v1/accounts/4394098882001/videos/ref%3A83b847b3-f6a6-4b3a-b69c-f27b1e0078d0 " 2>&1)
+    local tmpresult=$(curl $curlArgs --user-agent "${UA_Browser}" -${1} -Ss --max-time 10 -H "Accept: application/json;pk=$BCpk" "https://edge.api.brightcove.com/playback/v1/accounts/4394098882001/videos/ref%3A83b847b3-f6a6-4b3a-b69c-f27b1e0078d0" 2>&1)
     if [[ "$tmpresult" == "curl"* ]]; then
         echo -n -e "\r TVer:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
