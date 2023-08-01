@@ -2577,7 +2577,7 @@ function MediaUnlockTest_VideoMarket() {
         return
     fi
     local Token=$(echo $TokenSrc| grep -Eo 'notLoggedInTokenPc:(.|)*notLoggedInTokenSpAndroid')
-    local tmpresult=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fsL  --output /dev/null --max-time 10 -X POST -d '{"operationName":"readStatus","variables":{},"query":"query readStatus {\n  readStatus {\n    isRead\n    __typename\n  }\n}\n"}' -H "Authorization:Bearer ${Token:20:-27}"   2>&1)
+    local tmpresult=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fsL  --output /dev/null --max-time 10 "https://www.videomarket.jp/graphql" -X POST -d '{"operationName":"readStatus","variables":{},"query":"query readStatus {\n  readStatus {\n    isRead\n    __typename\n  }\n}\n"}' -H "Authorization:Bearer ${Token:20:-27}"   2>&1)
     if [[ "$tmpresult" == "curl"* ]]; then
         echo -n -e "\r VideoMarket:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
