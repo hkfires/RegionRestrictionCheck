@@ -3359,7 +3359,7 @@ function NA_UnlockTest() {
     echo "===========[ North America ]==========="
     local result=$(
     MediaUnlockTest_Fox ${1} &
-    MediaUnlockTest_HuluUS ${1} &
+    #MediaUnlockTest_HuluUS ${1} &
     MediaUnlockTest_NFLPlus ${1} &
     MediaUnlockTest_ESPNPlus ${1} &
     MediaUnlockTest_EPIX ${1} &
