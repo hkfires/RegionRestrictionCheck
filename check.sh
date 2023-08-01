@@ -2583,7 +2583,7 @@ function MediaUnlockTest_VideoMarket() {
         return
     fi
     local result=$(echo $tmpresult | grep OverseasAccess)
-    if [ -z "$result" ]; then
+    if [ -n "$result" ]; then
         echo -n -e "\r VideoMarket:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
     else
         echo -n -e "\r VideoMarket:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
