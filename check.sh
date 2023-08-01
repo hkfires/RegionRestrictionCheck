@@ -1067,22 +1067,26 @@ function MediaUnlockTest_YouTube_Premium() {
     
     local region=$(echo $tmpresult | grep "countryCode" | sed 's/.*"countryCode"//' | cut -f2 -d'"')
     local isAvailable=$(echo $tmpresult | grep 'purchaseButtonOverride')
+    local isAvailable2=$(echo $tmpresult | grep "Start trial")
 
-    if [ -z "$isAvailable" ] && [ -n "$region" ]; then
-        echo -n -e "\r YouTube Premium:\t\t\t${Font_Red}No (Region: $region)${Font_Suffix} \n"
-        return
-    elif [ -z "$isAvailable" ] && [ -z "$region" ]; then
-        echo -n -e "\r YouTube Premium:\t\t\t${Font_Red}No${Font_Suffix} \n"
-        return
-    elif [ -n "$isAvailable" ] && [ -n "$region" ]; then
-        echo -n -e "\r YouTube Premium:\t\t\t${Font_Green}Yes (Region: $region)${Font_Suffix}\n"
-        return
-    elif [ -z "$region" ] && [ -n "$isAvailable" ]; then
-        echo -n -e "\r YouTube Premium:\t\t\t${Font_Green}Yes${Font_Suffix}\n"
-        return
+    if [ -n "$isAvailable" ] || [-n "$isAvailable2"]; then
+        if [ -n "$region" ]; then
+            echo -n -e "\r YouTube Premium:\t\t\t${Font_Green}Yes (Region: $region)${Font_Suffix}\n"
+            return
+        else
+            echo -n -e "\r YouTube Premium:\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+            return
+        fi
     else
-        echo -n -e "\r YouTube Premium:\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+        if [ -n "$region" ]; then
+            echo -n -e "\r YouTube Premium:\t\t\t${Font_Red}No (Region: $region)${Font_Suffix} \n"
+            return
+        else
+            echo -n -e "\r YouTube Premium:\t\t\t${Font_Red}No${Font_Suffix} \n"
+            return
+        fi
     fi
+    echo -n -e "\r YouTube Premium:\t\t\t${Font_Red}Failed${Font_Suffix}\n"
 
 }
 
