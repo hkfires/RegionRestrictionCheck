@@ -2571,22 +2571,22 @@ function MediaUnlockTest_Spotify() {
 }
 
 function MediaUnlockTest_VideoMarket() {
-    local token=$(curl -s --max-time 10 -X POST "https://api-p.videomarket.jp/v2/authorize/access_token" -d 'grant_type=client_credentials&client_id=1eolxdrti3t58m2f2k8yi0kli105743b6f8c8295&client_secret=lco0nndn3l9tcbjdfdwlswmee105743b739cfb5a' 2>&1 | python -m json.tool 2>/dev/null | grep access_token | cut -f4 -d'"')
-    local Auth="X-Authorization: $token"
-    local playkey=$(curl -s --max-time 10 -X POST "https://api-p.videomarket.jp/v2/api/play/keyissue" -d 'fullStoryId=118008001&playChromeCastFlag=false&loginFlag=0' -H "$Auth" | python -m json.tool 2>/dev/null | grep playKey | cut -f4 -d'"')
-    local result=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://api-p.videomarket.jp/v2/api/play/keyauth?playKey=${playkey}&deviceType=3&bitRate=0&loginFlag=0&connType=" -H "$Auth")
-    if [ "$result" = "000" ] && [ "$1" == "6" ]; then
-        echo -n -e "\r VideoMarket:\t\t\t\t${Font_Red}IPv6 Not Supported${Font_Suffix}\n"
-    elif [ "$result" = "000" ] && [ "$1" == "4" ]; then
+    local TokenSrc=$(curl $curlArgs  --user-agent "${UA_Browser}" -${1} -Ss --max-time 10 "https://www.videomarket.jp/player/17588S/A17588S001999H01"  2>&1)
+    if [[ "$TokenSrc" == "curl"* ]]; then
         echo -n -e "\r VideoMarket:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
-    elif [ "$result" = "200" ]; then
-        echo -n -e "\r VideoMarket:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
-    elif [ "$result" = "408" ]; then
-        echo -n -e "\r VideoMarket:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"    
-    elif [ "$result" = "403" ]; then
+        return
+    fi
+    local Token=$(echo $TokenSrc| grep -Eo 'notLoggedInTokenPc:(.|)*notLoggedInTokenSpAndroid')
+    local tmpresult=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fsL  --output /dev/null --max-time 10 -X POST -d '{"operationName":"readStatus","variables":{},"query":"query readStatus {\n  readStatus {\n    isRead\n    __typename\n  }\n}\n"}' -H "Authorization:Bearer ${Token:20:-27}"   2>&1)
+    if [[ "$tmpresult" == "curl"* ]]; then
+        echo -n -e "\r VideoMarket:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+    local result=$(echo $tmpresult | grep OverseasAccess)
+    if [ -z "$result" ]; then
         echo -n -e "\r VideoMarket:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
     else
-        echo -n -e "\r VideoMarket:\t\t\t\t${Font_Red}Failed (Unexpected Result: $result)${Font_Suffix}\n"
+        echo -n -e "\r VideoMarket:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
     fi
     
 }
