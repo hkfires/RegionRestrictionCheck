@@ -1064,11 +1064,14 @@ function MediaUnlockTest_YouTube_Premium() {
         echo -n -e "\r YouTube Premium:\t\t\t${Font_Red}No${Font_Suffix} ${Font_Green} (Region: CN)${Font_Suffix} \n"
         return
     fi
-    local isNotAvailable=$(echo $tmpresult | grep 'Premium is not available in your country')
+    
     local region=$(echo $tmpresult | grep "countryCode" | sed 's/.*"countryCode"//' | cut -f2 -d'"')
     local isAvailable=$(echo $tmpresult | grep 'purchaseButtonOverride')
 
-    if [ -n "$isNotAvailable" ]; then
+    if [ -z "$isAvailable" ] && [ -n "$region" ]; then
+        echo -n -e "\r YouTube Premium:\t\t\t${Font_Red}No (Region: $region)${Font_Suffix} \n"
+        return
+    elif [ -z "$isAvailable" ] && [ -z "$region" ]; then
         echo -n -e "\r YouTube Premium:\t\t\t${Font_Red}No${Font_Suffix} \n"
         return
     elif [ -n "$isAvailable" ] && [ -n "$region" ]; then
