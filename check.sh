@@ -597,13 +597,13 @@ function MediaUnlockTest_Paravi() {
 }
 
 function MediaUnlockTest_wowow() {
-    local tmpresult=$(curl $curlArgs --user-agent "${UA_Browser}" -${1} -s -X POST --max-time 10 -d '{"meta_id":79408,"vuid":"92103b2769ca4362b2f8ded33228d5c3","device_code":1,"app_id":1,"ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36","user_id":3690522,"wol_access_token":"1685025374WMwI8VibQdysjJnt966Kn8BiPetNWl6CFB"}' -H "Content-Type: application/json;charset=UTF-8" "https://mapi.wowow.co.jp/api/v1/playback/auth" 2>&1)
+    local tmpresult=$(curl $curlArgs --user-agent "${UA_Browser}" -${1} -s --max-time 10 "https://mapi.wowow.co.jp/api/v1/playback/auth" -X POST -d '{"meta_id":81174}' -H "Content-Type: application/json" 2>&1)
     if [[ "$tmpresult" == "curl"* ]]; then
         echo -n -e "\r WOWOW:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
 
-    checkfailed=$(echo $tmpresult | python -m json.tool 2>/dev/null | grep code | awk '{print $2}' | cut -f1 -d',')
+    checkfailed=$(echo $tmpresult | python -m json.tool 2>/dev/null | grep '"code"' | awk '{print $2}' | tr -d ',')
     if [[ "$checkfailed" == "2055" ]]; then
         echo -n -e "\r WOWOW:\t\t\t\t\t${Font_Red}No${Font_Suffix}\n"
         return
@@ -611,7 +611,7 @@ function MediaUnlockTest_wowow() {
         echo -n -e "\r WOWOW:\t\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
         return
     else
-        echo -n -e "\r WOWOW:\t\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+        echo -n -e "\r WOWOW:\t\t\t\t\t${Font_Red}Unknown (Code: $checkfailed)${Font_Suffix}\n"
         return
     fi
 
