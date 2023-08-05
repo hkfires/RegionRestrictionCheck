@@ -2114,7 +2114,7 @@ function MediaUnlockTest_Binge() {
     if [ "$result" = "000" ]; then
         echo -n -e "\r Binge:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
-    elif [ "$result" = "200" ] || [ "$result" = "403" ]; then
+    elif [ "$result" = "200" ] || [ "$result" = "302" ]; then
         echo -n -e "\r Binge:\t\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
         return
     elif [ "$result" = "403" ]; then
