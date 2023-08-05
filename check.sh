@@ -10,7 +10,7 @@ Font_SkyBlue="\033[36m"
 Font_White="\033[37m"
 Font_Suffix="\033[0m"
 
-while getopts ":I:M:E:X:P:F:" optname; do
+while getopts ":I:M:E:X:P:F:S" optname; do
     case "$optname" in
     "I")
         iface="$OPTARG"
@@ -36,6 +36,9 @@ while getopts ":I:M:E:X:P:F:" optname; do
     	;;
     "F")
         func="$OPTARG"
+    	;;
+    "S")
+        Stype="$OPTARG"
     	;;
     ":")
         echo "Unknown error while processing options"
@@ -3495,7 +3498,7 @@ function EU_UnlockTest() {
 
 function HK_UnlockTest() {
     echo "=============[ Hong Kong ]============="
-       if [[ "$1" == 4 ]];then
+       if [[ "$1" == 4 ]] || [[ "$Stype" == "force6" ]];then
 	local result=$(
 	    MediaUnlockTest_NowE ${1} &
 	    MediaUnlockTest_ViuTV ${1} &
@@ -3580,7 +3583,7 @@ function JP_UnlockTest() {
 function Global_UnlockTest() {
     echo ""
     echo "============[ Multination ]============"
-    if [[ "$1" == 4 ]];then
+    if [[ "$1" == 4 ]] || [[ "$Stype" == "force6" ]];then
         local result=$(
         MediaUnlockTest_Dazn ${1} &
         MediaUnlockTest_HotStar ${1} &
