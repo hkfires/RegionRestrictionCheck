@@ -51,8 +51,8 @@ done
 curlArgs=""
 UA="Mozilla"
 
-myip4=$(curl -SsL "ipv4.ip.sb" 2>&1)
-myip6=$(curl  -SsL "ipv6.ip.sb" 2>&1)
+myip4=$(curl -SsL "ipv4.ip.sb")
+myip6=$(curl -SsL "ipv6.ip.sb")
 echo "$myip4"
 echo "$myip6"
 
