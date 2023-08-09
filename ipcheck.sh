@@ -261,7 +261,11 @@ function ip_check_google() {
 }
 
 function ip_check_ipapicom() {
-    local tmp=$(curl $curlArgs -${1} -A "$UA" -m 10 -SsL "http://ip-api.com/json" 2>&1)
+    if [[ "${1}" == "6" ]];then
+        local tmp=$(curl $curlArgs -A "$UA" -m  10 -SsL "http://ip-api.com/json/${myip6}" 2>&1)
+    else
+        local tmp=$(curl $curlArgs -A "$UA" -${1} -m 10 -SsL "http://ip-api.com/json" 2>&1)
+    fi
     if [[ "$tmp" == "curl"* ]]; then
         echo -n -e "\r ip-api.com:\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
@@ -535,7 +539,7 @@ function isp_check_ipregistry() {
     local result_asn_type=$(echo "$tmp" | jq ".connection.type" | tr -d '"')
     local result_company=$(echo "$tmp" | jq ".company.name" | tr -d '"')
     local result_company_type=$(echo "$tmp" | jq ".company.type" | tr -d '"')
-    echo -n -e "\r AS (ipregistry):\t\t${Font_Yellow}${result_asn_name} ($result_asn;$result_asn_type)${Font_Suffix}\n"
+    echo -n -e "\r AS (ipregistry):\t\t${Font_Yellow}${result_asn_name} (AS$result_asn;$result_asn_type)${Font_Suffix}\n"
     echo -n -e "\r Company (ipregistry):\t\t${Font_Yellow}${result_company} ($result_company_type)${Font_Suffix}\n"
     return
 }
