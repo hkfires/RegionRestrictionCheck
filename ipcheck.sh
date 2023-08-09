@@ -535,7 +535,7 @@ function isp_check_ipregistry() {
     local result_asn_type=$(echo "$tmp" | jq ".connection.type" | tr -d '"')
     local result_company=$(echo "$tmp" | jq ".company.name" | tr -d '"')
     local result_company_type=$(echo "$tmp" | jq ".company.type" | tr -d '"')
-    echo -n -e "\r AS (ipregistry):\t\t${Font_Yellow}${result_asn_name} (AS$result_asn;$result_asn_type)${Font_Suffix}\n"
+    echo -n -e "\r AS (ipregistry):\t\t${Font_Yellow}${result_asn_name} ($result_asn;$result_asn_type)${Font_Suffix}\n"
     echo -n -e "\r Company (ipregistry):\t\t${Font_Yellow}${result_company} ($result_company_type)${Font_Suffix}\n"
     return
 }
@@ -554,7 +554,7 @@ function isp_check_ipdata() {
     local result_asn_type=$(echo "$tmp" | jq ".asn.type" | tr -d '"')
     local result_company=$(echo "$tmp" | jq ".company.name" | tr -d '"')
     local result_company_type=$(echo "$tmp" | jq ".company.type" | tr -d '"')
-    echo -n -e "\r AS (ipdata.co):\t\t${Font_Yellow}${result_asn_name} (AS$result_asn;$result_asn_type)${Font_Suffix}\n"
+    echo -n -e "\r AS (ipdata.co):\t\t${Font_Yellow}${result_asn_name} ($result_asn;$result_asn_type)${Font_Suffix}\n"
     echo -n -e "\r Company (ipdata.co):\t\t${Font_Yellow}${result_company} ($result_company_type)${Font_Suffix}\n"
     return
 }
