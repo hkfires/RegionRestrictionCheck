@@ -184,6 +184,25 @@ checkDependencies() {
         fi
     fi
 
+    if ! command -v jq &>/dev/null; then
+        if [ "$is_debian" == 1 ]; then
+            echo -e "${Font_Green}Installing jq${Font_Suffix}"
+            $InstallMethod update >/dev/null 2>&1
+            $InstallMethod install jq -y >/dev/null 2>&1
+        elif [ "$is_redhat" == 1 ]; then
+            echo -e "${Font_Green}Installing jq${Font_Suffix}"
+            $InstallMethod makecache >/dev/null 2>&1
+            $InstallMethod install jq -y >/dev/null 2>&1
+        elif [ "$is_termux" == 1 ]; then
+            echo -e "${Font_Green}Installing jq${Font_Suffix}"
+            $InstallMethod update -y >/dev/null 2>&1
+            $InstallMethod install jq -y >/dev/null 2>&1
+        elif [ "$is_macos" == 1 ]; then
+            echo -e "${Font_Green}Installing jq${Font_Suffix}"
+            $InstallMethod install jq
+        fi
+    fi
+
     if [ "$is_macos" == 1 ]; then
         if ! command -v md5sum &>/dev/null; then
             echo -e "${Font_Green}Installing md5sha1sum${Font_Suffix}"
