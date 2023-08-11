@@ -3376,7 +3376,7 @@ function MediaUnlockTest_Tiktok() {
         echo -n -e "\r Tiktok:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
-    local region="$(echo "${result1}" | jq ".data.store_region" | td -d '"' )"
+    local region="$(echo "${result1}" | jq ".data.store_region" | tr -d '"' )"
     if [[ "$result" == *"/explore" ]]; then
         echo -n -e "\r Tiktok:\t\t\t\t\t${Font_Green}Yes (Region: ${region^^})${Font_Suffix}\n"
         return
