@@ -3391,21 +3391,21 @@ function MediaUnlockTest_Tiktok() {
 function MediaUnlockTest_StarhubTVPlus() {
     local result=$(curl $curlArgs --user-agent "${UA_Browser}" -${1} -sSL --max-time 10  --output /dev/null -w %{http_code} "https://ucdn.starhubgo.com/bpk-tv/HubSensasiHD/output/manifest.mpd" 2>&1)
     if [[ "$result" == "curl"* ]] && [[ "$1" == "6" ]]; then
-        echo -n -e "\r Starhub TV+:\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
+        echo -n -e "\r Starhub TV+:\t\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
         return
     elif [[ "$result" == "curl"* ]]; then
-        echo -n -e "\r Starhub TV+:\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        echo -n -e "\r Starhub TV+:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
     if [[ "$result" == "200" ]]; then
-        echo -n -e "\r Starhub TV+:\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+        echo -n -e "\r Starhub TV+:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
         return
     else
-        echo -n -e "\r Starhub TV+:\t\t\t${Font_Red}No${Font_Suffix}\n"
+        echo -n -e "\r Starhub TV+:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
         return
     fi
         
-    echo -n -e "\r Starhub TV+:\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+    echo -n -e "\r Starhub TV+:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
 }
 
 
