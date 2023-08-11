@@ -3366,6 +3366,28 @@ function MediaUnlockTest_NHKPlus() {
     echo -n -e "\r NHK+:\t\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
 }
 
+function MediaUnlockTest_Tiktok() {
+    local result=$(curl $curlArgs --user-agent "${UA_Browser}" -${1} -fsSL --max-time 10  --output /dev/null -w %{url_effective} "https://www.tiktok.com/" 2>&1)
+    local result1=$(curl $curlArgs --user-agent "${UA_Browser}" -${1} -fsSL --max-time 10 -X POST "https://www.tiktok.com/passport/web/store_region/" 2>&1)
+    if [[ "$result" == "curl"* ]] && [[ "$1" == "6" ]]; then
+        echo -n -e "\r Tiktok:\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
+        return
+    elif [[ "$result" == "curl"* ]]; then
+        echo -n -e "\r Tiktok:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+    local region="$(echo "${result1}" | jq ".data.store_region" | td -d '"' )"
+    if [[ "$result" == *"/explore" ]]; then
+        echo -n -e "\r Tiktok:\t\t\t\t\t${Font_Green}Yes (Region: ${region^^})${Font_Suffix}\n"
+        return
+    else
+        echo -n -e "\r Tiktok:\t\t\t\t\t${Font_Red}No (Region: ${region^^})${Font_Suffix}\n"
+        return
+    fi
+        
+    echo -n -e "\r Tiktok:\t\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+}
+
 
 
 function echo_Result() {
