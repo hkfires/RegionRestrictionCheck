@@ -3388,6 +3388,26 @@ function MediaUnlockTest_Tiktok() {
     echo -n -e "\r Tiktok:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
 }
 
+function MediaUnlockTest_StarhubTVPlus() {
+    local result=$(curl $curlArgs --user-agent "${UA_Browser}" -${1} -fsSL --max-time 10  --output /dev/null -w %{http_code} "https://ucdn.starhubgo.com/bpk-tv/HubSensasiHD/output/manifest.mpd" 2>&1)
+    if [[ "$result" == "curl"* ]] && [[ "$1" == "6" ]]; then
+        echo -n -e "\r Starhub TV+:\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
+        return
+    elif [[ "$result" == "curl"* ]]; then
+        echo -n -e "\r Starhub TV+:\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+    if [[ "$result" == "200" ]]; then
+        echo -n -e "\r Starhub TV+:\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+        return
+    else
+        echo -n -e "\r Starhub TV+:\t\t\t${Font_Red}No${Font_Suffix}\n"
+        return
+    fi
+        
+    echo -n -e "\r Starhub TV+:\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+}
+
 
 
 function echo_Result() {
@@ -3641,6 +3661,7 @@ function Global_UnlockTest() {
         #MediaUnlockTest_Instagram.Music ${1}
         GameTest_Steam ${1} &
         MediaUnlockTest_Google ${1} &
+        MediaUnlockTest_Tiktok ${1} &
         )
     else
         local result=$(
@@ -3662,7 +3683,7 @@ function Global_UnlockTest() {
         )
     fi
     wait
-    local array=("Dazn:" "HotStar:" "Disney+:" "Netflix:" "YouTube Premium:" "Amazon Prime Video:" "TVBAnywhere+:" "iQyi Oversea Region:" "Viu.com:" "YouTube CDN:" "Google" "YouTube Region:" "Netflix Preferred CDN:" "Spotify Registration:" "Steam Currency:")
+    local array=("Dazn:" "HotStar:" "Disney+:" "Netflix:" "YouTube Premium:" "Amazon Prime Video:" "TVBAnywhere+:" "iQyi Oversea Region:" "Viu.com:" "Tiktok" "YouTube CDN:" "Google" "YouTube Region:" "Netflix Preferred CDN:" "Spotify Registration:" "Steam Currency:")
     echo_Result ${result} ${array}
     echo "======================================="
 }
@@ -3757,9 +3778,10 @@ function SEA_UnlockTest(){
     local result=$(
         MediaUnlockTest_Catchplay ${1} &
         MediaUnlockTest_meWATCH ${1} &
+        MediaUnlockTest_StarhubTVPlus ${1} &
     )
     wait
-    local array=("meWATCH" "CatchPlay+:") 
+    local array=("meWATCH" "Starhub" "CatchPlay+:") 
     echo_Result ${result} ${array}
     ShowRegion TH
     local result=$(
