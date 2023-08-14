@@ -2597,6 +2597,7 @@ function MediaUnlockTest_Spotify() {
         echo -n -e "\r Spotify Registration:\t\t\t${Font_Green}Yes (Region: $region)${Font_Suffix}\n"
         return
     fi
+    echo -n -e "\r Spotify Registration:\t\t\t${Font_Red}Failed${Font_Suffix}\n"
 }
 
 function MediaUnlockTest_VideoMarket() {
