@@ -1439,6 +1439,7 @@ function MediaUnlockTest_EPIX() {
     tmpToken=$(curl $curlArgs -${1} -s -X POST --max-time 10 "https://api.epix.com/v2/sessions" -H "Content-Type: application/json" -d '{"device":{"guid":"e2add88e-2d92-4392-9724-326c2336013b","format":"console","os":"web","app_version":"1.0.2","model":"browser","manufacturer":"google"},"apikey":"f07debfcdf0f442bab197b517a5126ec","oauth":{"token":null}}' 2>&1)
     if [ -z "$tmpToken" ]; then
         echo -n -e "\r Epix:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
     elif [[ "$tmpToken" == "error code"* ]]; then
         echo -n -e "\r Epix:\t\t\t\t\t${Font_Red}No${Font_Suffix}\n"
         return
