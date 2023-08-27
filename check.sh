@@ -828,28 +828,28 @@ function MediaUnlockTest_iQYI_Region() {
     local tmpresult=$(curl $curlArgs -${1} -s -I --max-time 10 "https://www.iq.com/")
 
     if [[ "$tmpresult" == "curl"* ]]; then
-        echo -n -e "\r Crackle:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        echo -n -e "\r iQyi Oversea:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     elif [ -z "$tmpresult" ]; then
-        echo -n -e "\r Crackle:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+        echo -n -e "\r iQyi Oversea:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
         return
     fi
     result=$(echo "$tmpresult" | grep 'mod=' | awk '{print $2}' | cut -f2 -d'=' | cut -f1 -d';')
 
     if [ -n "$result" ]; then
         if [[ "$result" == "intl" ]]; then
-            echo -n -e "\r iQyi Oversea:\t\t\t${Font_Red}No (Intl)${Font_Suffix}\n"
+            echo -n -e "\r iQyi Oversea:\t\t\t\t${Font_Red}No (Intl)${Font_Suffix}\n"
         elif [[ "$result" == "ntw" ]]; then
             result=TW
-            echo -n -e "\r iQyi Oversea:\t\t\t${Font_Green}Yes (Region: ${result})${Font_Suffix}\n"
+            echo -n -e "\r iQyi Oversea:\t\t\t\t${Font_Green}Yes (Region: ${result})${Font_Suffix}\n"
             return
         else
             result=$(echo $result | tr [:lower:] [:upper:])
-            echo -n -e "\r iQyi Oversea:\t\t\t${Font_Green}Yes (Region: ${result})${Font_Suffix}\n"
+            echo -n -e "\r iQyi Oversea:\t\t\t\t${Font_Green}Yes (Region: ${result})${Font_Suffix}\n"
             return
         fi
     else
-        echo -n -e "\r iQyi Oversea:\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+        echo -n -e "\r iQyi Oversea:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
         return
     fi
 }
