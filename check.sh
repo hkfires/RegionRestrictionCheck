@@ -625,11 +625,11 @@ function MediaUnlockTest_wowow() {
         return
     fi
 
-    checkfailed=$(echo $tmpresult | python -m json.tool 2>/dev/null | grep '"code"' | awk '{print $2}' | tr -d ',')
+    checkfailed=$(echo $tmpresult | jq '.error.code')
     if [[ "$checkfailed" == "2055" ]]; then
         echo -n -e "\r WOWOW:\t\t\t\t\t${Font_Red}No${Font_Suffix}\n"
         return
-    elif [[ "$checkfailed" == "2041" ]]; then
+    elif [[ "$checkfailed" == "2041" ]] || [[ "$checkfailed" == "2003" ]]; then
         echo -n -e "\r WOWOW:\t\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
         return
     else
