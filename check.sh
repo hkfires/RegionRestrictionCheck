@@ -1054,7 +1054,7 @@ function MediaUnlockTest_KKTV() {
 }
 
 function MediaUnlockTest_PeacockTV() {
-    local tmpresult=$(curl $curlArgs -${1} -fsL -w "%{http_code}\n%{url_effective}\n" -o dev/null "https://www.peacocktv.com/" 2>&1)
+    local tmpresult=$(curl $curlArgs -${1} -fsL -w "%{http_code}\n%{url_effective}\n" -o /dev/null "https://www.peacocktv.com/" 2>&1)
     if [[ "$tmpresult" == "000"* ]]; then
         echo -n -e "\r Peacock TV:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
@@ -2686,12 +2686,12 @@ function MediaUnlockTest_Popcornflix(){
 }
 
 function MediaUnlockTest_TubiTV(){
-    local tmpresult=$(curl $curlArgs -${1} -sS --user-agent "${UA_Browser}" --max-time 10 "https://tubitv.com/home" 2>&1)
+    local tmpresult=$(curl $curlArgs -${1} -sSL --user-agent "${UA_Browser}" -w "%{url_effective}\n" -o /dev/null  --max-time 10 "https://tubitv.com" 2>&1)
     if [[ "$tmpresult" == "curl"* ]]; then
         echo -n -e "\r Tubi TV:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
-    local result=$(echo $tmpresult | grep '302 Found')
+    local result=$(echo $tmpresult | grep 'gdpr.tubi.tv')
     if [ -n "$result" ]; then
         echo -n -e "\r Tubi TV:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
     else
@@ -2987,7 +2987,7 @@ function MediaUnlockTest_AETV(){
 }
 
 function MediaUnlockTest_NFLPlus() {
-    local tmpresult=$(curl $curlArgs -${1} -fsL -w "%{http_code}\n%{url_effective}\n" -o dev/null "https://www.nfl.com/plus/" 2>&1)
+    local tmpresult=$(curl $curlArgs -${1} -fsL -w "%{http_code}\n%{url_effective}\n" -o /dev/null "https://www.nfl.com/plus/" 2>&1)
     if [[ "$tmpresult" == "000"* ]] && [[ "$1" == "6" ]]; then
         echo -n -e "\r NFL+:\t\t\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
         return
