@@ -2834,7 +2834,7 @@ function MediaUnlockTest_Tving() {
 }
 
 function MediaUnlockTest_CoupangPlay() {
-    local tmpresult=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fSsi --max-time 10 "https://www.coupangplay.com/ " 2>&1)
+    local tmpresult=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fSsI --max-time 10 "https://www.coupangplay.com/" 2>&1)
     if [[ "$tmpresult" == "curl"* ]] && [ "$1" == "6" ]; then
         echo -n -e "\r Coupang Play:\t\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
         return
@@ -2842,16 +2842,16 @@ function MediaUnlockTest_CoupangPlay() {
         echo -n -e "\r Coupang Play:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
-    local result1=$(echo "$tmpresult" | grep 'Location' | awk '{print $2}' )
-    if [[ "$result1" == "/"* ]]; then
-        echo -n -e "\r Coupang Play:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
-    else
+    local result1=$(echo "$tmpresult" | grep 'Location' -i | awk '{print $2}' )
+    if [[ "$result1" == *"/not-available"* ]]; then
         echo -n -e "\r Coupang Play:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+    else
+        echo -n -e "\r Coupang Play:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
     fi
 }
 
 function MediaUnlockTest_NaverTV() {
-    local tmpresult=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fSsL --max-time 10 "https://tv.naver.com/v/31030608 " 2>&1)
+    local tmpresult=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fSsL --max-time 10 "https://tv.naver.com/v/31030608" 2>&1)
     if [[ "$tmpresult" == "curl"* ]] && [ "$1" == "6" ]; then
         echo -n -e "\r Naver TV:\t\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
         return
