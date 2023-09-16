@@ -2507,6 +2507,7 @@ function MediaUnlockTest_MyVideo() {
     local tmpresult=$(curl $curlArgs -${1} -SsL -o /dev/null --max-time 10 -w '%{url_effective}\n' "https://www.myvideo.net.tw/login.do" 2>&1)
     if [[ "$tmpresult" == "curl"* ]] && [[ "$1" == "6" ]]; then
         echo -n -e "\r MyVideo:\t\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
+        return
     elif [[ "$tmpresult" == "curl"* ]]; then
         echo -n -e "\r MyVideo:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
