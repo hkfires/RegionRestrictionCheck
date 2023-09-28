@@ -3461,6 +3461,22 @@ function MediaUnlockTest_Viaplay() {
     echo -n -e "\r Viaplay:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
 }
 
+function MediaUnlockTest_Sooka() {
+    local result=$(curl $curlArgs --user-agent "${UA_Browser}" -${1} -fsL --max-time 10 --write-out %{http_code} --output /dev/null --max-time 10 "https://app-expmanager-proxy.sooka.my/prod/api/v1/enveu_prod/screen?screenId=0" 2>&1)
+    if [ "$result" = "000" ]; then
+        echo -n -e "\r Sooka:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    elif [ "$result" = "200" ]; then
+        echo -n -e "\r Sooka:\t\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+        return
+    elif [ "$result" = "403" ]; then
+        echo -n -e "\r Sooka:\t\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        return
+    else
+        echo -n -e "\r Sooka:\t\t\t\t\t${Font_Red}Failed (Unexpected Result: $result)${Font_Suffix}\n"
+        return
+    fi
+}
 
 
 function echo_Result() {
@@ -3865,6 +3881,13 @@ function SEA_UnlockTest(){
     )
     wait
     local array=("MYTV" "Clip TV" "Galaxy Play" "B-Global Việt Nam Only" )
+    echo_Result ${result} ${array}
+    ShowRegion MY
+    local result=$(
+    MediaUnlockTest_Sooka ${1} &
+    )
+    wait
+    local array=("Sooka")
     echo_Result ${result} ${array}
     ShowRegion IN
     local result=$(
