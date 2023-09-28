@@ -1105,7 +1105,7 @@ function MediaUnlockTest_YouTube_Premium() {
     local isAvailable=$(echo $tmpresult | grep 'purchaseButtonOverride')
     local isAvailable2=$(echo $tmpresult | grep "Start trial")
 
-    if [ -n "$isAvailable" ] || [ -n "$isAvailable2" ]; then
+    if [ -n "$isAvailable" ] || [ -n "$isAvailable2" ] || [ -n "$region" ]; then
         if [ -n "$region" ]; then
             echo -n -e "\r YouTube Premium:\t\t\t${Font_Green}Yes (Region: $region)${Font_Suffix}\n"
             return
