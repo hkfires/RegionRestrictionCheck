@@ -3423,6 +3423,27 @@ function MediaUnlockTest_StarhubTVPlus() {
     echo -n -e "\r Starhub TV+:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
 }
 
+function MediaUnlockTest_Eurosport() {
+    local result=$(curl $curlArgs --user-agent "${UA_Browser}" -${1} -sSI --max-time 10 "https://www.eurosport.com/" | grep eurosport_country_code | grep -Eo "eurosport_country_code=.." 2>&1)
+    # echo ${result: -2}
+    # if [[ "$result" == "curl"* ]] && [[ "$1" == "6" ]]; then
+    #     echo -n -e "\r Starhub TV+:\t\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
+    #     return
+    # elif [[ "$result" == "curl"* ]]; then
+    #     echo -n -e "\r Starhub TV+:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+    #     return
+    # fi
+    # if [[ "$result" == "200" ]]; then
+    echo -n -e "\r Eurosports Region:\t\t\t${Font_Green}${result: -2}${Font_Suffix}\n"
+    #     return
+    # else
+    #     echo -n -e "\r Starhub TV+:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+    #     return
+    # fi
+
+    # echo -n -e "\r Starhub TV+:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+}
+
 
 
 function echo_Result() {
@@ -3515,11 +3536,12 @@ function EU_UnlockTest() {
     MediaUnlockTest_SkyShowTime ${1} &
     MediaUnlockTest_HBOMax ${1} &
     MediaUnlockTest_MathsSpot ${1} &
+    MediaUnlockTest_Eurosport ${1} &
     # MediaUnlockTest_HBO_Nordic ${1}
     # MediaUnlockTest_HBOGO_EUROPE ${1}
     )
     wait
-    local array=("Rakuten TV:" "Funimation:" "SkyShowTime:" "HBO Max:" "Maths Spot:")
+    local array=("Rakuten TV:" "Funimation:" "SkyShowTime:" "HBO Max:" "Maths Spot:" "Eurosport")
     echo_Result ${result} ${array}
     ShowRegion GB
     local result=$(
