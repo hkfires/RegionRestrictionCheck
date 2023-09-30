@@ -2203,7 +2203,7 @@ function MediaUnlockTest_OptusSports() {
 }
 
 function MediaUnlockTest_KayoSports() {
-    local result=$(curl $curlArgs -${1} -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://auth.kayosports.com.au" 2>&1)
+    local result=$(curl $curlArgs -${1} -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://auth.streamotion.com.au" 2>&1)
     if [ "$result" = "000" ]; then
         echo -n -e "\r Kayo Sports:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
