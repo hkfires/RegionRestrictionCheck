@@ -2203,13 +2203,14 @@ function MediaUnlockTest_OptusSports() {
 }
 
 function MediaUnlockTest_KayoSports() {
-    if [[ "$isKayoSportsOK" = "2" ]]; then
-        echo -n -e "\r Kayo Sports:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+    local result=$(curl $curlArgs -${1} -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://auth.kayosports.com.au" 2>&1)
+    if [ "$result" = "000" ]; then
+        echo -n -e "\r Kayo Sports:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
-    elif [[ "$isKayoSportsOK" = "1" ]]; then
+    elif [ "$result" = "200" ] || [ "$result" = "302" ]; then
         echo -n -e "\r Kayo Sports:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
         return
-    elif [[ "$isKayoSportsOK" = "0" ]]; then
+    elif [ "$result" = "403" ]; then
         echo -n -e "\r Kayo Sports:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
         return
     else
@@ -3796,16 +3797,12 @@ function OA_UnlockTest() {
     MediaUnlockTest_ABCiView ${1} &
     MediaUnlockTest_OptusSports ${1} &
     MediaUnlockTest_SBSonDemand ${1} &
+    MediaUnlockTest_Docplay ${1}
+    MediaUnlockTest_KayoSports ${1}
     )
     wait
-    echo "$result" | grep "Stan:"
-    echo "$result" | grep "Binge:"
-    MediaUnlockTest_Docplay ${1}
-    local array=("7plus:" "Channel 9:" "Channel 10:" "ABC iView:")
+    local array=("Stan:" "Binge:" "7plus:" "Channel 9:" "Channel 10:" "ABC iView:" "Docplay:" "Optus Sports:" "SBS on Demand:" "Kayo Sports:")
     echo_Result ${result} ${array}
-    MediaUnlockTest_KayoSports ${1}
-    echo "$result" | grep "Optus Sports:"
-    echo "$result" | grep "SBS on Demand:"
     ShowRegion NZ
     local result=$(
     MediaUnlockTest_NeonTV ${1} &
