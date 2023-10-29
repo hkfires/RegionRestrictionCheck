@@ -3500,7 +3500,7 @@ function MediaUnlockTest_BilibiliAnimeNew() {
         return
     else
         local country=$(echo $tmp | jq '.data.country' | tr -d '"' )
-        echo -n -e "\r Bilibili Anime:\t\t\t${Font_Red}NO (Country: $country)${Font_Red}\n"
+        echo -n -e "\r Bilibili Anime:\t\t\t${Font_Red}No (Country: $country)${Font_Suffix}\n"
         return
     fi
 }
