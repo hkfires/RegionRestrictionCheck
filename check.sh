@@ -3479,6 +3479,31 @@ function MediaUnlockTest_Sooka() {
     fi
 }
 
+function MediaUnlockTest_BilibiliAnimeNew() {
+    local tmp=$(curl $curlArgs --user-agent "${UA_Browser}" -${1} -fsSL --max-time 10 "https://api.bilibili.com/x/web-interface/zone" 2>&1)
+    if [[ "$tmp" == "curl"* ]]; then
+        echo -n -e "\r Bilibili Anime:\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+    local country_code=$(echo $tmp | jq '.data.country_code')
+    if [ "$country_code" == "86" ]; then
+        echo -n -e "\r Bilibili Anime:\t\t\t${Font_Green}Yes (Region:CN)${Font_Suffix}\n"
+        return
+    elif [ "$country_code" == "886" ]; then
+        echo -n -e "\r Bilibili Anime:\t\t\t${Font_Green}Yes (Region: TW)${Font_Suffix}\n"
+        return
+    elif [ "$country_code" == "852" ]; then
+        echo -n -e "\r Bilibili Anime:\t\t\t${Font_Green}Yes (Region: HK)${Font_Suffix}\n"
+        return
+    elif [ "$country_code" == "853" ]; then
+        echo -n -e "\r Bilibili Anime:\t\t\t${Font_Green}Yes (Region: MO)${Font_Suffix}\n"
+        return
+    else
+        local country=$(echo $tmp | jq '.data.country' | tr -d '"' )
+        echo -n -e "\r Bilibili Anime:\t\t\t${Font_Red}NO (Country: $country)${Font_Red}\n"
+        return
+    fi
+}
 
 function echo_Result() {
     for((i=0;i<${#array[@]};i++))
