@@ -850,7 +850,7 @@ function MediaUnlockTest_iQYI_Region() {
 
     if [ -n "$result" ]; then
         if [[ "$result" == "intl" ]]; then
-            echo -n -e "\r iQyi Oversea:\t\t\t\t${Font_Red}No (Intl)${Font_Suffix}\n"
+            echo -n -e "\r iQyi Oversea:\t\t\t\t${Font_Red}No  (Intl)${Font_Suffix}\n"
         elif [[ "$result" == "ntw" ]]; then
             result=TW
             echo -n -e "\r iQyi Oversea:\t\t\t\t${Font_Green}Yes (Region: ${result})${Font_Suffix}\n"
@@ -1115,7 +1115,7 @@ function MediaUnlockTest_YouTube_Premium() {
         fi
     else
         if [ -n "$region" ]; then
-            echo -n -e "\r YouTube Premium:\t\t\t${Font_Red}No (Region: $region)${Font_Suffix} \n"
+            echo -n -e "\r YouTube Premium:\t\t\t${Font_Red}No  (Region: $region)${Font_Suffix} \n"
             return
         else
             echo -n -e "\r YouTube Premium:\t\t\t${Font_Red}No${Font_Suffix} \n"
@@ -1775,7 +1775,7 @@ function MediaUnlockTest_TVBAnywhere() {
         echo -n -e "\r TVBAnywhere+:\t\t\t\t${Font_Green}Yes (Region: ${region})${Font_Suffix}\n"
         return
     elif [[ "$result" == "false" ]]; then
-        echo -n -e "\r TVBAnywhere+:\t\t\t\t${Font_Red}No (Region: ${region})${Font_Suffix}\n"
+        echo -n -e "\r TVBAnywhere+:\t\t\t\t${Font_Red}No  (Region: ${region})${Font_Suffix}\n"
         return
     else
         echo -n -e "\r TVBAnywhere+:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
@@ -2385,7 +2385,7 @@ function MediaUnlockTest_SetantaSports() {
     local result=$(echo $tmpresult | python -m json.tool 2>/dev/null | grep outsideAllowedTerritories | awk '{print $2}' | cut -f1 -d",")
     local region=$(echo $tmpresult1 | python -m json.tool 2>/dev/null | grep callerCountryCode | awk '{print $2}' | cut -f2 -d'"')
     if [[ "$result" == "true" ]]; then
-        echo -n -e "\r Setanta Sports:\t\t\t${Font_Red}No (Region: ${region})${Font_Suffix}\n"
+        echo -n -e "\r Setanta Sports:\t\t\t${Font_Red}No  (Region: ${region})${Font_Suffix}\n"
         return
     elif [[ "$result" == "false" ]]; then
         echo -n -e "\r Setanta Sports:\t\t\t${Font_Green}Yes (Region: ${region})${Font_Suffix}\n"
@@ -3032,7 +3032,7 @@ function MediaUnlockTest_MathsSpot() {
     fi
     local blocked=$(echo "$tmpresult1" | grep 'Request blocked')
     if [ -n "$blocked" ]; then
-    	echo -n -e "\r Maths Spot:\t\t\t\t${Font_Red}No (Proxy/VPN Detected)${Font_Suffix}\n"
+    	echo -n -e "\r Maths Spot:\t\t\t\t${Font_Red}No  (Proxy/VPN Detected)${Font_Suffix}\n"
         return
     fi
     local playtoken=$(echo "$tmpresult1" | python -m json.tool 2>/dev/null | grep '"playToken":' | awk '{print $2}' | cut -f2 -d'"')
@@ -3397,7 +3397,7 @@ function MediaUnlockTest_Tiktok() {
         echo -n -e "\r Tiktok:\t\t\t\t${Font_Green}Yes (Region: ${region^^})${Font_Suffix}\n"
         return
     else
-        echo -n -e "\r Tiktok:\t\t\t\t${Font_Red}No (Region: ${region^^})${Font_Suffix}\n"
+        echo -n -e "\r Tiktok:\t\t\t\t${Font_Red}No  (Region: ${region^^})${Font_Suffix}\n"
         return
     fi
 
