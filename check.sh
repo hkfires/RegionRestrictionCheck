@@ -3662,7 +3662,7 @@ function HK_UnlockTest() {
 	    MediaUnlockTest_ViuTV ${1} &
 	    MediaUnlockTest_MyTVSuper ${1} &
 	    MediaUnlockTest_HBOGO_ASIA ${1} &
-	    MediaUnlockTest_BilibiliHKMCTW ${1} &
+	    # MediaUnlockTest_BilibiliHKMCTW ${1} &
 	)
     else
 	echo -e "${Font_Green}此区域无IPv6可用流媒体，跳过……${Font_Suffix}"
@@ -3686,7 +3686,7 @@ function TW_UnlockTest() {
     MediaUnlockTest_HBOGO_ASIA ${1} &
     MediaUnlockTest_BahamutAnime ${1} &
     #MediaUnlockTest_ElevenSportsTW ${1}
-    MediaUnlockTest_BilibiliTW ${1} &
+    # MediaUnlockTest_BilibiliTW ${1} &
     )
     wait
     local array=("KKTV:" "LiTV:" "MyVideo:" "4GTV.TV:" "LineTV.TW:" "Hami Video:" "CatchPlay+:" "HBO GO Asia:" "Bahamut Anime:" "Bilibili Taiwan Only:")
@@ -3759,6 +3759,7 @@ function Global_UnlockTest() {
         GameTest_Steam ${1} &
         MediaUnlockTest_Google ${1} &
         MediaUnlockTest_Tiktok ${1} &
+        MediaUnlockTest_BilibiliAnimeNew ${1} &
         )
     else
         local result=$(
@@ -3780,7 +3781,7 @@ function Global_UnlockTest() {
         )
     fi
     wait
-    local array=("Dazn:" "HotStar:" "Disney+:" "Netflix:" "YouTube Premium:" "Amazon Prime Video:" "TVBAnywhere+:" "iQyi Oversea:" "Viu.com:" "Tiktok" "YouTube CDN:" "Google" "YouTube Region:" "Netflix Preferred CDN:" "Spotify Registration:" "Steam Currency:")
+    local array=("Dazn:" "HotStar:" "Disney+:" "Netflix:" "YouTube Premium:" "Amazon Prime Video:" "TVBAnywhere+:" "iQyi Oversea:" "Bilibili Anime:" "Viu.com:" "Tiktok" "YouTube CDN:" "Google" "YouTube Region:" "Netflix Preferred CDN:" "Spotify Registration:" "Steam Currency:")
     echo_Result ${result} ${array}
     echo "======================================="
 }
