@@ -435,11 +435,8 @@ function MediaUnlockTest_Netflix() {
 
 function MediaUnlockTest_DisneyPlus() {
     local PreAssertion=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -s --max-time 10 -X POST "https://disney.api.edge.bamgrid.com/devices" -H "authorization: Bearer ZGlzbmV5JmJyb3dzZXImMS4wLjA.Cu56AgSfBTDag5NiRA81oLHkDZfu5L3CKadnefEAY84" -H "content-type: application/json; charset=UTF-8" -d '{"deviceFamily":"browser","applicationRuntime":"chrome","deviceProfile":"windows","attributes":{}}' 2>&1)
-    if [[ "$PreAssertion" == "curl"* ]] && [[ "$1" == "6" ]]; then
-        echo -n -e "\r Disney+:\t\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
-        return
-    elif [[ "$PreAssertion" == "curl"* ]]; then
-        echo -n -e "\r Disney+:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+    if [[ "$PreAssertion" == "curl"* ]]; then
+        echo -n -e "\r Disney+:\t\t\t\t${Font_Red}Failed (Network Connection[1])${Font_Suffix}\n"
         return
     fi
 
@@ -447,11 +444,15 @@ function MediaUnlockTest_DisneyPlus() {
     local PreDisneyCookie=$(echo "$Media_Cookie" | sed -n '1p')
     local disneycookie=$(echo $PreDisneyCookie | sed "s/DISNEYASSERTION/${assertion}/g")
     local TokenContent=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -s --max-time 10 -X POST "https://disney.api.edge.bamgrid.com/token" -H "authorization: Bearer ZGlzbmV5JmJyb3dzZXImMS4wLjA.Cu56AgSfBTDag5NiRA81oLHkDZfu5L3CKadnefEAY84" -d "$disneycookie" 2>&1)
+    if [[ "$TokenContent" == "curl"* ]]; then
+        echo -n -e "\r Disney+:\t\t\t\t${Font_Red}Failed (Network Connection[2])${Font_Suffix}\n"
+        return
+    fi
     local isBanned=$(echo $TokenContent | python -m json.tool 2>/dev/null | grep 'forbidden-location')
     local is403=$(echo $TokenContent | grep '403 ERROR')
 
     if [ -n "$isBanned" ] || [ -n "$is403" ]; then
-        echo -n -e "\r Disney+:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        echo -n -e "\r Disney+:\t\t\t\t${Font_Red}No (Banned)${Font_Suffix}\n"
         return
     fi
 
@@ -459,7 +460,16 @@ function MediaUnlockTest_DisneyPlus() {
     local refreshToken=$(echo $TokenContent | python -m json.tool 2>/dev/null | grep 'refresh_token' | awk '{print $2}' | cut -f2 -d'"')
     local disneycontent=$(echo $fakecontent | sed "s/ILOVEDISNEY/${refreshToken}/g")
     local tmpresult=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -X POST -sSL --max-time 10 "https://disney.api.edge.bamgrid.com/graph/v1/device/graphql" -H "authorization: ZGlzbmV5JmJyb3dzZXImMS4wLjA.Cu56AgSfBTDag5NiRA81oLHkDZfu5L3CKadnefEAY84" -d "$disneycontent" 2>&1)
-    local previewcheck=$(curl $curlArgs -${1} -s -o /dev/null -L --max-time 10 -w '%{url_effective}\n' "https://www.disneyplus.com" | grep preview)
+    if [[ "$tmpresult" == "curl"* ]]; then
+        echo -n -e "\r Disney+:\t\t\t\t${Font_Red}Failed (Network Connection[3])${Font_Suffix}\n"
+        return
+    fi
+    local previewchecktmp=$(curl $curlArgs -${1} -s -o /dev/null -L --max-time 10 -w '%{url_effective}\n' "https://www.disneyplus.com")
+    if [[ "$previewchecktmp" == "curl"* ]]; then
+        echo -n -e "\r Disney+:\t\t\t\t${Font_Red}Failed (Network Connection[4])${Font_Suffix}\n"
+        return
+    fi
+    local previewcheck=$(echo $previewchecktmp | grep preview)
     local isUnabailable=$(echo $previewcheck | grep 'unavailable')
     local region=$(echo $tmpresult | python -m json.tool 2>/dev/null | grep 'countryCode' | cut -f4 -d'"')
     local inSupportedLocation=$(echo $tmpresult | python -m json.tool 2>/dev/null | grep 'inSupportedLocation' | awk '{print $2}' | cut -f1 -d',')
@@ -471,13 +481,13 @@ function MediaUnlockTest_DisneyPlus() {
         echo -n -e "\r Disney+:\t\t\t\t${Font_Yellow}Available For [Disney+ $region] Soon${Font_Suffix}\n"
         return
     elif [ -n "$region" ] && [ -n "$isUnavailable" ]; then
-        echo -n -e "\r Disney+:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        echo -n -e "\r Disney+:\t\t\t\t${Font_Red}No (Unavailable)${Font_Suffix}\n"
         return
     elif [ -n "$region" ] && [[ "$inSupportedLocation" == "true" ]]; then
         echo -n -e "\r Disney+:\t\t\t\t${Font_Green}Yes (Region: $region)${Font_Suffix}\n"
         return
     elif [ -z "$region" ]; then
-        echo -n -e "\r Disney+:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        echo -n -e "\r Disney+:\t\t\t\t${Font_Red}No (Unknown)${Font_Suffix}\n"
         return
     else
         echo -n -e "\r Disney+:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
