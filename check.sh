@@ -3497,7 +3497,7 @@ function MediaUnlockTest_BilibiliAnimeNew() {
     fi
     local country_code=$(echo $tmp | jq '.data.country_code')
     if [ "$country_code" == "86" ]; then
-        echo -n -e "\r Bilibili Anime:\t\t\t${Font_Green}Yes (Region:CN)${Font_Suffix}\n"
+        echo -n -e "\r Bilibili Anime:\t\t\t${Font_Green}Yes (Region: CN)${Font_Suffix}\n"
         return
     elif [ "$country_code" == "886" ]; then
         echo -n -e "\r Bilibili Anime:\t\t\t${Font_Green}Yes (Region: TW)${Font_Suffix}\n"
