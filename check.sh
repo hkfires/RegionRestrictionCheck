@@ -3515,6 +3515,36 @@ function MediaUnlockTest_BilibiliAnimeNew() {
     fi
 }
 
+function MediaUnlockTest_ChatGPT() {
+    local tmpresult=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -SsLI --max-time 10 "https://chat.openai.com" 2>&1)
+    local tmpresult1=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -SsL --max-time 10 "https://ios.chat.openai.com" 2>&1)
+    local cf_details=$(echo "$tmpresult1" | jq .cf_details)
+    if [[ "$tmpresult" == "curl"* ]]; then
+        echo -n -e "\r ChatGPT:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+
+    local result1=$(echo "$tmpresult" | grep 'location' )
+    if [ ! -n "$result1" ]; then
+        if [[ "$tmpresult1" == *"blocked_why_headline"* ]]; then
+            echo -n -e "\r ChatGPT:\t\t\t\t${Font_Red}No (Blocked)${Font_Suffix}\n"
+            return
+        fi
+        if [[ "$cf_details" == *"(2)"* ]]; then
+            echo -n -e "\r ChatGPT:\t\t\t\t${Font_Red}No (Disallowed ISP)${Font_Suffix}\n"
+            return
+        fi
+    	echo -n -e "\r ChatGPT:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+    else
+    	local region1=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -SsL --max-time 10 "https://chat.openai.com/cdn-cgi/trace" 2>&1 | grep "loc=" | awk -F= '{print $2}')
+        if [[ "$cf_details" == *"(2)"* ]]; then
+            echo -n -e "\r ChatGPT:\t\t\t\t${Font_Yellow}Web Only (Disallowed ISP)${Font_Suffix}\n"
+            return
+        fi
+        echo -n -e "\r ChatGPT:\t\t\t\t${Font_Green}Yes (Region: ${region1})${Font_Suffix}\n"
+    fi
+}
+
 function echo_Result() {
     for((i=0;i<${#array[@]};i++))
     do
@@ -3955,33 +3985,12 @@ function Sport_UnlockTest() {
 
 function Openai_UnlockTest() {
     echo "==============[ Openai ]==============="
-    local tmpresult=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -SsLI --max-time 10 "https://chat.openai.com" 2>&1)
-    local tmpresult1=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -SsL --max-time 10 "https://ios.chat.openai.com" 2>&1)
-    local cf_details=$(echo "$tmpresult1" | jq .cf_details)
-    if [[ "$tmpresult" == "curl"* ]]; then
-        echo -n -e "\r ChatGPT:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
-        return
-    fi
-
-    local result1=$(echo "$tmpresult" | grep 'location' )
-    if [ ! -n "$result1" ]; then
-        if [[ "$tmpresult1" == *"blocked_why_headline"* ]]; then
-            echo -n -e "\r ChatGPT:\t\t\t\t${Font_Red}No (Blocked)${Font_Suffix}\n"
-            return
-        fi
-        if [[ "$cf_details" == *"(2)"* ]]; then
-            echo -n -e "\r ChatGPT:\t\t\t\t${Font_Red}No (Disallowed ISP)${Font_Suffix}\n"
-            return
-        fi
-    	echo -n -e "\r ChatGPT:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
-    else
-    	local region1=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -SsL --max-time 10 "https://chat.openai.com/cdn-cgi/trace" 2>&1 | grep "loc=" | awk -F= '{print $2}')
-        if [[ "$cf_details" == *"(2)"* ]]; then
-            echo -n -e "\r ChatGPT:\t\t\t\t${Font_Yellow}Web Only (Disallowed ISP)${Font_Suffix}\n"
-            return
-        fi
-        echo -n -e "\r ChatGPT:\t\t\t\t${Font_Green}Yes (Region: ${region1})${Font_Suffix}\n"
-    fi
+    local result=$(
+    MediaUnlockTest_ChatGPT ${1} &
+    )
+    wait
+    local array=("ChatGPT")
+    echo_Result ${result} ${array}
 
     echo "======================================="
 }
