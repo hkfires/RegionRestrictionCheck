@@ -3957,6 +3957,7 @@ function Openai_UnlockTest() {
     echo "==============[ Openai ]==============="
     local tmpresult=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -SsLI --max-time 10 "https://chat.openai.com" 2>&1)
     local tmpresult1=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -SsL --max-time 10 "https://ios.chat.openai.com" 2>&1)
+    local cf_details=$(echo "$tmpresult1" | jq .cf_details)
     if [[ "$tmpresult" == "curl"* ]]; then
         echo -n -e "\r ChatGPT:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
@@ -3968,7 +3969,6 @@ function Openai_UnlockTest() {
             echo -n -e "\r ChatGPT:\t\t\t\t${Font_Red}No (Blocked)${Font_Suffix}\n"
             return
         fi
-        local cf_details=$(echo "$tmpresult1" | jq .cf_details)
         if [[ "$cf_details" == *"(2)"* ]]; then
             echo -n -e "\r ChatGPT:\t\t\t\t${Font_Red}No (Disallowed ISP)${Font_Suffix}\n"
             return
