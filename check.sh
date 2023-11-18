@@ -3530,15 +3530,23 @@ function MediaUnlockTest_ChatGPT() {
             echo -n -e "\r ChatGPT:\t\t\t\t${Font_Red}No (Blocked)${Font_Suffix}\n"
             return
         fi
+        if [[ "$cf_details" == *"(1)"* ]]; then
+            echo -n -e "\r ChatGPT:\t\t\t\t${Font_Red}No (Disallowed ISP[1])${Font_Suffix}\n"
+            return
+        fi
         if [[ "$cf_details" == *"(2)"* ]]; then
-            echo -n -e "\r ChatGPT:\t\t\t\t${Font_Red}No (Disallowed ISP)${Font_Suffix}\n"
+            echo -n -e "\r ChatGPT:\t\t\t\t${Font_Red}No (Disallowed ISP[2])${Font_Suffix}\n"
             return
         fi
     	echo -n -e "\r ChatGPT:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
     else
     	local region1=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -SsL --max-time 10 "https://chat.openai.com/cdn-cgi/trace" 2>&1 | grep "loc=" | awk -F= '{print $2}')
+        if [[ "$cf_details" == *"(1)"* ]]; then
+            echo -n -e "\r ChatGPT:\t\t\t\t${Font_Yellow}Web Only (Disallowed ISP[1])${Font_Suffix}\n"
+            return
+        fi
         if [[ "$cf_details" == *"(2)"* ]]; then
-            echo -n -e "\r ChatGPT:\t\t\t\t${Font_Yellow}Web Only (Disallowed ISP)${Font_Suffix}\n"
+            echo -n -e "\r ChatGPT:\t\t\t\t${Font_Yellow}Web Only (Disallowed ISP[2])${Font_Suffix}\n"
             return
         fi
         echo -n -e "\r ChatGPT:\t\t\t\t${Font_Green}Yes (Region: ${region1})${Font_Suffix}\n"
