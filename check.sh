@@ -3556,11 +3556,21 @@ function MediaUnlockTest_ChatGPT() {
 function AIUnlockTest_Bard_location() {
     local tmp=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -SsL --max-time 10 'https://bard.google.com/_/BardChatUi/data/batchexecute'   -H 'accept-language: en-US'   --data-raw 'f.req=[[["K4WWud","[[0],[\"en-US\"]]",null,"generic"]]]' 2>&1)
     if [[ "$tmp" == "curl"* ]]; then
-        echo -n -e "\r Google Bard Location:\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        echo -n -e "\r Google Bard Location:\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
     local region=$(echo "$tmp" | grep K4WWud | jq .[0][2] | grep -Eo '\[\[\\"(.*)\\",\\"S' )
-    echo -n -e "\r Google Bard Location:\t\t${Font_Yellow}${region:4:-6}${Font_Suffix}\n"
+    echo -n -e "\r Google Bard Location:\t\t\t${Font_Yellow}${region:4:-6}${Font_Suffix}\n"
+}
+
+function AIUnlockTest_Copilot_location() {
+    local tmp=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -SsL --max-time 10 "https://copilot.microsoft.com/" 2>&1)
+    if [[ "$tmp" == "curl"* ]]; then
+        echo -n -e "\r Microsoft Copilot Location:\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+    local region=$(echo "$tmp" | sed -n 's/.*RevIpCC:"\([^"]*\)".*/\1/p' )
+    echo -n -e "\r Microsoft Copilot Location:\t\t${Font_Yellow}${region^^}${Font_Suffix}\n"
 }
 
 function echo_Result() {
@@ -4006,9 +4016,10 @@ function AI_UnlockTest() {
     local result=$(
     MediaUnlockTest_ChatGPT ${1} &
     AIUnlockTest_Bard_location ${1} &
+    AIUnlockTest_Copilot_location ${1} &
     )
     wait
-    local array=("ChatGPT" "Bard")
+    local array=("ChatGPT" "Bard" "Copilot")
     echo_Result ${result} ${array}
 
     echo "======================================="
