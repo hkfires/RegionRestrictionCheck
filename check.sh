@@ -3563,14 +3563,20 @@ function AIUnlockTest_Bard_location() {
     echo -n -e "\r Google Bard Location:\t\t\t${Font_Yellow}${region:4:-6}${Font_Suffix}\n"
 }
 
-function AIUnlockTest_Copilot_location() {
+function AIUnlockTest_Copilot() {
     local tmp=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -SsL --max-time 10 "https://copilot.microsoft.com/" 2>&1)
+    local tmp2=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -SsL --max-time 10 "https://copilot.microsoft.com/turing/conversation/chats?bundleVersion=1.1342.3-cplt.12"  2>&1)
     if [[ "$tmp" == "curl"* ]]; then
-        echo -n -e "\r Microsoft Copilot Location:\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        echo -n -e "\r Microsoft Copilot:\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
+    local result=$(echo "$tmp2" | jq .result.value  2>&1 | tr -d '"' 2>&1) 
     local region=$(echo "$tmp" | sed -n 's/.*RevIpCC:"\([^"]*\)".*/\1/p' )
-    echo -n -e "\r Microsoft Copilot Location:\t\t${Font_Yellow}${region^^}${Font_Suffix}\n"
+    if [[ "$result" == "Success" ]];then
+        echo -n -e "\r Microsoft Copilot:\t\t\t${Font_Green}Yes (Region: ${region^^})${Font_Suffix}\n"
+    else 
+        echo -n -e "\r Microsoft Copilot:\t\t\t${Font_Red}No  (Region: ${region^^})${Font_Suffix}\n"
+    fi
 }
 
 function echo_Result() {
@@ -4016,10 +4022,10 @@ function AI_UnlockTest() {
     local result=$(
     MediaUnlockTest_ChatGPT ${1} &
     AIUnlockTest_Bard_location ${1} &
-    AIUnlockTest_Copilot_location ${1} &
+    AIUnlockTest_Copilot ${1} &
     )
     wait
-    local array=("ChatGPT" "Bard" "Copilot")
+    local array=("ChatGPT" "Copilot" "Bard" )
     echo_Result ${result} ${array}
 
     echo "======================================="
