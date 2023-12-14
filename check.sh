@@ -3553,6 +3553,16 @@ function MediaUnlockTest_ChatGPT() {
     fi
 }
 
+function AIUnlockTest_Bard_location() {
+    local tmp=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -SsL --max-time 10 'https://bard.google.com/_/BardChatUi/data/batchexecute'   -H 'accept-language: en-US'   --data-raw 'f.req=[[["K4WWud","[[0],[\"en-US\"]]",null,"generic"]]]' 2>&1)
+    if [[ "$tmp" == "curl"* ]]; then
+        echo -n -e "\r Google Bard Location:\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+    local region=$(echo "$tmp" | grep K4WWud | jq .[0][2] | grep -Eo '\[\[\\"(.*)\\",\\"S' )
+    echo -n -e "\r Google Bard Location:\t\t${Font_Yellow}${region:4:-6}${Font_Suffix}\n"
+}
+
 function echo_Result() {
     for((i=0;i<${#array[@]};i++))
     do
@@ -3991,13 +4001,14 @@ function Sport_UnlockTest() {
     echo "======================================="
 }
 
-function Openai_UnlockTest() {
-    echo "==============[ Openai ]==============="
+function AI_UnlockTest() {
+    echo "============[ AI Platform ]============"
     local result=$(
     MediaUnlockTest_ChatGPT ${1} &
+    AIUnlockTest_Bard_location ${1} &
     )
     wait
-    local array=("ChatGPT")
+    local array=("ChatGPT" "Bard")
     echo_Result ${result} ${array}
 
     echo "======================================="
@@ -4139,7 +4150,7 @@ function Start() {
         echo -e "${Font_SkyBlue}Input Number  [7]: [ Multination + Oceania ]${Font_Suffix}"
         echo -e "${Font_SkyBlue}Input Number  [8]: [ Multination + Korean ]${Font_Suffix}"
         echo -e "${Font_SkyBlue}Input Number  [9]: [ Multination + SouthEastAsia ]检测${Font_Suffix}"
-        echo -e "${Font_SkyBlue}Input Number [10]: [ OpenAI ]检测${Font_Suffix}"
+        echo -e "${Font_SkyBlue}Input Number [10]: [ AI Platform ]检测${Font_Suffix}"
         echo -e "${Font_SkyBlue}Input Number  [0]: [ Multination Only ]${Font_Suffix}"
         echo -e "${Font_SkyBlue}Input Number [99]: [ Sport Platforms ]${Font_Suffix}"
         read -p "Please Input the Correct Number or Press ENTER:" num
@@ -4154,7 +4165,7 @@ function Start() {
         echo -e "${Font_SkyBlue}输入数字  [7]: [跨国平台+大洋洲平台]检测${Font_Suffix}"
         echo -e "${Font_SkyBlue}输入数字  [8]: [ 跨国平台+韩国平台 ]检测${Font_Suffix}"
         echo -e "${Font_SkyBlue}输入数字  [9]: [跨国平台+东南亚平台]检测${Font_Suffix}"
-        echo -e "${Font_SkyBlue}输入数字 [10]: [       OpenAI      ]检测${Font_Suffix}"
+        echo -e "${Font_SkyBlue}输入数字 [10]: [      AI 平台     ]检测${Font_Suffix}"
         echo -e "${Font_SkyBlue}输入数字  [0]: [   只进行跨国平台  ]检测${Font_Suffix}"
         echo -e "${Font_SkyBlue}输入数字 [99]: [   体育直播平台    ]检测${Font_Suffix}"
         read -p "请输入正确数字或直接按回车:" num
@@ -4305,11 +4316,11 @@ function RunScript() {
             ScriptTitle
             CheckV4
             if [[ "$isv4" -eq 1 ]]; then
-                Openai_UnlockTest 4
+                AI_UnlockTest 4
             fi
             CheckV6
             if [[ "$isv6" -eq 1 ]]; then
-                Openai_UnlockTest 6
+                AI_UnlockTest 6
             fi
             Goodbye
 
