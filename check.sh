@@ -2610,14 +2610,14 @@ function MediaUnlockTest_Spotify() {
     local tmpresult=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -s --max-time 10 https://www.spotify.com/tw/signup 2>&1)
 
     if [[ "$tmpresult" == "curl"* ]]; then
-        echo -n -e "\r Spotify Region:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        echo -n -e "\r Spotify Region:\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
 
     local country=$(echo $tmpresult | grep -Eo 'geoCountry.*","geoCountryMarket"')
 
     if [ -n "$country" ]; then
-        echo -n -e "\r Spotify Region:\t\t\t\t${Font_Green}${country:13:-20}${Font_Suffix}\n"
+        echo -n -e "\r Spotify Region:\t\t\t${Font_Green}${country:13:-20}${Font_Suffix}\n"
         return
     fi
     echo -n -e "\r Spotify Region:\t\t\t${Font_Red}Failed${Font_Suffix}\n"
@@ -3853,7 +3853,7 @@ function Global_UnlockTest() {
         )
     fi
     wait
-    local array=("Dazn:" "HotStar:" "Disney+:" "Netflix:" "YouTube Premium:" "Amazon Prime Video:" "TVBAnywhere+:" "iQyi Oversea:" "Bilibili Anime:" "Viu.com:" "Tiktok" "YouTube CDN:" "Google" "YouTube Region:" "Netflix Preferred CDN:" "Spotify Registration:" "Steam Currency:")
+    local array=("Dazn:" "HotStar:" "Disney+:" "Netflix:" "YouTube Premium:" "Amazon Prime Video:" "TVBAnywhere+:" "iQyi Oversea:" "Bilibili Anime:" "Viu.com:" "Tiktok" "YouTube CDN:" "Google" "YouTube Region:" "Netflix Preferred CDN:" "Spotify" "Steam Currency:")
     echo_Result ${result} ${array}
     echo "======================================="
 }
