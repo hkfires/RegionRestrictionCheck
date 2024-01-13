@@ -66,8 +66,8 @@ fi
 curlArgs="$useNIC $usePROXY $xForward"
 UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36 Edg/112.0.1722.64"
 UA_Dalvik="Dalvik/2.1.0 (Linux; U; Android 9; ALP-AL00 Build/HUAWEIALP-AL00)"
-Media_Cookie=$(curl -s --retry 3 --max-time 10 "https://raw.githubusercontent.com/1-stream/RegionRestrictionCheck/main/cookies") &
-IATACode=$(curl -s --retry 3 --max-time 10 "https://raw.githubusercontent.com/1-stream/RegionRestrictionCheck/main/reference/IATACode.txt") &
+Media_Cookie=$(curl -s --retry 3 --max-time 10 "https://raw.githubusercontent.com/1-stream/RegionRestrictionCheck/main/cookies" &)
+IATACode=$(curl -s --retry 3 --max-time 10 "https://raw.githubusercontent.com/1-stream/RegionRestrictionCheck/main/reference/IATACode.txt" &)
 
 countRunTimes() {
     if [ "$is_busybox" == 1 ]; then
@@ -213,20 +213,17 @@ checkDependencies() {
 }
 checkDependencies
 
-local_ipv4=$(curl $curlArgs -4 -s --max-time 10 cloudflare.com/cdn-cgi/trace | grep ip | awk -F= '{print $2}')
-local_ipv6=$(curl $curlArgs -6 -s --max-time 20 cloudflare.com/cdn-cgi/trace | grep ip | awk -F= '{print $2}')
-{
-    bgptools_v4=$(curl $curlArgs -s -4 --max-time 10 --user-agent "${UA_Browser}" "https://v4.bgp.tools/whoami")
-    export local_isp4=$(echo $bgptools_v4 | jq '.ASS' | tr -d '"')
-    export local_as4=$(echo $bgptools_v4 | jq '.ASN' | tr -d '"')
-    export local_ipv4_asterisk=$(echo $bgptools_v4 | jq '.IPP' | tr -d '"')
-} &
-{
-    bgptools_v6=$(curl $curlArgs -s -6 --max-time 10 --user-agent "${UA_Browser}" "https://v6.bgp.tools/whoami")
-    export local_isp6=$(echo $bgptools_v6 | jq '.ASS' | tr -d '"')
-    export local_as6=$(echo $bgptools_v6 | jq '.ASN' | tr -d '"')
-    export local_ipv6_asterisk=$(echo $bgptools_v6 | jq '.IPP' | tr -d '"')
-} &
+local_ipv4=$(curl $curlArgs -4 -s --max-time 10 cloudflare.com/cdn-cgi/trace | grep ip | awk -F= '{print $2}' &)
+local_ipv6=$(curl $curlArgs -6 -s --max-time 20 cloudflare.com/cdn-cgi/trace | grep ip | awk -F= '{print $2}' &)
+bgptools_v4=$(curl $curlArgs -s -4 --max-time 10 --user-agent "${UA_Browser}" "https://v4.bgp.tools/whoami" &)
+local_isp4=$(echo $bgptools_v4 | jq '.ASS' | tr -d '"')
+local_as4=$(echo $bgptools_v4 | jq '.ASN' | tr -d '"')
+local_ipv4_asterisk=$(echo $bgptools_v4 | jq '.IPP' | tr -d '"')
+bgptools_v6=$(curl $curlArgs -s -6 --max-time 10 --user-agent "${UA_Browser}" "https://v6.bgp.tools/whoami" &)
+local_isp6=$(echo $bgptools_v6 | jq '.ASS' | tr -d '"')
+local_as6=$(echo $bgptools_v6 | jq '.ASN' | tr -d '"')
+local_ipv6_asterisk=$(echo $bgptools_v6 | jq '.IPP' | tr -d '"')
+wait
 
 ShowRegion() {
     echo -e "${Font_Yellow} ---${1}---${Font_Suffix}"
@@ -4044,10 +4041,9 @@ function CheckV4() {
             echo -e "${Font_SkyBlue}User Choose to Test Only IPv6 Results, Skipping IPv4 Testing...${Font_Suffix}"
         else
             echo -e " ${Font_SkyBlue}** Checking Results Under IPv4${Font_Suffix} "
-            check4=$(curl $curlArgs cloudflare.com/cdn-cgi/trace -4 -s 2>&1)
             echo "--------------------------------"
             echo -e " ${Font_SkyBlue}** Your Network Provider: AS${local_as4} ${local_isp4} (${local_ipv4_asterisk})${Font_Suffix} "
-            if [ -n  "$check4"  ]; then
+            if [ -n  "$local_ipv4"  ]; then
                 isv4=1
             else
                 echo -e "${Font_SkyBlue}No IPv4 Connectivity Found, Abort IPv4 Testing...${Font_Suffix}"
@@ -4062,10 +4058,9 @@ function CheckV4() {
             echo -e "${Font_SkyBlue}用户选择只检测IPv6结果，跳过IPv4检测...${Font_Suffix}"
         else
             echo -e " ${Font_SkyBlue}** 正在测试IPv4解锁情况${Font_Suffix} "
-            check4=$(curl $curlArgs cloudflare.com/cdn-cgi/trace -4 -s 2>&1)
             echo "--------------------------------"
             echo -e " ${Font_SkyBlue}** 您的网络为: AS${local_as4} ${local_isp4} (${local_ipv4_asterisk})${Font_Suffix} "
-            if [ -n  "$check4"  ]; then
+            if [ -n  "$local_ipv4"  ]; then
                 isv4=1
             else
                 echo -e "${Font_SkyBlue}当前网络不支持IPv4,跳过...${Font_Suffix}"
@@ -4085,8 +4080,7 @@ function CheckV6() {
                 echo -e "${Font_SkyBlue}User Choose to Test Only IPv4 Results, Skipping IPv6 Testing...${Font_Suffix}"
             fi
         else
-            check6=$(curl $curlArgs cloudflare.com/cdn-cgi/trace -6 -s 2>&1)
-            if [ -n  "$check6"  ]; then
+            if [ -n  "$local_ipv6"  ]; then
                 echo ""
                 echo ""
                 echo -e " ${Font_SkyBlue}** Checking Results Under IPv6${Font_Suffix} "
@@ -4107,8 +4101,7 @@ function CheckV6() {
                 echo -e "${Font_SkyBlue}用户选择只检测IPv4结果，跳过IPv6检测...${Font_Suffix}"
             fi
         else
-            check6=$(curl $curlArgs cloudflare.com/cdn-cgi/trace -6 -s 2>&1)
-            if [ -n  "$check6"  ]; then
+            if [ -n  "$local_ipv6"  ]; then
                 echo ""
                 echo ""
                 echo -e " ${Font_SkyBlue}** 正在测试IPv6解锁情况${Font_Suffix} "
