@@ -217,8 +217,13 @@ local_ipv4=$(curl $curlArgs -4 -s --max-time 10 cloudflare.com/cdn-cgi/trace | g
 local_ipv4_asterisk=$(awk -F"." '{print $1"."$2".*.*"}' <<<"${local_ipv4}")
 local_ipv6=$(curl $curlArgs -6 -s --max-time 20 cloudflare.com/cdn-cgi/trace | grep ip | awk -F= '{print $2}')
 local_ipv6_asterisk=$(awk -F":" '{print $1":"$2":"$3":*:*"}' <<<"${local_ipv6}")
-local_isp4=$(curl $curlArgs -s -4 --max-time 10 --user-agent "${UA_Browser}" "https://v4.bgp.tools/whoami" | jq '.ASS' | tr -d '"' &)
-local_isp6=$(curl $curlArgs -s -6 --max-time 10 --user-agent "${UA_Browser}" "https://v6.bgp.tools/whoami" | jq '.ASS' | tr -d '"' &)
+bgptools_v4=$(curl $curlArgs -s -4 --max-time 10 --user-agent "${UA_Browser}" "https://v4.bgp.tools/whoami")
+bgptools_v6=$(curl $curlArgs -s -4 --max-time 10 --user-agent "${UA_Browser}" "https://v6.bgp.tools/whoami")
+local_isp4=$(echo $bgptools_v4 | jq '.ASS' | tr -d '"')
+local_isp6=$(echo $bgptools_v6 | jq '.ASS' | tr -d '"')
+local_as4=$(echo $bgptools_v4 | jq '.ASN' | tr -d '"')
+local_as6=$(echo $bgptools_v6 | jq '.ASN' | tr -d '"')
+
 
 ShowRegion() {
     echo -e "${Font_Yellow} ---${1}---${Font_Suffix}"
@@ -4038,7 +4043,7 @@ function CheckV4() {
             echo -e " ${Font_SkyBlue}** Checking Results Under IPv4${Font_Suffix} "
             check4=$(curl $curlArgs cloudflare.com/cdn-cgi/trace -4 -s 2>&1)
             echo "--------------------------------"
-            echo -e " ${Font_SkyBlue}** Your Network Provider: ${local_isp4} (${local_ipv4_asterisk})${Font_Suffix} "
+            echo -e " ${Font_SkyBlue}** Your Network Provider: AS${local_as4} ${local_isp4} (${local_ipv4_asterisk})${Font_Suffix} "
             if [ -n  "$check4"  ]; then
                 isv4=1
             else
@@ -4056,7 +4061,7 @@ function CheckV4() {
             echo -e " ${Font_SkyBlue}** 正在测试IPv4解锁情况${Font_Suffix} "
             check4=$(curl $curlArgs cloudflare.com/cdn-cgi/trace -4 -s 2>&1)
             echo "--------------------------------"
-            echo -e " ${Font_SkyBlue}** 您的网络为: ${local_isp4} (${local_ipv4_asterisk})${Font_Suffix} "
+            echo -e " ${Font_SkyBlue}** 您的网络为: AS${local_as4} ${local_isp4} (${local_ipv4_asterisk})${Font_Suffix} "
             if [ -n  "$check4"  ]; then
                 isv4=1
             else
@@ -4083,7 +4088,7 @@ function CheckV6() {
                 echo ""
                 echo -e " ${Font_SkyBlue}** Checking Results Under IPv6${Font_Suffix} "
                 echo "--------------------------------"
-                echo -e " ${Font_SkyBlue}** Your Network Provider: ${local_isp6} (${local_ipv6_asterisk})${Font_Suffix} "
+                echo -e " ${Font_SkyBlue}** Your Network Provider:  AS${local_as6} ${local_isp6} (${local_ipv6_asterisk})${Font_Suffix} "
                 isv6=1
             else
                 echo -e "${Font_SkyBlue}No IPv6 Connectivity Found, Abort IPv6 Testing...${Font_Suffix}"
@@ -4105,7 +4110,7 @@ function CheckV6() {
                 echo ""
                 echo -e " ${Font_SkyBlue}** 正在测试IPv6解锁情况${Font_Suffix} "
                 echo "--------------------------------"
-                echo -e " ${Font_SkyBlue}** 您的网络为: ${local_isp6} (${local_ipv6_asterisk})${Font_Suffix} "
+                echo -e " ${Font_SkyBlue}** 您的网络为: AS${local_as6} ${local_isp6} (${local_ipv6_asterisk})${Font_Suffix} "
                 isv6=1
             else
                 echo -e "${Font_SkyBlue}当前主机不支持IPv6,跳过...${Font_Suffix}"
