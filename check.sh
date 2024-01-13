@@ -1917,7 +1917,7 @@ function MediaUnlockTest_NetflixCDN() {
     local target_country=$(echo $tmpresult | jq .targets[0].location.country | tr -d '"')
     local isp=$(echo $tmpresult | jq .client.isp | tr -d '"')
     local target_url=$(echo $tmpresult | jq .targets[0].url | tr -d '"')
-    if [ -n "$isp" ]; then
+    if [ -n "$isp" ] && [[ "${isp}" != "null" ]]; then
         echo -n -e "\r Netflix Preferred CDN:\t\t\t${Font_Yellow}${isp}'s OCAs in ${target_city},${target_country}${Font_Suffix}\n"
         return
     fi
