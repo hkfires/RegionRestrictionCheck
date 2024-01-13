@@ -217,15 +217,15 @@ local_ipv4=$(curl $curlArgs -4 -s --max-time 10 cloudflare.com/cdn-cgi/trace | g
 local_ipv6=$(curl $curlArgs -6 -s --max-time 20 cloudflare.com/cdn-cgi/trace | grep ip | awk -F= '{print $2}')
 {
     bgptools_v4=$(curl $curlArgs -s -4 --max-time 10 --user-agent "${UA_Browser}" "https://v4.bgp.tools/whoami")
-    local_isp4=$(echo $bgptools_v4 | jq '.ASS' | tr -d '"')
-    local_as4=$(echo $bgptools_v4 | jq '.ASN' | tr -d '"')
-    local_ipv4_asterisk=$(echo $bgptools_v4 | jq '.IPP' | tr -d '"')
+    export local_isp4=$(echo $bgptools_v4 | jq '.ASS' | tr -d '"')
+    export local_as4=$(echo $bgptools_v4 | jq '.ASN' | tr -d '"')
+    export local_ipv4_asterisk=$(echo $bgptools_v4 | jq '.IPP' | tr -d '"')
 } &
 {
     bgptools_v6=$(curl $curlArgs -s -6 --max-time 10 --user-agent "${UA_Browser}" "https://v6.bgp.tools/whoami")
-    local_isp6=$(echo $bgptools_v6 | jq '.ASS' | tr -d '"')
-    local_as6=$(echo $bgptools_v6 | jq '.ASN' | tr -d '"')
-    local_ipv6_asterisk=$(echo $bgptools_v6 | jq '.IPP' | tr -d '"')
+    export local_isp6=$(echo $bgptools_v6 | jq '.ASS' | tr -d '"')
+    export local_as6=$(echo $bgptools_v6 | jq '.ASN' | tr -d '"')
+    export local_ipv6_asterisk=$(echo $bgptools_v6 | jq '.IPP' | tr -d '"')
 } &
 
 ShowRegion() {
@@ -4036,7 +4036,7 @@ function AI_UnlockTest() {
 
     echo "======================================="
 }
-wait
+
 function CheckV4() {
     if [[ "$language" == "e" ]]; then
         if [[ "$NetworkType" == "6" ]]; then
