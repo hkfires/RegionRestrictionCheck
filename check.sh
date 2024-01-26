@@ -1917,17 +1917,18 @@ function MediaUnlockTest_NetflixCDN() {
     local target_country=$(echo $tmpresult | jq .targets[0].location.country | tr -d '"')
     local isp=$(echo $tmpresult | jq .client.isp | tr -d '"')
     local target_url=$(echo $tmpresult | jq .targets[0].url | tr -d '"')
+    local target_fqdn=$(echo $target_url |awk -F"/" '{print $3}'| awk -F"." '{print $1}')
     if [ -n "$isp" ] && [[ "${isp}" != "null" ]]; then
-        echo -n -e "\r Netflix Preferred CDN:\t\t\t${Font_Yellow}${isp}'s OCAs in ${target_city},${target_country}${Font_Suffix}\n"
+        echo -n -e "\r Netflix Preferred CDN:\t\t\t${Font_Yellow}${isp}'s OCAs in ${target_city},${target_country} ($target_fqdn)${Font_Suffix}\n"
         return
     fi
     if [[ $target_url == *"isp.1.oca"* ]]; then
-        echo -n -e "\r Netflix Preferred CDN:\t\t\t${Font_Yellow}ISP's OCAs in ${target_city},${target_country}${Font_Suffix}\n"
+        echo -n -e "\r Netflix Preferred CDN:\t\t\t${Font_Yellow}ISP's OCAs in ${target_city},${target_country} ($target_fqdn)${Font_Suffix}\n"
         return
     fi
     #Detect Offical OCAs
     if [ -n "$target_city" ] && [ -n "$target_city" ]; then
-        echo -n -e "\r Netflix Preferred CDN:\t\t\t${Font_Green}${target_city},${target_country}${Font_Suffix}\n"
+        echo -n -e "\r Netflix Preferred CDN:\t\t\t${Font_Green}${target_city},${target_country} ($target_fqdn)${Font_Suffix}\n"
         return
     fi
     echo -n -e "\r Netflix Preferred CDN:\t\t\t${Font_Red}Failed${Font_Suffix}\n"
