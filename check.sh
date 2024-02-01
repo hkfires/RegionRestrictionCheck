@@ -3410,6 +3410,48 @@ function MediaUnlockTest_StarhubTVPlus() {
     echo -n -e "\r Starhub TV+:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
 }
 
+function MediaUnlockTest_KPlus() {
+    local tmpresult=$(curl $curlArgs --user-agent "${UA_Browser}" -${1} -sSL --max-time 10 -X POST -d '{"osVersion":"Windows 10","deviceModel":"Edge","deviceType":"PC","deviceSerial":"w7ab83550-c0aa-11ee-bf07-531681e47537","deviceOem":"Edge","devicePrettyName":"Edge 121.0.0.0","appVersion":"11.0","language":"en_US","brand":"vstv","featureLevel":5}' "https://tvapi-sgn.solocoo.tv/v1/provision" 2>&1)
+    if [[ "$result" == "curl"* ]] && [[ "$1" == "6" ]]; then
+        echo -n -e "\r K+:\t\t\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
+        return
+    elif [[ "$result" == "curl"* ]]; then
+        echo -n -e "\r K+:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+    local region=$(echo "${tmpresult}" | jq .session.geoCountryCode | tr -d'"')
+    if [[ "$region" == "VN" ]]; then
+        echo -n -e "\r K+:\t\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+        return
+    else
+        echo -n -e "\r K+:\t\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        return
+    fi
+
+    echo -n -e "\r K+:\t\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+}
+
+function MediaUnlockTest_TV360() {
+    local tmpresult=$(curl $curlArgs --user-agent "${UA_Browser}" -${1} -sSL --max-time 10 'https://tv360.vn/public/v1/composite/get-link?sq=CJSkRii71PAn41F9A2OlJSTxkOTDBl8uip04KFxqJc6iAmCPOt52q12a9hpwORZGjayWYrJSGjwYdG7Jy2NqPA%3D%3D&secured=true' 2>&1)
+    if [[ "$result" == "curl"* ]] && [[ "$1" == "6" ]]; then
+        echo -n -e "\r TV360:\t\t\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
+        return
+    elif [[ "$result" == "curl"* ]]; then
+        echo -n -e "\r TV360:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+    local errcode=$(echo "${tmpresult}" | jq .errorCode)
+    if [[ "$errcode" == "310" ]]; then
+        echo -n -e "\r TV360:\t\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        return
+    else
+        echo -n -e "\r TV360:\t\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+        return
+    fi
+
+    echo -n -e "\r TV360:\t\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+}
+
 function MediaUnlockTest_Eurosport() {
     local result=$(curl $curlArgs --user-agent "${UA_Browser}" -${1} -sSI --max-time 10 "https://www.eurosport.com/" 2>&1)
     # echo ${result: -2}
@@ -3950,10 +3992,12 @@ function SEA_UnlockTest(){
     MediaUnlockTest_MYTV ${1} &
     MediaUnlockTest_ClipTV ${1} &
     MediaUnlockTest_GalaxyPlay ${1} &
+    MediaUnlockTest_KPlus ${1} &
+    MediaUnlockTest_TV360 ${1} &
     MediaUnblockTest_BGlobalVN ${1} &
     )
     wait
-    local array=("MYTV" "Clip TV" "Galaxy Play" "B-Global Việt Nam Only" )
+    local array=("MYTV" "Clip TV" "Galaxy Play" "K+" "TV360" "B-Global Việt Nam Only" )
     echo_Result ${result} ${array}
     ShowRegion MY
     local result=$(
