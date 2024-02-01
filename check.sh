@@ -3463,10 +3463,10 @@ function MediaUnlockTest_SonyLiv() {
     fi
     local country=$(echo "${tmpresult}" | grep country_code | grep -Eo 'country_code:...')
     if [[ "$country" == *"IN" ]]; then
-        echo -n -e "\r SonyLiv:\t\t\t\t${Font_Green}Yes ${country#*\"}${Font_Suffix}\n"
+        echo -n -e "\r SonyLiv:\t\t\t\t${Font_Green}Yes (Region:${country#*\"})${Font_Suffix}\n"
         return
     else
-        echo -n -e "\r SonyLiv:\t\t\t\t${Font_Red}No  ${country#*\"}${Font_Suffix}\n"
+        echo -n -e "\r SonyLiv:\t\t\t\t${Font_Red}No  (Region:${country#*\"})${Font_Suffix}\n"
         return
     fi
 
