@@ -3412,10 +3412,10 @@ function MediaUnlockTest_StarhubTVPlus() {
 
 function MediaUnlockTest_KPlus() {
     local tmpresult=$(curl $curlArgs --user-agent "${UA_Browser}" -${1} -sSL --max-time 10 -X POST -d '{"osVersion":"Windows 10","deviceModel":"Edge","deviceType":"PC","deviceSerial":"w7ab83550-c0aa-11ee-bf07-531681e47537","deviceOem":"Edge","devicePrettyName":"Edge 121.0.0.0","appVersion":"11.0","language":"en_US","brand":"vstv","featureLevel":5}' "https://tvapi-sgn.solocoo.tv/v1/provision" 2>&1)
-    if [[ "$result" == "curl"* ]] && [[ "$1" == "6" ]]; then
+    if [[ "$tmpresult" == "curl"* ]] && [[ "$1" == "6" ]]; then
         echo -n -e "\r K+:\t\t\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
         return
-    elif [[ "$result" == "curl"* ]]; then
+    elif [[ "$tmpresult" == "curl"* ]]; then
         echo -n -e "\r K+:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
@@ -3433,10 +3433,10 @@ function MediaUnlockTest_KPlus() {
 
 function MediaUnlockTest_TV360() {
     local tmpresult=$(curl $curlArgs --user-agent "${UA_Browser}" -${1} -sSL --max-time 10 'https://tv360.vn/public/v1/composite/get-link?sq=CJSkRii71PAn41F9A2OlJSTxkOTDBl8uip04KFxqJc6iAmCPOt52q12a9hpwORZGjayWYrJSGjwYdG7Jy2NqPA%3D%3D&secured=true' 2>&1)
-    if [[ "$result" == "curl"* ]] && [[ "$1" == "6" ]]; then
+    if [[ "$tmpresult" == "curl"* ]] && [[ "$1" == "6" ]]; then
         echo -n -e "\r TV360:\t\t\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
         return
-    elif [[ "$result" == "curl"* ]]; then
+    elif [[ "$tmpresult" == "curl"* ]]; then
         echo -n -e "\r TV360:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
@@ -3451,6 +3451,49 @@ function MediaUnlockTest_TV360() {
 
     echo -n -e "\r TV360:\t\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
 }
+
+function MediaUnlockTest_SonyLiv() {
+    local tmpresult=$(curl $curlArgs --user-agent "${UA_Browser}" -${1} -sSL --max-time 10 'https://www.sonyliv.com/signin' 2>&1)
+    if [[ "$tmpresult" == "curl"* ]] && [[ "$1" == "6" ]]; then
+        echo -n -e "\r SonyLiv:\t\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
+        return
+    elif [[ "$tmpresult" == "curl"* ]]; then
+        echo -n -e "\r SonyLiv:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+    local country=$(echo "${tmpresult}" | grep country_code | grep -Eo 'country_code:...')
+    if [[ "$country" == *"IN" ]]; then
+        echo -n -e "\r SonyLiv:\t\t\t\t${Font_Green}Yes ${country#*\"}${Font_Suffix}\n"
+        return
+    else
+        echo -n -e "\r SonyLiv:\t\t\t\t${Font_Red}No  ${country#*\"}${Font_Suffix}\n"
+        return
+    fi
+
+    echo -n -e "\r SonyLiv:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+}
+
+function MediaUnlockTest_JioCinema() {
+    local tmpresult=$(curl $curlArgs --user-agent "${UA_Browser}" -${1} -sSL --max-time 10 'https://content-jiovoot.voot.com/psapi/' 2>&1)
+    if [[ "$tmpresult" == "curl"* ]] && [[ "$1" == "6" ]]; then
+        echo -n -e "\r Jio Cinema:\t\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
+        return
+    elif [[ "$tmpresult" == "curl"* ]]; then
+        echo -n -e "\r Jio Cinema:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+    local code=$(echo "${tmpresult}" | jq .code)
+    if [[ "$code" == "474" ]]; then
+        echo -n -e "\r Jio Cinema:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        return
+    else
+        echo -n -e "\r Jio Cinema:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+        return
+    fi
+
+    echo -n -e "\r Jio Cinema:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+}
+
 
 function MediaUnlockTest_Eurosport() {
     local result=$(curl $curlArgs --user-agent "${UA_Browser}" -${1} -sSI --max-time 10 "https://www.eurosport.com/" 2>&1)
@@ -4010,9 +4053,11 @@ function SEA_UnlockTest(){
     local result=$(
     MediaUnlockTest_MXPlayer ${1} &
     MediaUnlockTest_TataPlay ${1} &
+    MediaUnlockTest_SonyLiv ${1} &
+    MediaUnlockTest_JioCinema ${1} &
     )
     wait
-    local array=("MXPlayer" "Tata Play" )
+    local array=("MXPlayer" "Tata Play" "SonyLiv" "Jio Cinema")
     echo_Result ${result} ${array}
     echo "======================================="
 }
