@@ -3419,7 +3419,7 @@ function MediaUnlockTest_KPlus() {
         echo -n -e "\r K+:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
-    local region=$(echo "${tmpresult}" | jq .session.geoCountryCode | tr -d'"')
+    local region=$(echo "${tmpresult}" | jq .session.geoCountryCode | tr -d '"')
     if [[ "$region" == "VN" ]]; then
         echo -n -e "\r K+:\t\t\t\t\t${Font_Green}Yes (Region:${region})${Font_Suffix}\n"
         return
@@ -4036,7 +4036,7 @@ function SEA_UnlockTest(){
     MediaUnlockTest_ClipTV ${1} &
     MediaUnlockTest_GalaxyPlay ${1} &
     MediaUnlockTest_KPlus ${1} &
-    MediaUnlockTest_TV360 ${1} &
+    #MediaUnlockTest_TV360 ${1} &
     MediaUnblockTest_BGlobalVN ${1} &
     )
     wait
