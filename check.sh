@@ -3494,6 +3494,21 @@ function MediaUnlockTest_JioCinema() {
     echo -n -e "\r Jio Cinema:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
 }
 
+function MediaUnlockTest_HoyTV() {
+    local result=$(curl $curlArgs -${1} -fSsL --write-out %{http_code} --output /dev/null --max-time 10 "https://hoytv-live-stream.hoy.tv/ch78/index-fhd.m3u8" 2>&1)
+
+    if [[ "$result" == "403" ]]; then
+        echo -n -e "\r HOY TV:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        return
+    elif [[ "$result" == "200" ]]; then
+        echo -n -e "\r HOY TV:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+        return
+    fi
+
+    echo -n -e "\r HOY TV:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+    return
+
+}
 
 function MediaUnlockTest_Eurosport() {
     local result=$(curl $curlArgs --user-agent "${UA_Browser}" -${1} -sSI --max-time 10 "https://www.eurosport.com/" 2>&1)
@@ -3797,11 +3812,18 @@ function HK_UnlockTest() {
 	    MediaUnlockTest_ViuTV ${1} &
 	    MediaUnlockTest_MyTVSuper ${1} &
 	    MediaUnlockTest_HBOGO_ASIA ${1} &
+        MediaUnlockTest_HoyTV ${1} &
 	    # MediaUnlockTest_BilibiliHKMCTW ${1} &
 	)
     else
-	echo -e "${Font_Green}此区域无IPv6可用流媒体，跳过……${Font_Suffix}"
-    fi
+	local result=$(
+	    # MediaUnlockTest_NowE ${1} &
+	    # MediaUnlockTest_ViuTV ${1} &
+	    # MediaUnlockTest_MyTVSuper ${1} &
+	    # MediaUnlockTest_HBOGO_ASIA ${1} &
+        MediaUnlockTest_HoyTV ${1} &
+	    # MediaUnlockTest_BilibiliHKMCTW ${1} &
+	)    fi
     wait
     local array=("Now E:" "Viu.TV:" "MyTVSuper:" "HBO GO Asia:" "BiliBili Hongkong/Macau/Taiwan:")
     echo_Result ${result} ${array}
