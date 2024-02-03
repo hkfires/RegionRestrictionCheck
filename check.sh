@@ -3817,10 +3817,10 @@ function HK_UnlockTest() {
 	)
     else
 	local result=$(
-	    MediaUnlockTest_NowE ${1} &
-	    MediaUnlockTest_ViuTV ${1} &
-	    MediaUnlockTest_MyTVSuper ${1} &
-	    MediaUnlockTest_HBOGO_ASIA ${1} &
+	    # MediaUnlockTest_NowE ${1} &
+	    # MediaUnlockTest_ViuTV ${1} &
+	    # MediaUnlockTest_MyTVSuper ${1} &
+	    # MediaUnlockTest_HBOGO_ASIA ${1} &
         MediaUnlockTest_HoyTV ${1} &
 	    # MediaUnlockTest_BilibiliHKMCTW ${1} &
 	)
