@@ -3826,7 +3826,7 @@ function HK_UnlockTest() {
 	)
     fi
     wait
-    local array=("Now E:" "Viu.TV:" "MyTVSuper:" "HBO GO Asia:" "BiliBili Hongkong/Macau/Taiwan:")
+    local array=("Now E:" "Viu.TV:" "MyTVSuper:" "HBO GO Asia:" "HOY TV" "BiliBili Hongkong/Macau/Taiwan:")
     echo_Result ${result} ${array}
     echo "======================================="
 }
