@@ -3495,7 +3495,7 @@ function MediaUnlockTest_JioCinema() {
 }
 
 function MediaUnlockTest_HoyTV() {
-    local result=$(curl $curlArgs -${1} -fSsL --write-out %{http_code} --output /dev/null --max-time 10 "https://hoytv-live-stream.hoy.tv/ch78/index-fhd.m3u8" 2>&1)
+    local result=$(curl $curlArgs -${1} -SsL --write-out %{http_code} --output /dev/null --max-time 10 "https://hoytv-live-stream.hoy.tv/ch78/index-fhd.m3u8" 2>&1)
 
     if [[ "$result" == "403" ]]; then
         echo -n -e "\r HOY TV:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
