@@ -475,14 +475,14 @@ function MediaUnlockTest_DisneyPlus() {
         return
     fi
     local previewcheck=$(echo $previewchecktmp | grep preview)
-    local isUnabailable=$(echo $previewcheck | grep 'unavailable')
+    local isUnavailable=$(echo $previewcheck | grep 'unavailable')
     local region=$(echo $tmpresult | python -m json.tool 2>/dev/null | grep 'countryCode' | cut -f4 -d'"')
     local inSupportedLocation=$(echo $tmpresult | python -m json.tool 2>/dev/null | grep 'inSupportedLocation' | awk '{print $2}' | cut -f1 -d',')
 
     if [[ "$region" == "JP" ]]; then
         echo -n -e "\r Disney+:\t\t\t\t${Font_Green}Yes (Region: JP)${Font_Suffix}\n"
         return
-    elif [ -n "$region" ] && [[ "$inSupportedLocation" == "false" ]] && [ -z "$isUnabailable" ]; then
+    elif [ -n "$region" ] && [[ "$inSupportedLocation" == "false" ]] && [ -z "$isUnavailable" ]; then
         echo -n -e "\r Disney+:\t\t\t\t${Font_Yellow}Available For [Disney+ $region] Soon${Font_Suffix}\n"
         return
     elif [ -n "$region" ] && [ -n "$isUnavailable" ]; then
