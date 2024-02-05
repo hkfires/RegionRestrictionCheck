@@ -1036,9 +1036,13 @@ function MediaUnlockTest_Niconico() {
 }
 
 function MediaUnlockTest_ParamountPlus() {
-    local result=$(curl $curlArgs -${1} -s -o /dev/null -L --max-time 10 -w '%{url_effective}\n' "https://www.paramountplus.com/" 2>&1 | grep 'intl')
+    local result=$(curl $curlArgs -${1} -Ss -o /dev/null -L --max-time 10 -w '%{url_effective}\n' "https://www.paramountplus.com/" 2>&1)
+    if [[ "$result" == "curl"* ]]; then
+        echo -n -e "\r Paramount+:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
 
-    if [ -n "$result" ]; then
+    if [[ "$result" == *"intl"* ]]; then
         echo -n -e "\r Paramount+:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
         return
     else
