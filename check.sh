@@ -42,7 +42,7 @@ while getopts ":I:M:EX:P:F:S:R:" optname; do
         ;;
         "R")
             Resolve="$OPTARG"
-            resolve='--resolve "*:443:$Resolve"'
+            resolve="--resolve \"*:443:$Resolve\""
         ;;
         ":")
             echo "Unknown error while processing options"
