@@ -10,7 +10,7 @@ Font_SkyBlue="\033[36m"
 Font_White="\033[37m"
 Font_Suffix="\033[0m"
 
-while getopts ":I:M:E:X:P:F:S:" optname; do
+while getopts ":I:M:EX:P:F:S:R:" optname; do
     case "$optname" in
         "I")
             iface="$OPTARG"
@@ -40,6 +40,10 @@ while getopts ":I:M:E:X:P:F:S:" optname; do
         "S")
             Stype="$OPTARG"
         ;;
+        "R")
+            Resolve="$OPTARG"
+            resolve='--resolve "*:443:$Resolve"'
+        ;;
         ":")
             echo "Unknown error while processing options"
             exit 1
@@ -60,10 +64,14 @@ if [ -z "$proxy" ]; then
     usePROXY=""
 fi
 
+if [ -z "$Resolve" ]; then
+    resolve=""
+fi
+
 if ! mktemp -u --suffix=RRC &>/dev/null; then
     is_busybox=1
 fi
-curlArgs="$useNIC $usePROXY $xForward"
+curlArgs="$useNIC $usePROXY $xForward $resolve"
 UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36 Edg/112.0.1722.64"
 UA_Dalvik="Dalvik/2.1.0 (Linux; U; Android 9; ALP-AL00 Build/HUAWEIALP-AL00)"
 Media_Cookie=$(curl -s --retry 3 --max-time 10 "https://raw.githubusercontent.com/1-stream/RegionRestrictionCheck/main/cookies" &)
@@ -212,18 +220,20 @@ checkDependencies() {
     
 }
 checkDependencies
+if [ -z "$func" ]; then
+    local_ipv4=$(curl $curlArgs -4 -s --max-time 10 cloudflare.com/cdn-cgi/trace | grep ip | awk -F= '{print $2}' &)
+    local_ipv6=$(curl $curlArgs -6 -s --max-time 20 cloudflare.com/cdn-cgi/trace | grep ip | awk -F= '{print $2}' &)
+    bgptools_v4=$(curl $curlArgs -s -4 --max-time 10 --user-agent "${UA_Browser}" "https://v4.bgp.tools/whoami" &)
+    local_isp4=$(echo $bgptools_v4 | jq '.ASS' | tr -d '"')
+    local_as4=$(echo $bgptools_v4 | jq '.ASN' | tr -d '"')
+    local_ipv4_asterisk=$(echo $bgptools_v4 | jq '.IPP' | tr -d '"')
+    bgptools_v6=$(curl $curlArgs -s -6 --max-time 10 --user-agent "${UA_Browser}" "https://v6.bgp.tools/whoami" &)
+    local_isp6=$(echo $bgptools_v6 | jq '.ASS' | tr -d '"')
+    local_as6=$(echo $bgptools_v6 | jq '.ASN' | tr -d '"')
+    local_ipv6_asterisk=$(echo $bgptools_v6 | jq '.IPP' | tr -d '"')
+    wait
+fi
 
-local_ipv4=$(curl $curlArgs -4 -s --max-time 10 cloudflare.com/cdn-cgi/trace | grep ip | awk -F= '{print $2}' &)
-local_ipv6=$(curl $curlArgs -6 -s --max-time 20 cloudflare.com/cdn-cgi/trace | grep ip | awk -F= '{print $2}' &)
-bgptools_v4=$(curl $curlArgs -s -4 --max-time 10 --user-agent "${UA_Browser}" "https://v4.bgp.tools/whoami" &)
-local_isp4=$(echo $bgptools_v4 | jq '.ASS' | tr -d '"')
-local_as4=$(echo $bgptools_v4 | jq '.ASN' | tr -d '"')
-local_ipv4_asterisk=$(echo $bgptools_v4 | jq '.IPP' | tr -d '"')
-bgptools_v6=$(curl $curlArgs -s -6 --max-time 10 --user-agent "${UA_Browser}" "https://v6.bgp.tools/whoami" &)
-local_isp6=$(echo $bgptools_v6 | jq '.ASS' | tr -d '"')
-local_as6=$(echo $bgptools_v6 | jq '.ASN' | tr -d '"')
-local_ipv6_asterisk=$(echo $bgptools_v6 | jq '.IPP' | tr -d '"')
-wait
 
 ShowRegion() {
     echo -e "${Font_Yellow} ---${1}---${Font_Suffix}"
