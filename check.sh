@@ -3735,7 +3735,7 @@ function NA_UnlockTest() {
     MediaUnlockTest_ATTNOW ${1} &
     MediaUnlockTest_KBSAmerican ${1} &
     MediaUnlockTest_KOCOWA ${1} &
-    MediaUnlockTest_MathsSpot ${1} &
+    # MediaUnlockTest_MathsSpot ${1} &
     )
     wait
     local array=("Sling TV:" "Pluto TV:" "Acorn TV:" "SHOWTIME:" "encoreTVB:" "Funimation:" "Discovery" "Paramount+:" "Peacock TV:" "Popcornflix:" "Crunchyroll:" "Directv Stream:" "KBS American:" "KOCOWA:" "Maths Spot:")
@@ -3758,7 +3758,7 @@ function EU_UnlockTest() {
     MediaUnlockTest_Funimation ${1} &
     MediaUnlockTest_SkyShowTime ${1} &
     MediaUnlockTest_HBOMax ${1} &
-    MediaUnlockTest_MathsSpot ${1} &
+    # MediaUnlockTest_MathsSpot ${1} &
     MediaUnlockTest_Eurosport ${1} &
     MediaUnlockTest_Viaplay ${1} &
     # MediaUnlockTest_HBO_Nordic ${1}
