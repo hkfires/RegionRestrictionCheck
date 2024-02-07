@@ -1932,7 +1932,7 @@ function MediaUnlockTest_NetflixCDN() {
     local isp=$(echo $tmpresult | jq .client.isp | tr -d '"')
     local target_url=$(echo $tmpresult | jq .targets[0].url | tr -d '"')
     local target_fqdn=$(echo $target_url |awk -F"/" '{print $3}'| awk -F"." '{print $1}')
-    if [ -n "$isp" ] && [[ "${isp}" != "null" ]]; then
+    if [ -n "$isp" ] && [[ "${isp}" != "null" ]] && [[ $target_url == *"isp.1.oca"*  ]]; then
         echo -n -e "\r Netflix Preferred CDN:\t\t\t${Font_Yellow}${isp}'s OCAs in ${target_city},${target_country} ($target_fqdn)${Font_Suffix}\n"
         return
     fi
