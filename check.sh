@@ -3669,6 +3669,23 @@ function AIUnlockTest_Copilot() {
     fi
 }
 
+function MediaUnlockTest_RakutenMagazine() {
+    local result=$(curl $curlArgs -${1} -sL --write-out %{http_code} --output /dev/null --max-time 10 "curl https://data-cloudauthoring.magazine.rakuten.co.jp/rem_repository/////////.key" 2>&1)
+
+    if [[ "$result" == "403" ]]; then
+        echo -n -e "\r Rakuten MAGAZINE:\t\t${Font_Red}No${Font_Suffix}\n"
+        return
+    elif [[ "$result" == "404" ]]; then
+        echo -n -e "\r Rakuten MAGAZINE:\t\t${Font_Green}Yes${Font_Suffix}\n"
+        return
+    fi
+
+    echo -n -e "\r Rakuten MAGAZINE:\t\t${Font_Red}Failed ($result)${Font_Suffix}\n"
+    return
+
+}
+
+
 function echo_Result() {
     for((i=0;i<${#array[@]};i++))
     do
@@ -3905,6 +3922,13 @@ function JP_UnlockTest() {
     )
     wait
     local array=("Kancolle Japan:" "Pretty Derby Japan:" "Konosuba Fantastic Days:" "Princess Connect Re:Dive Japan:" "World Flipper Japan:" "Project Sekai: Colorful Stage:")
+    echo_Result ${result} ${array}
+    ShowRegion Read
+    local result=$(
+    MediaUnlockTest_RakutenMagazine ${1} &
+    )
+    wait
+    local array=("Rakuten MAGAZINE")
     echo_Result ${result} ${array}
     echo "======================================="
 
