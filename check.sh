@@ -3670,17 +3670,17 @@ function AIUnlockTest_Copilot() {
 }
 
 function MediaUnlockTest_RakutenMagazine() {
-    local result=$(curl $curlArgs -${1} -sL --write-out %{http_code} --output /dev/null --max-time 10 "curl https://data-cloudauthoring.magazine.rakuten.co.jp/rem_repository/////////.key" 2>&1)
+    local result=$(curl $curlArgs -${1} -sL --write-out %{http_code} --output /dev/null --max-time 10 "https://data-cloudauthoring.magazine.rakuten.co.jp/rem_repository/////////.key" 2>&1)
 
     if [[ "$result" == "403" ]]; then
-        echo -n -e "\r Rakuten MAGAZINE:\t\t${Font_Red}No${Font_Suffix}\n"
+        echo -n -e "\r Rakuten MAGAZINE:\t\t\t${Font_Red}No${Font_Suffix}\n"
         return
     elif [[ "$result" == "404" ]]; then
-        echo -n -e "\r Rakuten MAGAZINE:\t\t${Font_Green}Yes${Font_Suffix}\n"
+        echo -n -e "\r Rakuten MAGAZINE:\t\t\t${Font_Green}Yes${Font_Suffix}\n"
         return
     fi
 
-    echo -n -e "\r Rakuten MAGAZINE:\t\t${Font_Red}Failed ($result)${Font_Suffix}\n"
+    echo -n -e "\r Rakuten MAGAZINE:\t\t\t${Font_Red}Failed ($result)${Font_Suffix}\n"
     return
 
 }
