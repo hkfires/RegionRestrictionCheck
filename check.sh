@@ -3350,7 +3350,7 @@ function MediaUnlockTest_Google() {
         return
     fi
     local region=$(echo "$tmp" | grep K4WWud | jq .[0][2] | grep -Eo '\[\[\\"(.*)\\",\\"S' )
-    echo -n -e "\r Google Location:\t\t\t${Font_Yellow}${region:4:-6}${Font_Suffix}\n"
+    echo -n -e "\r Google Location:\t\t\t${Font_Green}${region:4:-6}${Font_Suffix}\n"
 }
 
 function MediaUnlockTest_NHKPlus() {
