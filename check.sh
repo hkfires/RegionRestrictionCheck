@@ -3344,21 +3344,13 @@ function MediaUnlockTest_MYTV() {
 }
 
 function MediaUnlockTest_Google() {
-    local result=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -sSL --max-time 10 "https://www.google.com/async/lbsc" 2>&1)
-    if [[ "$result" == *"curl"* ]]; then
+    local tmp=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -SsL --max-time 10 'https://bard.google.com/_/BardChatUi/data/batchexecute'   -H 'accept-language: en-US'   --data-raw 'f.req=[[["K4WWud","[[0],[\"en-US\"]]",null,"generic"]]]' 2>&1)
+    if [[ "$tmp" == "curl"* ]]; then
         echo -n -e "\r Google Location:\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
-    if [[ "$result" == *"websearch/answer/86640"* ]]; then
-        echo -n -e "\r Google Location:\t\t\t${Font_Red}Failed (Unusual Traffic)${Font_Suffix}\n"
-        return
-    fi
-    local result1="$(echo "${result}" | grep "location_address" | python -m json.tool | grep 'location_address' | awk  -F '"' '{print $4}' )"
-    if [[ -n "$result1" ]]; then
-        echo -n -e "\r Google Location:\t\t\t${Font_Green}$result1${Font_Suffix}\n"
-        return
-    fi
-    echo -n -e "\r Google Location:\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+    local region=$(echo "$tmp" | grep K4WWud | jq .[0][2] | grep -Eo '\[\[\\"(.*)\\",\\"S' )
+    echo -n -e "\r Google Location:\t\t\t${Font_Yellow}${region:4:-6}${Font_Suffix}\n"
 }
 
 function MediaUnlockTest_NHKPlus() {
@@ -3643,14 +3635,14 @@ function MediaUnlockTest_ChatGPT() {
     fi
 }
 
-function AIUnlockTest_Bard_location() {
-    local tmp=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -SsL --max-time 10 'https://bard.google.com/_/BardChatUi/data/batchexecute'   -H 'accept-language: en-US'   --data-raw 'f.req=[[["K4WWud","[[0],[\"en-US\"]]",null,"generic"]]]' 2>&1)
+function AIUnlockTest_Gemini_location() {
+    local tmp=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -SsL --max-time 10 'https://gemini.google.com/_/BardChatUi/data/batchexecute'   -H 'accept-language: en-US'   --data-raw 'f.req=[[["K4WWud","[[0],[\"en-US\"]]",null,"generic"]]]' 2>&1)
     if [[ "$tmp" == "curl"* ]]; then
-        echo -n -e "\r Google Bard Location:\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        echo -n -e "\r Google Gemini Location:\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
     local region=$(echo "$tmp" | grep K4WWud | jq .[0][2] | grep -Eo '\[\[\\"(.*)\\",\\"S' )
-    echo -n -e "\r Google Bard Location:\t\t\t${Font_Yellow}${region:4:-6}${Font_Suffix}\n"
+    echo -n -e "\r Google Gemini Location:\t\t\t${Font_Yellow}${region:4:-6}${Font_Suffix}\n"
 }
 
 function AIUnlockTest_Copilot() {
@@ -3953,7 +3945,7 @@ function Global_UnlockTest() {
         MediaUnlockTest_Spotify ${1} &
         #MediaUnlockTest_Instagram.Music ${1}
         GameTest_Steam ${1} &
-        #MediaUnlockTest_Google ${1} &
+        MediaUnlockTest_Google ${1} &
         MediaUnlockTest_Tiktok ${1} &
         MediaUnlockTest_BilibiliAnimeNew ${1} &
         )
@@ -3973,7 +3965,7 @@ function Global_UnlockTest() {
         MediaUnlockTest_Spotify ${1} &
         #MediaUnlockTest_Instagram.Music ${1}
         # GameTest_Steam ${1} &
-        #MediaUnlockTest_Google ${1} &
+        MediaUnlockTest_Google ${1} &
         )
     fi
     wait
@@ -4147,11 +4139,11 @@ function AI_UnlockTest() {
     echo "============[ AI Platform ]============"
     local result=$(
     MediaUnlockTest_ChatGPT ${1} &
-    AIUnlockTest_Bard_location ${1} &
+    AIUnlockTest_Gemini_location ${1} &
     AIUnlockTest_Copilot ${1} &
     )
     wait
-    local array=("ChatGPT" "Copilot" "Bard" )
+    local array=("ChatGPT" "Copilot" "Gemini" )
     echo_Result ${result} ${array}
 
     echo "======================================="
