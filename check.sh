@@ -1025,6 +1025,7 @@ function MediaUnlockTest_Viu.com() {
             else
                 echo -n -e "\r Viu.com:\t\t\t\t${Font_Green}Yes (Region: ${result})${Font_Suffix}\n"
                 return
+            fi
         fi
 
     else
