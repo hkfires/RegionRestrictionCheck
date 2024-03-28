@@ -427,9 +427,9 @@ function MediaUnlockTest_BBCiPLAYER() {
 }
 
 function MediaUnlockTest_Netflix() {
-    local result1=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fsL --max-time 10 --tlsv1.3 "https://www.netflix.com/title/81280792" | grep -Eo \"isPlayable\":....  2>&1)
-    local result2=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fsL --max-time 10 --tlsv1.3 "https://www.netflix.com/title/70143836" | grep -Eo \"isPlayable\":.... 2>&1)
-    local regiontmp=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fSs --max-time 10 --write-out %{redirect_url} --output /dev/null --tlsv1.3 "https://www.netflix.com/login" 2>&1 )
+    local result1=$(curl $curlArgs -${1} -fsL --max-time 10 --tlsv1.3 "https://www.netflix.com/title/81280792" | grep -Eo \"isPlayable\":....  2>&1)
+    local result2=$(curl $curlArgs -${1} -fsL --max-time 10 --tlsv1.3 "https://www.netflix.com/title/70143836" | grep -Eo \"isPlayable\":.... 2>&1)
+    local regiontmp=$(curl $curlArgs -${1} -fSs --max-time 10 --write-out %{redirect_url} --output /dev/null --tlsv1.3 "https://www.netflix.com/login" 2>&1 )
     if [[ "$regiontmp" == "curl"* ]]; then
         echo -n -e "\r Netflix:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
