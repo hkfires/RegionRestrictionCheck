@@ -2595,33 +2595,6 @@ function MediaUnlockTest_Channel10() {
 
 }
 
-function MediaUnlockTest_Funimation() {
-    if [ "$is_busybox" == 1 ]; then
-        tmp_file=$(mktemp)
-    else
-        tmp_file=$(mktemp --suffix=RRC)
-    fi
-
-    curl $curlArgs -${1} --user-agent "${UA_Browser}" -ILs --max-time 10 --insecure "https://www.funimation.com" >${tmp_file}
-    result=$(cat ${tmp_file} | awk 'NR==1' | awk '{print $2}')
-    isHasRegion=$(cat ${tmp_file} | grep 'region=')
-    if [[ "$1" == "6" ]]; then
-        echo -n -e "\r Funimation:\t\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
-        return
-    elif [ "$result" = "000" ]; then
-        echo -n -e "\r Funimation:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
-        return
-    elif [ "$result" = "403" ]; then
-        echo -n -e "\r Funimation:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
-        return
-    elif [ -n "$isHasRegion" ]; then
-        local region=$(cat ${tmp_file} | grep region= | awk '{print $2}' | cut -f1 -d";" | cut -f2 -d"=")
-        echo -n -e "\r Funimation:\t\t\t\t${Font_Green}Yes (Region: $region)${Font_Suffix}\n"
-        return
-    fi
-    echo -n -e "\r Funimation:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
-}
-
 function MediaUnlockTest_Spotify() {
     local tmpresult=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -s --max-time 10 https://www.spotify.com/tw/signup 2>&1)
 
@@ -3759,7 +3732,6 @@ function NA_UnlockTest() {
     MediaUnlockTest_AcornTV ${1} &
     MediaUnlockTest_SHOWTIME ${1} &
     MediaUnlockTest_encoreTVB ${1} &
-    MediaUnlockTest_Funimation ${1} &
     MediaUnlockTest_DiscoveryPlus ${1} &
     MediaUnlockTest_ParamountPlus ${1} &
     MediaUnlockTest_PeacockTV ${1} &
@@ -3771,7 +3743,7 @@ function NA_UnlockTest() {
     # MediaUnlockTest_MathsSpot ${1} &
     )
     wait
-    local array=("Sling TV:" "Pluto TV:" "Acorn TV:" "SHOWTIME:" "encoreTVB:" "Funimation:" "Discovery" "Paramount+:" "Peacock TV:" "Popcornflix:" "Crunchyroll:" "Directv Stream:" "KBS American:" "KOCOWA:" "Maths Spot:")
+    local array=("Sling TV:" "Pluto TV:" "Acorn TV:" "SHOWTIME:" "encoreTVB:" "Discovery" "Paramount+:" "Peacock TV:" "Popcornflix:" "Crunchyroll:" "Directv Stream:" "KBS American:" "KOCOWA:" "Maths Spot:")
     echo_Result ${result} ${array}
     ShowRegion CA
     local result=$(
