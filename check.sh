@@ -2860,7 +2860,8 @@ function MediaUnlockTest_CoupangPlay() {
 }
 
 function MediaUnlockTest_NaverTV() {
-    local tmpresult=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fSsL --max-time 10 "https://tv.naver.com/v/31030608" 2>&1)
+    local timestamp=$(date +%s%3N)
+    local tmpresult=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fSsL --max-time 10 "https://apis.naver.com/now_web2/now_web_api/v1/clips/31030608/meta-info?msgpad=${timestamp}&md=SCrXvFnuzUU4qaZbxG%2BVhc0gjCQ%3D" 2>&1)
     if [[ "$tmpresult" == "curl"* ]] && [ "$1" == "6" ]; then
         echo -n -e "\r Naver TV:\t\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
         return
@@ -2868,11 +2869,13 @@ function MediaUnlockTest_NaverTV() {
         echo -n -e "\r Naver TV:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
-    local result1=$(echo "$tmpresult" | grep 'nation_error' | grep 'display:none' )
-    if [ -z "$result1" ]; then
-        echo -n -e "\r Naver TV:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+    local region=$(echo "$tmpresult" | jq .result.bannerGladParam.ctry | tr -d '"' )
+    if [[ "$region" == "KR" ]]; then
+        echo -n -e "\r Naver TV:\t\t\t\t${Font_Green}Yes (Region: $region)${Font_Suffix}\n"
+        return
     else
-        echo -n -e "\r Naver TV:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+        echo -n -e "\r Naver TV:\t\t\t\t${Font_Red}No (Region: $region)${Font_Suffix}\n"
+        return
     fi
 }
 
