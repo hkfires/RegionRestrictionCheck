@@ -1696,7 +1696,7 @@ function MediaUnlockTest_Starz() {
 }
 
 function MediaUnlockTest_CanalPlus() {
-    local tmpresult=$(curl $curlArgs -${1} -sS -o /dev/null -L --max-time 10 -w '%{url_effective}\n' "https://boutique-tunnel.canalplus.com/" 2>&1)
+    local tmpresult=$(curl $curlArgs -${1}  --user-agent "${UA_Browser}" -sS -o /dev/null -IL -X GET --max-time 10 -w '%{url_effective}\n' "https://boutique-tunnel.canalplus.com/" 2>&1)
     if [[ "$tmpresult" == "curl"* ]]; then
         echo -n -e "\r Canal+:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
