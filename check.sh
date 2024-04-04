@@ -1211,9 +1211,10 @@ function MediaUnlockTest_BritBox() {
         echo -n -e "\r BritBox:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
-    local result=$(echo $tmpresult | grep 'locationnotsupported')
+    local result=$(echo $tmpresult | grep 'locationnotvalidated')
     if [ -n "$result" ]; then
-        echo -n -e "\r BritBox:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        local region=$(echo $tmpresult | cut -d '/' -f4)
+        echo -n -e "\r BritBox:\t\t\t\t${Font_Red}No  (Region: ${region^^})${Font_Suffix}\n"
         return
     else
         echo -n -e "\r BritBox:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
