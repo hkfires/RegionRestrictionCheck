@@ -1702,7 +1702,7 @@ function MediaUnlockTest_CanalPlus() {
         echo -n -e "\r Canal+:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
-    local result=$(echo $tmpresult | grep 'othercountry')
+    local result=$(echo $tmpresult | grep 'other-country-blocking')
     if [ -n "$result" ]; then
         echo -n -e "\r Canal+:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
         return
