@@ -1449,19 +1449,19 @@ function MediaUnlockTest_Joyn() {
 function MediaUnlockTest_SKY_DE() {
     local tmpresult=$(curl $curlArgs -${1} -s --max-time 10 "https://edge.api.brightcove.com/playback/v1/accounts/1050888051001/videos/6247131490001" -H "Accept: application/json;pk=BCpkADawqM0OXCLe4eIkpyuir8Ssf3kIQAM62a1KMa4-1_vTOWQIxoHHD4-oL-dPmlp-rLoS-WIAcaAMKuZVMR57QY4uLAmP4Ov3V416hHbqr0GNNtzVXamJ6d4-rA3Xi98W-8wtypdEyjGEZNepUCt3D7UdMthbsG-Ean3V4cafT4nZX03st5HlyK1chp51SfA-vKcAOhHZ4_Oa9TTN61tEH6YqML9PWGyKrbuN5myICcGsFzP3R2aOF8c5rPCHT2ZAiG7MoavHx8WMjhfB0QdBr2fphX24CSpUKlcjEnQJnBiA1AdLg9iyReWrAdQylX4Eyhw5OwKiCGJznfgY6BDtbUmeq1I9r9RfmhP5bfxVGjILSEFZgXbMqGOvYdrdare0aW2fTCxeHdHt0vyKOWTC6CS1lrGJF2sFPKn1T1csjVR8s4MODqCBY1PTbHY4A9aZ-2MDJUVJDkOK52hGej6aXE5b9N9_xOT2B9wbXL1B1ZB4JLjeAdBuVtaUOJ44N0aCd8Ns0o02E1APxucQqrjnEociLFNB0Bobe1nkGt3PS74IQcs-eBvWYSpolldMH6TKLu8JqgdnM4WIp3FZtTWJRADgAmvF9tVDUG9pcJoRx_CZ4im-rn-AzN3FeOQrM4rTlU3Q8YhSmyEIoxYYqsFDwbFlhsAcvqQkgaElYtuciCL5i3U8N4W9rIhPhQJzsPafmLdWxBP_FXicyek25GHFdQzCiT8nf1o860Jv2cHQ4xUNcnP-9blIkLy9JmuB2RgUXOHzWsrLGGW6hq9wLUtqwEoxcEAAcNJgmoC0k8HE-Ga-NHXng6EFWnqiOg_mZ_MDd7gmHrrKLkQV" -H "Origin: https://www.sky.de" 2>&1)
     if [ -z "$tmpresult" ]; then
-        echo -n -e "\r Sky:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        echo -n -e "\r Sky DE:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
 
     local result=$(echo $tmpresult | python -m json.tool 2>/dev/null | grep error_subcode | cut -f4 -d'"')
     if [[ "$result" == "CLIENT_GEO" ]]; then
-        echo -n -e "\r Sky:\t\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        echo -n -e "\r Sky DE:\t\t\t\t\t${Font_Red}No${Font_Suffix}\n"
         return
     elif [ -z "$result" ] && [ -n "$tmpresult" ]; then
-        echo -n -e "\r Sky:\t\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+        echo -n -e "\r Sky DE:\t\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
         return
     else
-        echo -n -e "\r Sky:\t\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+        echo -n -e "\r Sky DE:\t\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
     fi
 
 }
@@ -1503,7 +1503,7 @@ function MediaUnlockTest_HBOGO_ASIA() {
 }
 
 function MediaUnlockTest_EPIX() {
-    tmpToken=$(curl $curlArgs -${1} -s -X POST --max-time 10 "https://api.epix.com/v2/sessions" -H "Content-Type: application/json" -d '{"device":{"guid":"e2add88e-2d92-4392-9724-326c2336013b","format":"console","os":"web","app_version":"1.0.2","model":"browser","manufacturer":"google"},"apikey":"f07debfcdf0f442bab197b517a5126ec","oauth":{"token":null}}' 2>&1)
+    tmpToken=$(curl $curlArgs -${1} -s -X POST --max-time 10 "https://api.epix.com/v2/sessions" -H "Content-Type: application/json" -d '{"device":{"guid":"e2add88e-2d92-4392-9724-326c2336013b","format":"console","os":"web","app_version":"1.0.2","model":"browser","manufacturer":"google"},"apikey":"53e208a9bbaee479903f43b39d7301f7","oauth":{"token":null}}' 2>&1)
     if [ -z "$tmpToken" ]; then
         echo -n -e "\r Epix:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
@@ -1513,44 +1513,31 @@ function MediaUnlockTest_EPIX() {
     fi
 
     EpixToken=$(echo $tmpToken | python -m json.tool 2>/dev/null | grep 'session_token' | cut -f4 -d'"')
-    local tmpresult=$(curl $curlArgs -${1} -X POST -s --max-time 10 "https://api.epix.com/v2/movies/16921/play" -d '{}' -H "X-Session-Token: $EpixToken" 2>&1)
+    local tmpresult=$(curl $curlArgs -${1} -s --max-time 10 -X POST -H 'content-type: application/json' -H "x-session-token: ${EpixToken}" -d $'{"operationName":"PlayFlow","variables":{"id":"bW92aWU7MjExNDc=","supportedActions":["open_url","show_notice","start_billing","play_content","log_in","noop","confirm_provider","unlinked_provider"],"streamTypes":[{"encryptionScheme":"CBCS","packagingSystem":"DASH"},{"encryptionScheme":"CENC","packagingSystem":"DASH"},{"encryptionScheme":"NONE","packagingSystem":"HLS"},{"encryptionScheme":"SAMPLE_AES","packagingSystem":"HLS"}]},"query":"fragment ShowNotice on ShowNotice {\\n  type\\n  actions {\\n    continuationContext\\n    text\\n    __typename\\n  }\\n  description\\n  title\\n  __typename\\n}\\n\\nfragment OpenUrl on OpenUrl {\\n  type\\n  url\\n  __typename\\n}\\n\\nfragment Content on Content {\\n  title\\n  __typename\\n}\\n\\nfragment Movie on Movie {\\n  id\\n  shortName\\n  __typename\\n}\\n\\nfragment Episode on Episode {\\n  id\\n  series {\\n    shortName\\n    __typename\\n  }\\n  seasonNumber\\n  number\\n  __typename\\n}\\n\\nfragment Preroll on Preroll {\\n  id\\n  __typename\\n}\\n\\nfragment ContentUnion on ContentUnion {\\n  ...Content\\n  ...Movie\\n  ...Episode\\n  ...Preroll\\n  __typename\\n}\\n\\nfragment PlayContent on PlayContent {\\n  type\\n  continuationContext\\n  heartbeatToken\\n  currentItem {\\n    content {\\n      ...ContentUnion\\n      __typename\\n    }\\n    __typename\\n  }\\n  nextItem {\\n    content {\\n      ...ContentUnion\\n      __typename\\n    }\\n    showNotice {\\n      ...ShowNotice\\n      __typename\\n    }\\n    showNoticeAt\\n    __typename\\n  }\\n  amazonPlaybackData {\\n    pid\\n    playbackToken\\n    materialType\\n    __typename\\n  }\\n  playheadPosition\\n  vizbeeStreamInfo {\\n    customStreamInfo\\n    __typename\\n  }\\n  closedCaptions {\\n    ttml {\\n      location\\n      __typename\\n    }\\n    vtt {\\n      location\\n      __typename\\n    }\\n    xml {\\n      location\\n      __typename\\n    }\\n    __typename\\n  }\\n  hints {\\n    duration\\n    seekAllowed\\n    trackingEnabled\\n    trackingId\\n    __typename\\n  }\\n  streams(types: $streamTypes) {\\n    playlistUrl\\n    closedCaptionsEmbedded\\n    packagingSystem\\n    encryptionScheme\\n    videoQuality {\\n      height\\n      width\\n      __typename\\n    }\\n    widevine {\\n      authenticationToken\\n      licenseServerUrl\\n      __typename\\n    }\\n    playready {\\n      authenticationToken\\n      licenseServerUrl\\n      __typename\\n    }\\n    fairplay {\\n      authenticationToken\\n      certificateUrl\\n      licenseServerUrl\\n      __typename\\n    }\\n    __typename\\n  }\\n  __typename\\n}\\n\\nfragment StartBilling on StartBilling {\\n  type\\n  __typename\\n}\\n\\nfragment LogIn on LogIn {\\n  type\\n  __typename\\n}\\n\\nfragment Noop on Noop {\\n  type\\n  __typename\\n}\\n\\nfragment PreviewContent on PreviewContent {\\n  type\\n  title\\n  description\\n  stream {\\n    sources {\\n      hls {\\n        location\\n        __typename\\n      }\\n      __typename\\n    }\\n    __typename\\n  }\\n  __typename\\n}\\n\\nfragment ConfirmProvider on ConfirmProvider {\\n  type\\n  __typename\\n}\\n\\nfragment UnlinkedProvider on UnlinkedProvider {\\n  type\\n  __typename\\n}\\n\\nquery PlayFlow($id: String\u0021, $supportedActions: [PlayFlowActionEnum\u0021]\u0021, $context: String, $behavior: BehaviorEnum = DEFAULT, $streamTypes: [StreamDefinition\u0021]) {\\n  playFlow(\\n    id: $id\\n    supportedActions: $supportedActions\\n    context: $context\\n    behavior: $behavior\\n  ) {\\n    ...ShowNotice\\n    ...OpenUrl\\n    ...PlayContent\\n    ...StartBilling\\n    ...LogIn\\n    ...Noop\\n    ...PreviewContent\\n    ...ConfirmProvider\\n    ...UnlinkedProvider\\n    __typename\\n  }\\n}"}' 'https://api.epix.com/graphql'  2>&1)
 
-    local result=$(echo $tmpresult | python -m json.tool 2>/dev/null | grep status | cut -f4 -d'"')
-    if [[ "$result" == "PROXY_DETECTED" ]]; then
-        echo -n -e "\r Epix:\t\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+    local isBlocked=$(echo $tmpresult | grep 'MGM+ is only available in the United States')
+    local isOK=$(echo $tmpresult | grep StartBilling)
+    if [ -n "$isBlocked" ]; then
+        echo -n -e "\r MGM+:\t\t\t\t\t${Font_Red}No${Font_Suffix}\n"
         return
-    elif [[ "$result" == "GEO_BLOCKED" ]]; then
-        echo -n -e "\r Epix:\t\t\t\t\t${Font_Red}No${Font_Suffix}\n"
-        return
-    elif [[ "$result" == "NOT_SUBSCRIBED" ]]; then
-        echo -n -e "\r Epix:\t\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+    elif [ -n "$isOK" ]; then
+        echo -n -e "\r MGM+:\t\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
         return
     else
-        echo -n -e "\r Epix:\t\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+        echo -n -e "\r MGM+:\t\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
         return
     fi
 
 }
 
 function MediaUnlockTest_NLZIET() {
-    TmpFallBackCode=$(curl $curlArgs -X GET -${1} -s --max-time 10 "https://id.nlziet.nl/connect/authorize/callback?client_id=triple-web&redirect_uri=https%3A%2F%2Fapp.nlziet.nl%2Fcallback&response_type=code&scope=openid%20api&state=91b508206f154b8381d3cc9061170527&code_challenge=EF_HpSX8a_leJOXmHqsYpBKjNRX0D8oZh_HfremhSWE&code_challenge_method=S256&response_mode=query" -b "optanonStatus=,C0001,; _gid=GA1.2.301664903.1627130663; OptanonConsent=isIABGlobal=false&datestamp=Sat+Jul+24+2021+20%3A44%3A23+GMT%2B0800+(%E9%A6%99%E6%B8%AF%E6%A0%87%E5%87%86%E6%97%B6%E9%97%B4)&version=6.17.0&hosts=&landingPath=https%3A%2F%2Fapp.nlziet.nl%2F&groups=C0001%3A1%2CC0002%3A0%2CC0003%3A0%2CC0004%3A0; _ga=GA1.2.1715247671.1627130661; _ga_LQL66TVRW1=GS1.1.1627130674.1.1.1627130679.0; _ga_QVB71SF0T8=GS1.1.1627130674.1.1.1627130679.0; .AspNetCore.Antiforgery.iEdXBvgZzA4=CfDJ8IdkGvI8o6RKkusMbm16dgZLQ3gjhTBrGZ5YAf7IYcvZ_uyXtvFmF8n87s9O1A6_hGU2cylV3fP7KrNnOndoMYFzeQTtFjYYe6rKr7G7tnvK5nDlZ1voXmUWbOynzDibE8HvkIICFkMzAZQksRtufiA; _ga_YV1B2GE80N=GS1.1.1627130661.1.1.1627130679.0; idsrv.session=3AF23B3FB60D818D8D6B519258D305C4; idsrv=CfDJ8IdkGvI8o6RKkusMbm16dgY4Sqm-8MQ1fT9qsFj38GA2PTr53t9IZNOTNbfRBqf4_2ymzxFOJr3WeVh_xbqM-yiQtvZ3LKdkZW8jR8g6jE9WeZj5kxdUZYSYRsOkUc-ZCQJA59txaiunIwwgwPfbRYW86mL_ZL_cTVZZldVNHswXPKvDKeeD9ieyXVGvLFEjgEUsNXzukaPN6SFuC0UISPcU8rqU9DdLp0y5QeoqE_z_nTlVgB65F-bGYeKtFVtk1uf7TYDgxnFeTJt5NpigsRk2zcIi0bmrzkgKd7oUQrAfVkUoy8T1-SnHAjN0VpDn4fRE4t1LdsU89IbV99pMVN2hvx5UrNT09lsSllkqzJXYoxC2dLQihWWcfH5J0lUn9GjFPTZWFOSw_6i164eYY2cpfvROcr3MJH0dXPf1kgLXNjN5ejjjCEPmgeMGvFdYS4cusx0tgvDp5R2hpbZGpRXneTgwAjFs9vgYuf_-r7cdb-fdSy-oohsdEDIIz5Zz_-7TvOl3hHEShAYaHjyUYWcm90E-6N3mjm7sBXUe9cDqbqbfpwgr1ciW0GbuZCqXaShrFvjE48EXnwt46TuBDAJJtVm4OZPE8ngJYscQrel7AJvm8tPpv10P6vw_Hva5IvCPxcLkyFj4xnbmY6hBU3-WQNawtZ67098QTEvMKgF44_QI0x5xP8NZ8HR2GDabLtMh88enklIB8_j7dp3RwoSLn9N61gZJWhBj9mU5FioAOGKsNJD4iWtPXKwUU0Yz4XnjD1KYL88BE3j7-Z5qiLQQGWj5GkKk7PLhPMA_PghLjE6KKKoWTny6NSXXyPSGZIHwlV2NGTH8EQmKoBq_xfejG-oBqSP0aCAf2apl6bwDHrBK3YVigLWPlej_4OKj7BC-KXhHxW7bNY4vHQ5EUHw" -I 2>&1 | grep Location | sed 's/.*callback?code=//' | cut -f1 -d"&")
-    local tmpauth=$(curl $curlArgs -${1} -s --max-time 10 -X POST "https://id.nlziet.nl/connect/token" -H "Content-Type: application/x-www-form-urlencoded" -d "client_id=triple-web&code=${TmpFallBackCode}&redirect_uri=https%3A%2F%2Fapp.nlziet.nl%2Fcallback&code_verifier=04850de4083d48adb0bf6db3ebfd038fe27a7881de914b95a18d90ceb350316ed05a0e39e72440e6ace015ddc11d28b5&grant_type=authorization_code" 2>&1)
-
-    if [ -z "$tmpauth" ]; then
-        echo -n -e "\r NLZIET:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
-        return
-    fi
-
-    local auth=$(echo $tmpauth | python -m json.tool 2>/dev/null | grep access_token | awk '{print $2}' | cut -f2 -d'"')
-    local result=$(curl $curlArgs -X GET -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://api.nlziet.nl/v7/stream/handshake/Widevine/Dash/VOD/rJDaXnOP4kaRXnZdR_JofA?playerName=BitmovinWeb" -H "authorization: Bearer $auth" 2>&1)
-
-    if [ "$result" = "000" ]; then
-        echo -n -e "\r NLZIET:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
-        return
-    elif [ "$result" = "500" ]; then
+    local tmpresult=$(curl $curlArgs -${1} -s --max-time 10 'https://api.nlziet.nl/v7/stream/handshake/Widevine/Dash/VOD/rzIL9rb-TkSn-ek_wBmvaw?playerName=BitmovinWeb'   -H 'accept: application/json, text/plain, */*'   -H 'accept-language: zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6'   -H 'authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IkM4M0YzQUFGOTRCOTM0ODA2NkQwRjZDRTNEODhGQkREIiwidHlwIjoiYXQrand0In0.eyJuYmYiOjE3MTIxMjY0NTMsImV4cCI6MTcxMjE1NTI0OCwiaXNzIjoiaHR0cHM6Ly9pZC5ubHppZXQubmwiLCJhdWQiOiJhcGkiLCJjbGllbnRfaWQiOiJ0cmlwbGUtd2ViIiwic3ViIjoiMDAzMTZiNGEtMDAwMC0wMDAwLWNhZmUtZjFkZTA1ZGVlZmVlIiwiYXV0aF90aW1lIjoxNzEyMTI2NDUzLCJpZHAiOiJsb2NhbCIsImVtYWlsIjoibXVsdGkuZG5zMUBvdXRsb29rLmNvbSIsInVzZXJJZCI6IjMyMzg3MzAiLCJjdXN0b21lcklkIjoiMCIsImRldmljZUlkZW50aWZpZXIiOiJJZGVudGl6aWV0LTI0NWJiNmYzLWM2ZjktNDNjZS05ODhmLTgxNDc2OTcwM2E5OCIsImV4dGVybmFsVXNlcklkIjoiZTM1ZjdkMzktMjQ0ZC00ZTkzLWFkOTItNGFjYzVjNGY0NGNlIiwicHJvZmlsZUlkIjoiMjdDMzM3RjktOTRDRS00NjBDLTlBNjktMTlDNjlCRTYwQUIzIiwicHJvZmlsZUNvbG9yIjoiRkY0MjdDIiwicHJvZmlsZVR5cGUiOiJBZHVsdCIsIm5hbWUiOiJTdHJlYW1pbmciLCJqdGkiOiI4Q0M1QzYzNkJGRjg3MEE2REJBOERBNUMwQTk0RUZDRiIsImlhdCI6MTcxMjEyNjQ1Mywic2NvcGUiOlsiYXBpIiwib3BlbmlkIl0sImFtciI6WyJwcm9maWxlIiwicHdkIl19.bk-ziFPJM00bpE7TcgPmIYFFx-2Q5N3BkUzEvQ_dDMK9O1F9f7DEe-Qzmnb5ym7ChlnXwrCV3QyOOA24hu_gCrlNlD7-vI3XGZR-54zFD-F7cRDOoL-1-iO_10tmgwb5Io-svY0bn0EDYKeRxYYBi0w_3bFVFDM2CxxA6tWeBYIfN5rCSzBHd3RPPjYtqX-sogyh_5W_7KJ83GK5kpsywT3mz8q7Cs1mtKs9QA1-o01N0RvTxZAcfzsHg3-qGgLnvaAuZ_XqRK9kLWqJWeJTWKWtUI6OlPex22sY3keKFpfZnUtFv-BvkCM6tvbIlMZAClk3lhI8rMFAWDpUcbcS3w'   -H 'nlziet-appname: WebApp'   -H 'nlziet-appversion: 5.43.24'   -H 'origin: https://app.nlziet.nl'   -H 'referer: https://app.nlziet.nl/'  2>&1)
+    local isBlocked=$(echo $tmpresult | grep 'CountryNotAllowed')
+    local isOK=$(echo $tmpresult | grep 'streamSessionId')
+    if [ -n "$isBlocked" ]; then
         echo -n -e "\r NLZIET:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
         return
-    elif [ "$result" = "200" ]; then
+    elif [ -n "$isOK" ]; then
         echo -n -e "\r NLZIET:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
         return
     else
@@ -1561,35 +1548,42 @@ function MediaUnlockTest_NLZIET() {
 }
 
 function MediaUnlockTest_videoland() {
-    local onetrustresult=$(curl $curlArgs -${1} -sS --user-agent "${UA_Browser}" --max-time 10 "https://geolocation.onetrust.com/cookieconsentpub/v1/geo/location/dnsfeed" 2>&1)
+    local tmpresult=$(curl $curlArgs -${1} -sS --user-agent "${UA_Browser}" --max-time 10  -X POST -H 'content-type: application/json' -d '{"operationName":"IsOnboardingGeoBlocked","variables":{},"query":"query IsOnboardingGeoBlocked {\n isOnboardingGeoBlocked\n}\n"}' 'https://api.videoland.com/subscribe/videoland-account/graphql' 2>&1)
     if [[ "$tmpresult" == "curl"* ]]; then
         echo -n -e "\r videoland:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
 
-    local result=$(echo $onetrustresult | grep '"country":"NL"')
-    if [ -z "$result" ]; then
-        echo -n -e "\r videoland:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+    local result=$(echo $tmpresult | jq .data.isOnboardingGeoBlocked)
+    if [[ "$result"=="false" ]]; then
+        echo -n -e "\r videoland:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
         return
     else
-        echo -n -e "\r videoland:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+        echo -n -e "\r videoland:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        return
     fi
 
 }
 
 function MediaUnlockTest_NPO_Start_Plus() {
-    local tmpresult=$(curl $curlArgs -${1} -s --max-time 10 "https://start-player.npo.nl/video/KN_1726624/streams?profile=dash-playready" -X POST 2>&1)
-    if [ -z "$tmpresult" ]; then
+    local tmptoken=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -sS  --max-time 10 "https://npo.nl/start/api/domain/player-token?productId=BV_101410466")
+    if [[ "$tmptoken" == "curl"* ]]; then
         echo -n -e "\r NPO Start Plus:\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
-
-    local isError=$(echo $tmpresult | grep 'locatie (33)')
-    if [ -n "$isError" ]; then
+    local token=$(echo $tmptoken | jq .token | tr -d '"')
+    local tmpresult=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -sS --max-time 10 "https://prod.npoplayer.nl/stream-link" -X POST -H "Authorization:$token" 2>&1)
+    if [[ "$tmpresult" == "curl"* ]]; then
+        echo -n -e "\r NPO Start Plus:\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+    local result=$(echo $tmpresult | jq .status)
+    if [[ "$result"=="451" ]]; then
         echo -n -e "\r NPO Start Plus:\t\t\t${Font_Red}No${Font_Suffix}\n"
         return
     else
         echo -n -e "\r NPO Start Plus:\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+        return
     fi
 
 }
@@ -1634,29 +1628,44 @@ function MediaUnlockTest_HBO_Spain() {
 
 }
 
-function MediaUnlockTest_PANTAYA() {
-    local authorization=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -s --max-time 10 "https://www.pantaya.com/sapi/header/v1/pantaya/us/735a16260c2b450686e68532ccd7f742" -H "Referer: https://www.pantaya.com/es/" 2>&1)
-    local tmpresult=$(curl $curlArgs -${1} -s --max-time 10 "https://auth.pantaya.com/api/v4/User/geolocation" -H "AuthTokenAuthorization: $authorization")
-    if [ -z "$tmpresult" ]; then
-        echo -n -e "\r PANTAYA:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+function MediaUnlockTest_MoviStarPlus() {
+    local result=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -sSI -X GET "https://contratar.movistarplus.es/" --write-out %{http_code} --output /dev/null 2>&1)
+    if [[ "$result" == "curl"* ]]; then
+        echo -n -e "\r Movistar+:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+    if [[ "$result" == "200" ]]; then
+        echo -n -e "\r Movistar+:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+        return
+    elif [[ "$result" == "403" ]]; then
+        echo -n -e "\r Movistar+:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        return
+    elif [[ "$result" == "000" ]]; then
+        echo -n -e "\r Movistar+:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+        return
+    else
+        echo -n -e "\r Movistar+:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+    fi
+
+}
+
+function MediaUnlockTest_Sky_CH() {
+    local tmpresult=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -sS -o /dev/null -IL -X GET --max-time 10 -w '%{url_effective}\n' "https://sky.ch/" 2>&1)
+    if [[ "$tmpresult" == "curl"* ]]; then
+        echo -n -e "\r SKY CH:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+    local result=$(echo $tmpresult | grep 'out-of-country')
+    if [ -n "$result" ]; then
+        echo -n -e "\r SKY CH:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        return
+    else
+        echo -n -e "\r SKY CH:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
         return
     fi
 
-    local isAllowedAccess=$(echo $tmpresult | python -m json.tool 2>/dev/null | grep isAllowedAccess | awk '{print $2}' | cut -f1 -d",")
-    local isAllowedCountry=$(echo $tmpresult | python -m json.tool 2>/dev/null | grep isAllowedCountry | awk '{print $2}' | cut -f1 -d",")
-    local isKnownProxy=$(echo $tmpresult | python -m json.tool 2>/dev/null | grep isKnownProxy | awk '{print $2}' | cut -f1 -d",")
-    if [[ "$isAllowedAccess" == "true" ]] && [[ "$isAllowedCountry" == "true" ]] && [[ "$isKnownProxy" == "false" ]]; then
-        echo -n -e "\r PANTAYA:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
-        return
-    elif [[ "$isAllowedAccess" == "false" ]]; then
-        echo -n -e "\r PANTAYA:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
-        return
-    elif [[ "$isKnownProxy" == "false" ]]; then
-        echo -n -e "\r PANTAYA:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
-        return
-    else
-        echo -n -e "\r PANTAYA:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
-    fi
+    echo -n -e "\r SKY CH:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+    return
 
 }
 
@@ -2900,6 +2909,30 @@ function MediaUnlockTest_KBSDomestic() {
     fi
 }
 
+function MediaUnlockTest_SpotvNow() {
+    local tmpresult=$(curl $curlArgs -${1} --user-agent "${UA_Browser}"  -Ss --max-time 10 'https://edge.api.brightcove.com/playback/v1/accounts/5764318566001/videos/6349973203112'   -H 'accept: application/json;pk=BCpkADawqM0U3mi_PT566m5lvtapzMq3Uy7ICGGjGB6v4Ske7ZX_ynzj8ePedQJhH36nym_5mbvSYeyyHOOdUsZovyg2XlhV6rRspyYPw_USVNLaR0fB_AAL2HSQlfuetIPiEzbUs1tpNF9NtQxt3BAPvXdOAsvy1ltLPWMVzJHiw9slpLRgI2NUufc' 2>&1)
+    if [[ "$tmpresult" == "curl"* ]] && [ "$1" == "6" ]; then
+        echo -n -e "\r SPOTV NOW:\t\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
+        return
+    elif [[ "$tmpresult" == "curl"* ]]; then
+        echo -n -e "\r SPOTV NOW:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+
+    local result=$(echo $tmpresult | jq .[0].error_subcode | tr -d '"')
+    local region=$(echo $tmpresult | jq .[0].client_geo | tr -d '"')
+    if [[ "$result" == "CLIENT_GEO" ]]; then
+        echo -n -e "\r SPOTV NOW:\t\t\t\t${Font_Red}No  (Region: ${region^^})${Font_Suffix}\n"
+        return
+    elif [ -z "$result" ] && [ -n "$tmpresult" ]; then
+        echo -n -e "\r SPOTV NOW:\t\t\t\t${Font_Green}Yes (Region: ${region^^})${Font_Suffix}\n"
+        return
+    else
+        echo -n -e "\r SPOTV NOW:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+    fi
+
+}
+
 function MediaUnlockTest_KBSAmerican() {
     local tmpresult=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fSsL --max-time 10 "https://vod.kbs.co.kr/index.html?source=episode&sname=vod&stype=vod&program_code=T2022-0690&program_id=PS-2022164275-01-000&broadcast_complete_yn=N&local_station_code=00&section_code=03 " 2>&1)
     if [[ "$tmpresult" == "curl"* ]] && [ "$1" == "6" ]; then
@@ -3706,7 +3739,7 @@ function NA_UnlockTest() {
     MediaUnlockTest_MaxCom ${1} &
     )
     wait
-    local array=("FOX:" "Hulu:" "NFL+" "ESPN+:" "Epix:" "Starz:" "Philo:" "FXNOW:" "Max.com")
+    local array=("FOX:" "Hulu:" "NFL+" "ESPN+:" "MGM+:" "Starz:" "Philo:" "FXNOW:" "Max.com")
     echo_Result ${result} ${array}
     MediaUnlockTest_TLCGO ${1}
     echo "$result" | grep "HBO Max:"
@@ -3738,7 +3771,7 @@ function NA_UnlockTest() {
     MediaUnlockTest_Popcornflix ${1} &
     MediaUnlockTest_Crunchyroll ${1} &
     MediaUnlockTest_ATTNOW ${1} &
-    MediaUnlockTest_KBSAmerican ${1} &
+    # MediaUnlockTest_KBSAmerican ${1} &
     MediaUnlockTest_KOCOWA ${1} &
     # MediaUnlockTest_MathsSpot ${1} &
     )
@@ -3765,11 +3798,12 @@ function EU_UnlockTest() {
     # MediaUnlockTest_MathsSpot ${1} &
     MediaUnlockTest_Eurosport ${1} &
     MediaUnlockTest_Viaplay ${1} &
+    MediaUnlockTest_SetantaSports ${1} &
     # MediaUnlockTest_HBO_Nordic ${1}
     # MediaUnlockTest_HBOGO_EUROPE ${1}
     )
     wait
-    local array=("Rakuten TV:" "SkyShowTime:" "HBO Max:" "Maths Spot:" "Viaplay" "Eurosport" )
+    local array=("Rakuten TV:" "SkyShowTime:" "HBO Max:" "Maths Spot:" "Viaplay" "Eurosport" "Setanta Sports:")
     echo_Result ${result} ${array}
     ShowRegion GB
     local result=$(
@@ -3797,26 +3831,29 @@ function EU_UnlockTest() {
     local array=("Canal+:" "Molotov:")
     echo_Result ${result} ${array}
     ShowRegion DE
-    local array=("Joyn:" "Sky:" "ZDF:")
+    local array=("Joyn:" "Sky DE:" "ZDF:")
     echo_Result ${result} ${array}
     ShowRegion NL
     local result=$(
-    # MediaUnlockTest_NLZIET ${1} &
+    MediaUnlockTest_NLZIET ${1} &
     MediaUnlockTest_videoland ${1} &
     MediaUnlockTest_NPO_Start_Plus ${1} &
     # MediaUnlockTest_HBO_Spain ${1}
-    # MediaUnlockTest_PANTAYA ${1} &
+    MediaUnlockTest_MoviStarPlus ${1} &
     MediaUnlockTest_RaiPlay ${1} &
+    MediaUnlockTest_Sky_CH ${1} &
     #MediaUnlockTest_MegogoTV ${1}
     MediaUnlockTest_Amediateka ${1} &
     )
     wait
     local array=("NLZIET:" "videoland:" "NPO Start Plus:")
     echo_Result ${result} ${array}
-    # ShowRegion ES
-    # echo "$result" | grep "PANTAYA:"
+    ShowRegion ES
+    echo "$result" | grep "Movistar+:"
     ShowRegion IT
     echo "$result" | grep "Rai Play:"
+    ShowRegion CH
+    echo "$result" | grep "SKY CH:"
     ShowRegion RU
     echo "$result" | grep "Amediateka:"
     echo "======================================="
@@ -4031,11 +4068,12 @@ function KR_UnlockTest() {
     MediaUnlockTest_CoupangPlay ${1} &
     MediaUnlockTest_NaverTV ${1} &
     MediaUnlockTest_Afreeca ${1} &
+    MediaUnlockTest_SpotvNow ${1} &
     MediaUnlockTest_KBSDomestic ${1} &
     #MediaUnlockTest_KOCOWA ${1} &
     )
     wait
-    local array=("Wavve:" "Tving:" "Coupang Play:" "Naver TV:" "Afreeca TV:" "KBS Domestic:")
+    local array=("Wavve:" "Tving:" "Coupang Play:" "Naver TV:" "Afreeca TV:" "SPOTV NOW:" "KBS Domestic:")
     echo_Result ${result} ${array}
     echo "======================================="
 }
