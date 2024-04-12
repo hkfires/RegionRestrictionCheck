@@ -1372,18 +1372,21 @@ function MediaUnlockTest_HotStar() {
 }
 
 function MediaUnlockTest_LiTV() {
-    local tmpresult=$(curl $curlArgs -${1} -sS --max-time 10 -X POST "https://www.litv.tv/vod/ajax/getUrl" -d '{"type":"noauth","assetId":"vod44868-010001M001_800K","puid":"6bc49a81-aad2-425c-8124-5b16e9e01337"}' -H "Content-Type: application/json" 2>&1)
+    local tmpresult=$(curl $curlArgs -${1} -sS --max-time 10 -X POST 'https://www.litv.tv/api/get-urls-no-auth' -H 'content-type: application/json' -d '{"AssetId":"iNEWS","MediaType":"channel","puid":"b0b59472-72eb-4e06-b0b1-591716e4f9a4"}'  2>&1)
     if [[ "$tmpresult" = "curl"* ]]; then
         echo -n -e "\r LiTV:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
-    result=$(echo $tmpresult | python -m json.tool 2>/dev/null | grep 'errorMessage' | awk '{print $2}' | cut -f1 -d"," | cut -f2 -d'"')
-    if [ -n "$result" ]; then
-        if [ "$result" = "null" ]; then
+    result=$(echo $tmpresult | jq .error.code)
+    if [[ "$result" != "null" ]]; then
+        if [ "$result" = "42000087" ]; then
+            echo -n -e "\r LiTV:\t\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+            return
+        elif [ "$result" = "42000075" ]; then
             echo -n -e "\r LiTV:\t\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
             return
-        elif [ "$result" = "vod.error.outsideregionerror" ]; then
-            echo -n -e "\r LiTV:\t\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        else
+            echo -n -e "\r LiTV:\t\t\t\t\t${Font_Red}Unknown (Code: $result)${Font_Suffix}\n"
             return
         fi
     else
