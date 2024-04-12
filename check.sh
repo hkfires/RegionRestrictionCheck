@@ -3899,7 +3899,7 @@ function TW_UnlockTest() {
     MediaUnlockTest_KKTV ${1} &
     MediaUnlockTest_LiTV ${1} &
     MediaUnlockTest_MyVideo ${1} &
-    MediaUnlockTest_4GTV ${1} &
+    #MediaUnlockTest_4GTV ${1} &
     MediaUnlockTest_LineTV.TW ${1} &
     MediaUnlockTest_HamiVideo ${1} &
     MediaUnlockTest_Catchplay ${1} &
