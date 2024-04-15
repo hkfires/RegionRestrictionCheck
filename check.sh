@@ -3732,7 +3732,7 @@ function MediaUnlockTest_AnimeFesta() {
         echo -n -e "\r AnimeFesta:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
         return
     fi
-    echo -n -e "\r AnimeFesta:\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+    echo -n -e "\r AnimeFesta:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
 }
 
 function echo_Result() {
