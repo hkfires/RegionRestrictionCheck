@@ -3722,14 +3722,14 @@ function MediaUnlockTest_RakutenMagazine() {
 function MediaUnlockTest_AnimeFesta() {
     local result1=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fsLI -X GET --write-out %{http_code} --output /dev/null --max-time 10 "https://api-animefesta.iowl.jp/v1/titles/1" -H 'x-requested-with: XMLHttpRequest'  2>&1)
     if [[ "$result1" == "curl"* ]]; then
-        echo -n -e "\r AnimeFesta:\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        echo -n -e "\r AnimeFesta:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
     if [[ "$result1" == "200" ]]; then
-        echo -n -e "\r AnimeFesta:\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+        echo -n -e "\r AnimeFesta:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
         return
     elif [[ "$result1" == "403" ]]; then
-        echo -n -e "\r AnimeFesta:\t\t\t${Font_Red}No${Font_Suffix}\n"
+        echo -n -e "\r AnimeFesta:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
         return
     fi
     echo -n -e "\r AnimeFesta:\t\t\t${Font_Red}Failed${Font_Suffix}\n"
