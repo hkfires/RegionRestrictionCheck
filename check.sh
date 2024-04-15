@@ -1942,10 +1942,15 @@ function MediaUnlockTest_CineMax() {
 
 function MediaUnlockTest_NetflixCDN() {
     #Detect Hijack
-    if [[ "$1" == "6" ]]; then
-        local nf_web_ip=$(dig www.netflix.com AAAA +noall +answer +nottl | grep -E "IN\s*AAAA" | awk '{print $4}' | head -1)
+    if [ -z "$Dns" ]; then
+        local dns_dig=""
     else
-        local nf_web_ip=$(dig www.netflix.com A +noall +answer +nottl | grep -E "IN\s*A" | awk '{print $4}' | head -1)
+        local dns_dig="@${Dns}"
+    fi
+    if [[ "$1" == "6" ]]; then
+        local nf_web_ip=$(dig www.netflix.com AAAA +noall +answer +nottl $dns_dig | grep -E "IN\s*AAAA" | awk '{print $4}' | head -1)
+    else
+        local nf_web_ip=$(dig www.netflix.com A +noall +answer +nottl $dns_dig | grep -E "IN\s*A" | awk '{print $4}' | head -1)
     fi
     if [ ! -n "$nf_web_ip" ]; then
         echo -n -e "\r Netflix Preferred CDN:\t\t\t${Font_Red}Null${Font_Suffix}\n"
@@ -3714,6 +3719,21 @@ function MediaUnlockTest_RakutenMagazine() {
 
 }
 
+function MediaUnlockTest_AnimeFesta() {
+    local result1=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fsLI -X GET --write-out %{http_code} --output /dev/null --max-time 10 "https://api-animefesta.iowl.jp/v1/titles/1" -H 'x-requested-with: XMLHttpRequest'  2>&1)
+    if [[ "$result1" == "curl"* ]]; then
+        echo -n -e "\r AnimeFesta:\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+    if [[ "$result1" == "200" ]]; then
+        echo -n -e "\r AnimeFesta:\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+        return
+    elif [[ "$result1" == "403" ]]; then
+        echo -n -e "\r AnimeFesta:\t\t\t${Font_Red}No${Font_Suffix}\n"
+        return
+    fi
+    echo -n -e "\r AnimeFesta:\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+}
 
 function echo_Result() {
     for((i=0;i<${#array[@]};i++))
@@ -3937,10 +3957,11 @@ function JP_UnlockTest() {
     MediaUnlockTest_FOD ${1} &
     MediaUnlockTest_Radiko ${1} &
     MediaUnlockTest_DAM ${1} &
+    MediaUnlockTest_AnimeFesta ${1} &
     MediaUnlockTest_J:COM_ON_DEMAND ${1} &
     )
     wait
-    local array=("TVer:" "WOWOW:" "VideoMarket:" "FOD(Fuji TV):" "Radiko:" "Karaoke@DAM:" "J:com On Demand:")
+    local array=("TVer:" "WOWOW:" "VideoMarket:" "FOD(Fuji TV):" "Radiko:" "Karaoke@DAM:" "J:com On Demand:" "AnimeFesta:")
     echo_Result ${result} ${array}
     ShowRegion Game
     local result=$(
