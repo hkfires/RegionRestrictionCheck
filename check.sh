@@ -3736,25 +3736,25 @@ function MediaUnlockTest_AnimeFesta() {
 }
 
 function MediaUnlockTest_Lemino() {
-    local tmpresult=$(curl $curlArgs -${1} -sS --max-time 10 -X POST 'https://if.lemino.docomo.ne.jp/v1/user/delivery/watch/ready'  2>&1)
+    local tmpresult=$(curl $curlArgs -${1} -fsS --max-time 10 -X POST 'https://if.lemino.docomo.ne.jp/v1/user/delivery/watch/ready'  2>&1)
     if [[ "$tmpresult" = "curl"* ]]; then
-        echo -n -e "\r Lemino:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        echo -n -e "\r Lemino:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
     result=$(echo $tmpresult | jq .result_code | tr -d '"')
     if [[ "$result" != "null" ]]; then
-        if [ "$result" = "WEBW100100" ]; then
-            echo -n -e "\r Lemino:\t\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        if [[ "$result" == "WEBW100100" ]]; then
+            echo -n -e "\r Lemino:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
             return
-        elif [ "$result" = "WEBW300100" ]; then
-            echo -n -e "\r Lemino:\t\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+        elif [[ "$result" == "WEBW300100" ]]; then
+            echo -n -e "\r Lemino:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
             return
         else
-            echo -n -e "\r Lemino:\t\t\t\t\t${Font_Red}Unknown (Code: $result)${Font_Suffix}\n"
+            echo -n -e "\r Lemino:\t\t\t\t${Font_Red}Unknown (Code: $result)${Font_Suffix}\n"
             return
         fi
     else
-        echo -n -e "\r Lemino:\t\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+        echo -n -e "\r Lemino:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
         return
     fi
 
