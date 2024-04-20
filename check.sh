@@ -3736,9 +3736,13 @@ function MediaUnlockTest_AnimeFesta() {
 }
 
 function MediaUnlockTest_Lemino() {
-    local tmpresult=$(curl $curlArgs -${1} -fsS --max-time 10 -X POST 'https://if.lemino.docomo.ne.jp/v1/user/delivery/watch/ready'  2>&1)
+    local tmpresult=$(curl $curlArgs -${1} -sS --max-time 10 -X POST 'https://if.lemino.docomo.ne.jp/v1/user/delivery/watch/ready'  2>&1)
     if [[ "$tmpresult" = "curl"* ]]; then
         echo -n -e "\r Lemino:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+    if [[ "$tmpresult" -= *"CloudFront"* ]]; then
+        echo -n -e "\r Lemino:\t\t\t\t${Font_Red}No  (Blocked)${Font_Suffix}\n"
         return
     fi
     result=$(echo $tmpresult | jq .result_code | tr -d '"')
