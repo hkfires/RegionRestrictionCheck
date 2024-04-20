@@ -3741,7 +3741,7 @@ function MediaUnlockTest_Lemino() {
         echo -n -e "\r Lemino:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
-    if [[ "$tmpresult" -= *"CloudFront"* ]]; then
+    if [[ "$tmpresult" == *"CloudFront"* ]]; then
         echo -n -e "\r Lemino:\t\t\t\t${Font_Red}No  (Blocked)${Font_Suffix}\n"
         return
     fi
