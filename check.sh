@@ -3764,6 +3764,51 @@ function MediaUnlockTest_Lemino() {
 
 }
 
+function MediaUnlockTest_mora() {
+    local result=$(curl $curlArgs -${1} -fsL --write-out %{http_code} --output /dev/null --max-time 10 'https://mora.jp/buy?__requestToken=1713764407153&returnUrl=https%3A%2F%2Fmora.jp%2Fpackage%2F43000087%2FTFDS01006B00Z%2F%3Ffmid%3DTOPRNKS%26trackMaterialNo%3D31168909&fromMoraUx=false&deleteMaterial=' -H 'host: mora.jp' 2>&1)
+    if [ "$result" = "000" ]; then
+        echo -n -e "\r Mora:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    elif [ "$result" = "200" ]; then
+        echo -n -e "\r Mora:\t\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+        return
+    elif [ "$result" = "500" ]; then
+        echo -n -e "\r Mora:\t\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        return
+    else
+        echo -n -e "\r Mora:\t\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+        return
+    fi
+}
+
+function MediaUnlockTest_DAnimeStore(){
+    local tmpresult=$(curl $usePROXY $xForward -${1} -sSL --max-time 10 -sL 'https://animestore.docomo.ne.jp/animestore/reg_pc' 2>/dev/null)
+    if [ -z "$tmpresult" ]; then
+        echo -n -e "\r D Anime Store:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        return
+    fi
+
+    local isBlocked=$(echo $tmpresult | grep '海外')
+    if [ -n "$isBlocked" ];then
+        echo -n -e "\r D Anime Store:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        return
+    else
+        echo -n -e "\r D Anime Store:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+        return
+    fi
+}
+
+function MediaUnlockTest_EroGameSpace(){
+    local result=$(curl $usePROXY $xForward -${1} -sSL --max-time 3  "https://erogamescape.org" 2>/dev/null | grep '18歳')
+    if [ -n "$result" ]; then
+      echo -n -e "\r EroGameSpace:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+        return
+    elif [ -z "$countrycode" ]; then
+        echo -n -e "\r EroGameSpace:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        return
+    fi
+}
+
 function echo_Result() {
     for((i=0;i<${#array[@]};i++))
     do
@@ -3970,19 +4015,19 @@ function JP_UnlockTest() {
     MediaUnlockTest_DMMTV ${1} &
     MediaUnlockTest_AbemaTV_IPTest ${1} &
     MediaUnlockTest_Niconico ${1} &
-    MediaUnlockTest_music.jp ${1} &
     MediaUnlockTest_Telasa ${1} &
     MediaUnlockTest_Paravi ${1} &
     MediaUnlockTest_unext ${1} &
     MediaUnlockTest_HuluJP ${1} &
     )
     wait
-    local array=("NHK+" "DMM TV:" "Abema.TV:" "Niconico:" "music.jp:" "Telasa:" "Paravi:" "U-NEXT:" "Hulu Japan:")
+    local array=("NHK+" "DMM TV:" "Abema.TV:" "Niconico:" "Telasa:" "Paravi:" "U-NEXT:" "Hulu Japan:")
     echo_Result ${result} ${array}
     local result=$(
     MediaUnlockTest_TVer ${1} &
     MediaUnlockTest_wowow ${1} &
     MediaUnlockTest_VideoMarket ${1} &
+    MediaUnlockTest_DAnimeStore ${1} &
     MediaUnlockTest_FOD ${1} &
     MediaUnlockTest_Radiko ${1} &
     MediaUnlockTest_DAM ${1} &
@@ -3991,7 +4036,7 @@ function JP_UnlockTest() {
     MediaUnlockTest_J:COM_ON_DEMAND ${1} &
     )
     wait
-    local array=("TVer:" "WOWOW:" "VideoMarket:" "FOD(Fuji TV):" "Radiko:" "Karaoke@DAM:" "J:com On Demand:" "AnimeFesta:" "Lemino:")
+    local array=("TVer:" "WOWOW:" "VideoMarket:" "D Anime Store:" "FOD(Fuji TV):" "Radiko:" "Karaoke@DAM:" "J:com On Demand:" "AnimeFesta:" "Lemino:")
     echo_Result ${result} ${array}
     ShowRegion Game
     local result=$(
@@ -4012,6 +4057,16 @@ function JP_UnlockTest() {
     wait
     local array=("Rakuten MAGAZINE")
     echo_Result ${result} ${array}
+    ShowRegion Music
+    local result=$(
+    MediaUnlockTest_mora ${1} &
+    MediaUnlockTest_music.jp ${1} &
+    )
+    wait
+    local array=("Mora:" "music.jp:") 
+    echo_Result ${result} ${array}
+    ShowRegion Forum
+    MediaUnlockTest_EroGameSpace ${1}
     echo "======================================="
 
 }
