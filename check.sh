@@ -2875,7 +2875,7 @@ function MediaUnlockTest_NaverTV() {
     local signature=$(printf "%s" "${sign_text}" | openssl dgst -sha1 -hmac "${key}" -binary | openssl base64)
     local signature_encoded=$(printf "%s" "${signature}" | sed 's/ /%20/g;s/!/%21/g;s/"/%22/g;s/#/%23/g;s/\$/%24/g;s/\&/%26/g;s/'\''/%27/g;s/(/%28/g;s/)/%29/g;s/\*/%2a/g;s/+/%2b/g;s/,/%2c/g;s/\//%2f/g;s/:/%3a/g;s/;/%3b/g;s/=/%3d/g;s/?/%3f/g;s/@/%40/g;s/\[/%5b/g;s/\]/%5d/g')
     local req_url="${base_url}now_web2/now_web_api/v1/clips/31030608/play-info?msgpad=${ts}&md=${signature_encoded}"
-    local tmpresult=$(curl $useNIC $usePROXY $xForward -${1} -s --max-time 10 "${req_url}" --user-agent "${UA_Browser}" -H 'host: apis.naver.com' -H 'connection: keep-alive' -H "sec-ch-ua: ${UA_SecCHUA}" -H 'accept: application/json, text/plain, */*' -H 'sec-ch-ua-mobile: ?0' -H 'sec-ch-ua-platform: "Windows"' -H 'origin: https://tv.naver.com' -H 'sec-fetch-site: same-site' -H 'sec-fetch-mode: cors' -H 'sec-fetch-dest: empty' -H 'referer: https://tv.naver.com/v/31030608' -H 'accept-language: en,zh-CN;q=0.9,zh;q=0.8')
+    local tmpresult=$(curl $curlArgs -${1} -s --max-time 10 "${req_url}" --user-agent "${UA_Browser}" -H 'host: apis.naver.com' -H 'connection: keep-alive' -H "sec-ch-ua: ${UA_SecCHUA}" -H 'accept: application/json, text/plain, */*' -H 'sec-ch-ua-mobile: ?0' -H 'sec-ch-ua-platform: "Windows"' -H 'origin: https://tv.naver.com' -H 'sec-fetch-site: same-site' -H 'sec-fetch-mode: cors' -H 'sec-fetch-dest: empty' -H 'referer: https://tv.naver.com/v/31030608' -H 'accept-language: en,zh-CN;q=0.9,zh;q=0.8')
     if [[ "$tmpresult" == "curl"* ]] && [ "$1" == "6" ]; then
         echo -n -e "\r Naver TV:\t\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
         return
