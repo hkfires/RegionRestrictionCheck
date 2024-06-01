@@ -2674,9 +2674,12 @@ function MediaUnlockTest_music.jp() {
 }
 
 function MediaUnlockTest_Instagram.Music() {
-    local cookie=$(echo "$Media_Cookie" | sed -n '14p')
-    local result=$(curl $curlArgs -${1} -s --user-agent "${UA_Browser}" --max-time 10 -H "X-IG-App-ID: 936619743392459" -H "X-IG-WWW-Claim: 0" -b "$cookie" "https://i.instagram.com/api/v1/media/2924384735484795396/info/" 2>&1 | python -m json.tool 2>/dev/null | grep '"should_mute_audio"' | awk '{print $2}' | cut -f1 -d',')
-    echo -n -e " Instagram Licensed Music:\t\t->\c"
+    local tmpresult=$(curl -sS $curlArgs 'https://www.instagram.com/api/graphql' -H 'Cookie: csrftoken=mmCtHhtfZRG-K3WgoYMemg; dpr=1.75; _js_ig_did=809EA442-22F7-4844-9470-ABC2AC4DE7AE; _js_datr=rb21ZbL7KR_5DN8m_43oEtgn; mid=ZbW9rgALAAECR590Ukv8bAlT8YQX; ig_did=809EA442-22F7-4844-9470-ABC2AC4DE7AE; ig_nrcb=1' -H 'X-FB-LSD: AVrkL73GMdk' -H 'X-IG-App-ID: 936619743392459' -d 'av=0&__d=www&__user=0&__a=1&__req=3&__hs=19750.HYP%3Ainstagram_web_pkg.2.1..0.0&dpr=1&__ccg=UNKNOWN&__rev=1011068636&__s=drshru%3Agu4p3s%3A0d8tzk&__hsi=7328972521009111950&__dyn=7xeUjG1mxu1syUbFp60DU98nwgU29zEdEc8co2qwJw5ux609vCwjE1xoswIwuo2awlU-cw5Mx62G3i1ywOwv89k2C1Fwc60AEC7U2czXwae4UaEW2G1NwwwNwKwHw8Xxm16wUwtEvw4JwJCwLyES1Twoob82ZwrUdUbGwmk1xwmo6O1FwlE6PhA6bxy4UjK5V8&__csr=gtneJ9lGF4HlRX-VHjmipBDGAhGuWV4uEyXyp22u6pU-mcx3BCGjHS-yabGq4rhoWBAAAKamtnBy8PJeUgUymlVF48AGGWxCiUC4E9HG78og01bZqx106Ag0clE0kVwdy0Nx4w2TU0iGDgChwmUrw2wVFQ9Bg3fw4uxfo2ow0asW&__comet_req=7&lsd=AVrkL73GMdk&jazoest=2909&__spin_r=1011068636&__spin_b=trunk&__spin_t=1706409389&fb_api_caller_class=RelayModern&fb_api_req_friendly_name=PolarisPostActionLoadPostQueryQuery&variables=%7B%22shortcode%22%3A%22C2YEAdOh9AB%22%2C%22fetch_comment_count%22%3A40%2C%22fetch_related_profile_media_count%22%3A3%2C%22parent_comment_count%22%3A24%2C%22child_comment_count%22%3A3%2C%22fetch_like_count%22%3A10%2C%22fetch_tagged_user_count%22%3Anull%2C%22fetch_preview_comment_count%22%3A2%2C%22has_threaded_comments%22%3Atrue%2C%22hoisted_comment_id%22%3Anull%2C%22hoisted_reply_id%22%3Anull%7D&server_timestamps=true&doc_id=10015901848480474' )
+    if [[ "$tmpresult" == "curl"* ]]; then
+        echo -n -e "\r Instagram Licensed Music:\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+    local result=$(echo $tmpresult | jq .data.xdt_shortcode_media.clips_music_attribution_info.should_mute_audio)
     if [[ "$result" == "false" ]]; then
         echo -n -e "\r Instagram Licensed Music:\t\t${Font_Green}Yes${Font_Suffix}\n"
     elif [[ "$result" == "true" ]]; then
@@ -4099,7 +4102,7 @@ function Global_UnlockTest() {
         MediaUnlockTest_YouTube_CDN ${1} &
         MediaUnlockTest_NetflixCDN ${1} &
         MediaUnlockTest_Spotify ${1} &
-        #MediaUnlockTest_Instagram.Music ${1}
+        MediaUnlockTest_Instagram.Music ${1}
         GameTest_Steam ${1} &
         MediaUnlockTest_Google ${1} &
         MediaUnlockTest_Tiktok ${1} &
@@ -4119,13 +4122,13 @@ function Global_UnlockTest() {
         MediaUnlockTest_YouTube_CDN ${1} &
         MediaUnlockTest_NetflixCDN ${1} &
         MediaUnlockTest_Spotify ${1} &
-        #MediaUnlockTest_Instagram.Music ${1}
-        # GameTest_Steam ${1} &
+        MediaUnlockTest_Instagram.Music ${1}
+        # GameTes t_Steam ${1} &
         MediaUnlockTest_Google ${1} &
         )
     fi
     wait
-    local array=("Dazn:" "HotStar:" "Disney+:" "Netflix:" "YouTube Premium:" "Amazon Prime Video:" "TVBAnywhere+:" "iQyi Oversea:" "Bilibili Anime:" "Viu.com:" "Tiktok" "YouTube CDN:" "Google" "YouTube Region:" "Netflix Preferred CDN:" "Spotify" "Steam Currency:")
+    local array=("Dazn:" "HotStar:" "Disney+:" "Netflix:" "YouTube Premium:" "Amazon Prime Video:" "TVBAnywhere+:" "iQyi Oversea:" "Bilibili Anime:" "Viu.com:" "Tiktok" "YouTube CDN:" "Google" "YouTube Region:" "Netflix Preferred CDN:" "Spotify" "Steam Currency:" "Instagram")
     echo_Result ${result} ${array}
     echo "======================================="
 }
