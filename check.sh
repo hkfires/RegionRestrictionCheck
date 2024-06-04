@@ -3988,6 +3988,7 @@ function HK_UnlockTest() {
 	    MediaUnlockTest_MyTVSuper ${1} &
 	    MediaUnlockTest_HBOGO_ASIA ${1} &
         MediaUnlockTest_HoyTV ${1} &
+        MediaUnlockTest_BahamutAnime ${1} &
 	    # MediaUnlockTest_BilibiliHKMCTW ${1} &
 	)
     else
@@ -4001,7 +4002,7 @@ function HK_UnlockTest() {
 	)
     fi
     wait
-    local array=("Now E:" "Viu.TV:" "MyTVSuper:" "HBO GO Asia:" "HOY TV" "BiliBili Hongkong/Macau/Taiwan:")
+    local array=("Now E:" "Viu.TV:" "MyTVSuper:" "HBO GO Asia:" "HOY TV" "BiliBili Hongkong/Macau/Taiwan:" "Bahamut Anime:")
     echo_Result ${result} ${array}
     echo "======================================="
 }
