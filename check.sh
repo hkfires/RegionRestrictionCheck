@@ -290,18 +290,23 @@ function MediaUnlockTest_BahamutAnime() {
     local tmpdeviceid=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" --max-time 10 -fsSL "https://ani.gamer.com.tw/ajax/getdeviceid.php" --cookie-jar bahamut_cookie.txt 2>&1)
     if [[ "$tmpdeviceid" == "curl"* ]]; then
         echo -n -e "\r Bahamut Anime:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        rm -f bahamut_cookie.txt
         return
     fi
     local tempdeviceid=$(echo $tmpdeviceid | python -m json.tool 2>/dev/null | grep 'deviceid' | awk '{print $2}' | tr -d '"' )
     local tmpresult=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" --max-time 10 -fsSL "https://ani.gamer.com.tw/ajax/token.php?adID=89422&sn=14667&device=${tempdeviceid}" -b bahamut_cookie.txt 2>&1)
-    if [[ "$tmpresult" == "curl"* ]]; then
+    local tmpresult2=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" --max-time 10 -fsSL "https://ani.gamer.com.tw/ajax/token.php?adID=89422&sn=37783&device=${tempdeviceid}" -b bahamut_cookie.txt 2>&1)
+    if [[ "$tmpresult" == "curl"* ]] || [[ "$tmpresult2" == "curl"* ]]; then
         echo -n -e "\r Bahamut Anime:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
-    rm bahamut_cookie.txt
+    rm -f bahamut_cookie.txt
     local result=$(echo $tmpresult | python -m json.tool 2>/dev/null | grep 'animeSn')
-    if [ -n "$result" ]; then
-        echo -n -e "\r Bahamut Anime:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+    local result2=$(echo $tmpresult2 | python -m json.tool 2>/dev/null | grep 'animeSn')
+    if [ -n "$result" ] && [ -n "$result2" ]; then
+        echo -n -e "\r Bahamut Anime:\t\t\t\t${Font_Green}Yes (Region: TW)${Font_Suffix}\n"
+    elif [ -n "$result2" ]; then
+        echo -n -e "\r Bahamut Anime:\t\t\t\t${Font_Green}Yes (Region: HK/MO)${Font_Suffix}\n"
     else
         echo -n -e "\r Bahamut Anime:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
     fi
