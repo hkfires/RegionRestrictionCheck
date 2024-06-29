@@ -1724,6 +1724,27 @@ function MediaUnlockTest_CanalPlus() {
 
 }
 
+
+function MediaUnlockTest_FranceTV() {
+    local tmpresult=$(curl $curlArgs -${1}  --user-agent "${UA_Browser}" -fsS -L -X GET --max-time 10  "https://geo-info.ftven.fr/ws/edgescape.json" 2>&1)
+    if [[ "$tmpresult" == "curl"* ]]; then
+        echo -n -e "\r France.tv:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+    local region=$(echo $tmpresult | | jq '.reponse.geo_info.country_code' | tr -d '"')
+    if [[ "$region" == "FR" ]]; then
+        echo -n -e "\r France.tv:\t\t\t\t${Font_Green}Yes (Region: $region)${Font_Suffix}\n"
+        return
+    else
+        echo -n -e "\r France.tv:\t\t\t\t${Font_Red}No   (Region: $region)${Font_Suffix}\n"
+        return
+    fi
+
+    echo -n -e "\r France.tv:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+    return
+
+}
+
 function MediaUnlockTest_CBCGem() {
     local tmpresult=$(curl $curlArgs -${1} -s --max-time 10 "https://www.cbc.ca/g/stats/js/cbc-stats-top.js" 2>&1)
     if [ -z "$tmpresult" ]; then
@@ -3943,12 +3964,14 @@ function EU_UnlockTest() {
     #MediaUnlockTest_Salto ${1} &
     MediaUnlockTest_CanalPlus ${1} &
     MediaUnlockTest_Molotov ${1} &
+    MediaUnlockTest_FranceTV ${1} &
     MediaUnlockTest_Joyn ${1} &
     MediaUnlockTest_SKY_DE ${1} &
     MediaUnlockTest_ZDF ${1} &
     )
     wait
-    local array=("Canal+:" "Molotov:")
+    local array=("Canal+:" "Molotov:" "
+    ")
     echo_Result ${result} ${array}
     ShowRegion DE
     local array=("Joyn:" "Sky DE:" "ZDF:")
