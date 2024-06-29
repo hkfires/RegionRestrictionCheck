@@ -1731,7 +1731,7 @@ function MediaUnlockTest_FranceTV() {
         echo -n -e "\r France.tv:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
-    local region=$(echo $tmpresult | | jq '.reponse.geo_info.country_code' | tr -d '"')
+    local region=$(echo $tmpresult | jq '.reponse.geo_info.country_code' | tr -d '"')
     if [[ "$region" == "FR" ]]; then
         echo -n -e "\r France.tv:\t\t\t\t${Font_Green}Yes (Region: $region)${Font_Suffix}\n"
         return
