@@ -3970,8 +3970,7 @@ function EU_UnlockTest() {
     MediaUnlockTest_ZDF ${1} &
     )
     wait
-    local array=("Canal+:" "Molotov:" "
-    ")
+    local array=("Canal+:" "Molotov:" "France.tv")
     echo_Result ${result} ${array}
     ShowRegion DE
     local array=("Joyn:" "Sky DE:" "ZDF:")
