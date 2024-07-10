@@ -3681,7 +3681,7 @@ function MediaUnlockTest_BilibiliAnimeNew() {
 }
 
 function MediaUnlockTest_ChatGPT() {
-    local tmpresult=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -SsLI --max-time 10 "https://chat.openai.com" 2>&1)
+    local tmpresult=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -SsLI --max-time 10 "https://chatgpt.com" 2>&1)
     local tmpresult1=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -SsL --max-time 10 "https://ios.chat.openai.com" 2>&1)
     local cf_details=$(echo "$tmpresult1" | jq .cf_details)
     if [[ "$tmpresult" == "curl"* ]]; then
