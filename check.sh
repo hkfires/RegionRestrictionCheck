@@ -2972,13 +2972,13 @@ function MediaUnlockTest_SpotvNow() {
         return
     fi
 
-    local result=$(echo $tmpresult | jq .[0].error_subcode | tr -d '"')
-    local region=$(echo $tmpresult | jq .[0].client_geo | tr -d '"')
+    local result=$(echo $tmpresult | jq .[0].error_subcode | tr -d '"' 2>&1)
+    local region=$(echo $tmpresult | jq .[0].client_geo | tr -d '"' 2>&1)
     if [[ "$result" == "CLIENT_GEO" ]]; then
         echo -n -e "\r SPOTV NOW:\t\t\t\t${Font_Red}No  (Region: ${region^^})${Font_Suffix}\n"
         return
     elif [ -z "$result" ] && [ -n "$tmpresult" ]; then
-        echo -n -e "\r SPOTV NOW:\t\t\t\t${Font_Green}Yes (Region: ${region^^})${Font_Suffix}\n"
+        echo -n -e "\r SPOTV NOW:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
         return
     else
         echo -n -e "\r SPOTV NOW:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
