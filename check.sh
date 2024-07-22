@@ -83,7 +83,7 @@ fi
 if ! mktemp -u --suffix=RRC &>/dev/null; then
     is_busybox=1
 fi
-curlArgs="$useNIC $usePROXY $xForward $resolve $dns"
+curlArgs="$useNIC $usePROXY $xForward $resolve $dns --max-time 10"
 UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36 Edg/112.0.1722.64"
 UA_Dalvik="Dalvik/2.1.0 (Linux; U; Android 9; ALP-AL00 Build/HUAWEIALP-AL00)"
 Media_Cookie=$(curl -s --retry 3 --max-time 10 "https://raw.githubusercontent.com/1-stream/RegionRestrictionCheck/main/cookies" &)
