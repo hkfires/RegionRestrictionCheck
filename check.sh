@@ -3829,6 +3829,26 @@ function MediaUnlockTest_EroGameSpace(){
     fi
 }
 
+function MediaUnlockTest_RakutenTVJP(){
+    local tmpresult=$(curl $curlArgs -${1} -sSL --max-time 10 'https://api.tv.rakuten.co.jp/content/playinfo.json?content_id=1&device_id=1' 2>&1)
+    if [[ "$tmpresult" = "curl"* ]]; then
+        echo -n -e "\r Rakuten TV JP:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+
+    local result=$(echo $tmpresult | jq .result.code | tr -d '"')
+    if [[ "$result" == "40404030802" ]]; then
+        echo -n -e "\r Rakuten TV JP:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+        return
+    elif [[ "$result" == "40301720109" ]]; then
+        echo -n -e "\r Rakuten TV JP:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        return
+    else
+        echo -n -e "\r Mora:\t\t\t\t\t${Font_Red}Unknown (Code: $result)${Font_Suffix}\n"
+        return
+    fi
+}
+
 function echo_Result() {
     for((i=0;i<${#array[@]};i++))
     do
@@ -4056,9 +4076,10 @@ function JP_UnlockTest() {
     MediaUnlockTest_AnimeFesta ${1} &
     MediaUnlockTest_Lemino ${1} &
     MediaUnlockTest_J:COM_ON_DEMAND ${1} &
+    MediaUnlockTest_RakutenTVJP ${1} &
     )
     wait
-    local array=("TVer:" "WOWOW:" "VideoMarket:" "D Anime Store:" "FOD(Fuji TV):" "Radiko:" "Karaoke@DAM:" "J:com On Demand:" "AnimeFesta:" "Lemino:")
+    local array=("TVer:" "WOWOW:" "VideoMarket:" "D Anime Store:" "FOD(Fuji TV):" "Radiko:" "Karaoke@DAM:" "J:com On Demand:" "AnimeFesta:" "Lemino:" "Rakuten TV JP:")
     echo_Result ${result} ${array}
     ShowRegion Game
     local result=$(
