@@ -2691,7 +2691,7 @@ function MediaUnlockTest_Instagram.Music() {
     elif [[ "$result" == "true" ]]; then
         echo -n -e "\r Instagram Licensed Music:\t\t${Font_Red}No${Font_Suffix}\n"
     else
-        echo -n -e "\r Instagram Licensed Music:\t\t${Font_Red}Failed${Font_Suffix}\n"
+        echo -n -e "\r Instagram Licensed Music:\t\t${Font_Red}No  (Failed)${Font_Suffix}\n"
     fi
 
 }
