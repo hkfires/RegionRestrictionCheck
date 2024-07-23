@@ -2682,7 +2682,7 @@ function MediaUnlockTest_J:COM_ON_DEMAND() {
 	local result=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://id.zaq.ne.jp" 2>&1)
 	if [ "$result" = "000" ]; then
         echo -n -e "\r J:com On Demand:\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
-    elif [ "$result" = "502" ]; then
+    elif [ "$result" = "404" ]; then
         echo -n -e "\r J:com On Demand:\t\t\t${Font_Green}Yes${Font_Suffix}\n"
     elif [ "$result" = "403" ]; then
         echo -n -e "\r J:com On Demand:\t\t\t${Font_Red}No${Font_Suffix}\n"
@@ -3823,7 +3823,7 @@ function MediaUnlockTest_mora() {
 }
 
 function MediaUnlockTest_DAnimeStore(){
-    local tmpresult=$(curl $usePROXY $xForward -${1} -sSL --max-time 10 -sL 'https://animestore.docomo.ne.jp/animestore/reg_pc' 2>&1)
+    local tmpresult=$(curl $curlArgs -${1} -sSL --max-time 10 -sL 'https://animestore.docomo.ne.jp/animestore/reg_pc' 2>&1)
     if [ -z "$tmpresult" ]; then
         echo -n -e "\r D Anime Store:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
         return
