@@ -3823,7 +3823,7 @@ function MediaUnlockTest_mora() {
 }
 
 function MediaUnlockTest_DAnimeStore(){
-    local tmpresult=$(curl $usePROXY $xForward -${1} -sSL --max-time 10 -sL 'https://animestore.docomo.ne.jp/animestore/reg_pc' 2>/dev/null)
+    local tmpresult=$(curl $usePROXY $xForward -${1} -sSL --max-time 10 -sL 'https://animestore.docomo.ne.jp/animestore/reg_pc' 2>&1)
     if [ -z "$tmpresult" ]; then
         echo -n -e "\r D Anime Store:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
         return
