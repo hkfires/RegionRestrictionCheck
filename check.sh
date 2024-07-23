@@ -398,19 +398,6 @@ function MediaUnlockTest_UMAJP() {
     fi
 }
 
-function MediaUnlockTest_WFJP() {
-    local result=$(curl $curlArgs --user-agent "${UA_Dalvik}" -${1} -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://api.worldflipper.jp/" 2>&1)
-    if [ "$result" = "000" ]; then
-        echo -n -e "\r World Flipper Japan:\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
-    elif [ "$result" = "200" ]; then
-        echo -n -e "\r World Flipper Japan:\t\t\t${Font_Green}Yes${Font_Suffix}\n"
-    elif [ "$result" = "403" ]; then
-        echo -n -e "\r World Flipper Japan:\t\t\t${Font_Red}No${Font_Suffix}\n"
-    else
-        echo -n -e "\r World Flipper Japan:\t\t\t${Font_Red}Failed (Unexpected Result: $result)${Font_Suffix}\n"
-    fi
-}
-
 function MediaUnlockTest_Kancolle() {
     local result=$(curl $curlArgs --user-agent "${UA_Dalvik}" -${1} -fsL --write-out %{http_code} --output /dev/null --max-time 10 "http://203.104.209.7/kcscontents/news/" 2>&1)
     if [ "$result" = "000" ]; then
@@ -679,7 +666,7 @@ function MediaUnlockTest_Paravi() {
 }
 
 function MediaUnlockTest_wowow() {
-    local tmpresult=$(curl $curlArgs --user-agent "${UA_Browser}" -${1} -s --max-time 10 "https://mapi.wowow.co.jp/api/v1/playback/auth" -X POST -d '{"meta_id":81174}' -H "Content-Type: application/json" 2>&1)
+    local tmpresult=$(curl $curlArgs --user-agent "${UA_Browser}" -${1} -sS --max-time 10 "https://mapi.wowow.co.jp/api/v1/playback/auth" -X POST -d '{"meta_id":81174}' -H "Content-Type: application/json" 2>&1)
     if [[ "$tmpresult" == "curl"* ]]; then
         echo -n -e "\r WOWOW:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
@@ -4087,7 +4074,6 @@ function JP_UnlockTest() {
     MediaUnlockTest_UMAJP ${1} &
     MediaUnlockTest_KonosubaFD ${1} &
     MediaUnlockTest_PCRJP ${1} &
-    MediaUnlockTest_WFJP ${1} &
     MediaUnlockTest_ProjectSekai ${1} &
     )
     wait
