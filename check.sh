@@ -687,27 +687,19 @@ function MediaUnlockTest_wowow() {
 }
 
 function MediaUnlockTest_TVer() {
-    local BCpktmp=$(curl $curlArgs --user-agent "${UA_Browser}" -${1} -Ss --max-time 10 "https://players.brightcove.net/4394098882001/L3xqlxT7zF_default/index.min.js"  2>&1)
-    if [[ "$BCpktmp" == "curl"* ]]; then
-        echo -n -e "\r TVer:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
-        return
-    fi
-    local BCpk=$(echo $BCpktmp |grep -Eo 'BCpk(.|)*"}},{name:"dock",autoInit:false}')
-    local tmpresult=$(curl $curlArgs --user-agent "${UA_Browser}" -${1} -Ss --max-time 10 -H "Accept: application/json;pk=${BCpk:0:-32}" "https://edge.api.brightcove.com/playback/v1/accounts/4394098882001/videos/ref%3A83b847b3-f6a6-4b3a-b69c-f27b1e0078d0" 2>&1)
-    if [[ "$tmpresult" == "curl"* ]]; then
-        echo -n -e "\r TVer:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
-        return
-    fi
-
-    local result=$(echo $tmpresult | python -m json.tool 2>/dev/null | grep error_subcode | cut -f4 -d'"')
-    if [[ "$result" == "CLIENT_GEO" ]]; then
-        echo -n -e "\r TVer:\t\t\t\t\t${Font_Red}No${Font_Suffix}\n"
-        return
-    elif [ -z "$result" ] && [ -n "$tmpresult" ]; then
+    local tmpresult=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fsLI -X GET --write-out %{http_code} --output /dev/null "https://playback.api.streaks.jp/v1/projects/tver-simul-ntv/medias/ref:simul-ntv" -H 'x-streaks-api-key: ntv'  2>&1)
+    
+    if [[ "$tmpresult" == "200" ]]; then
         echo -n -e "\r TVer:\t\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
         return
+    elif [[ "$tmpresult" == "403" ]]; then
+        echo -n -e "\r TVer:\t\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        return
+    elif [[ "$tmpresult" == "000" ]]; then
+        echo -n -e "\r TVer:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
     else
-        echo -n -e "\r TVer:\t\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+        echo -n -e "\r TVer:\t\t\t\t\t${Font_Red}Unknown (Code: $tmpresult)${Font_Suffix}\n"
     fi
 }
 
