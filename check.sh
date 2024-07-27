@@ -782,30 +782,6 @@ function MediaUnlockTest_PlutoTV() {
 
 }
 
-function MediaUnlockTest_HBOMax() {
-    local tmpresult=$(curl $curlArgs -${1} -sS -o /dev/null -L --max-time 10 -w '%{url_effective}\n' "https://www.hbomax.com/" 2>&1)
-    if [[ "$tmpresult" == "curl"* ]]; then
-        echo -n -e "\r HBO Max:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
-        return
-    fi
-    local isUnavailable=$(echo $tmpresult | grep 'geo-availability')
-    local region=$(echo $tmpresult | cut -f4 -d"/" | tr [:lower:] [:upper:])
-    if [ -n "$isUnavailable" ]; then
-        echo -n -e "\r HBO Max:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
-        return
-    elif [ -z "$isUnavailable" ] && [ -n "$region" ]; then
-        echo -n -e "\r HBO Max:\t\t\t\t${Font_Green}Yes (Region: $region)${Font_Suffix}\n"
-        return
-    elif [ -z "$isUnavailable" ] && [ -z "$region" ]; then
-        echo -n -e "\r HBO Max:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
-        return
-    fi
-
-    echo -n -e "\r HBO Max:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
-    return
-
-}
-
 function MediaUnlockTest_MaxCom() {
     local tmpresult=$(curl $curlArgs -${1} -sS -o /dev/null -L --max-time 10 -w '%{url_effective}\n' "https://www.max.com/" 2>&1)
     if [[ "$tmpresult" == "curl"* ]]; then
@@ -3884,7 +3860,6 @@ function NA_UnlockTest() {
     local array=("FOX:" "Hulu:" "NFL+" "ESPN+:" "MGM+:" "Starz:" "Philo:" "FXNOW:" "Max.com")
     echo_Result ${result} ${array}
     MediaUnlockTest_TLCGO ${1}
-    echo "$result" | grep "HBO Max:"
     local result=$(
     MediaUnlockTest_Shudder ${1} &
     MediaUnlockTest_BritBox ${1} &
