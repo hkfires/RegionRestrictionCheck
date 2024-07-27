@@ -744,18 +744,19 @@ function MediaUnlockTest_4GTV() {
 }
 
 function MediaUnlockTest_SlingTV() {
-    local result=$(curl $curlArgs --user-agent "${UA_Dalvik}" -${1} -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://www.sling.com/" 2>&1)
-    if [ "$result" = "000" ]; then
-        echo -n -e "\r Sling TV:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+    local tmpresult=$(curl $curlArgs -${1} -sSL --max-time 10 'https://p-geo.movetv.com/geo' 2>&1)
+    if [[ "$tmpresult" = "curl"* ]]; then
+        echo -n -e "\r Rakuten TV JP:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
-    elif [ "$result" = "200" ]; then
-        echo -n -e "\r Sling TV:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
-        return
-    elif [ "$result" = "403" ]; then
-        echo -n -e "\r Sling TV:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+    fi
+
+    local is_restricted=$(echo $tmpresult | jq .ip_restricted | tr -d '"')
+    local region=$(echo $tmpresult | jq .country | tr -d '"')
+    if [[ "$is_restricted" == "true" ]]; then
+        echo -n -e "\r Sling TV:\t\t\t\t${Font_Red}No  (Region: ${region^^})${Font_Suffix}\n"
         return
     else
-        echo -n -e "\r Sling TV:\t\t\t\t${Font_Red}Failed (Unexpected Result: $result)${Font_Suffix}\n"
+        echo -n -e "\r Sling TV:\t\t\t\t${Font_Green}Yes (Region: ${region^^})${Font_Suffix}\n"
         return
     fi
 }
