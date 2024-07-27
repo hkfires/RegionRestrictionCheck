@@ -3853,13 +3853,12 @@ function NA_UnlockTest() {
     MediaUnlockTest_Starz ${1} &
     MediaUnlockTest_Philo ${1} &
     MediaUnlockTest_FXNOW ${1} &
-    MediaUnlockTest_HBOMax ${1} &
     MediaUnlockTest_MaxCom ${1} &
+    # MediaUnlockTest_TLCGO ${1} & # Wait to fix.
     )
     wait
     local array=("FOX:" "Hulu:" "NFL+" "ESPN+:" "MGM+:" "Starz:" "Philo:" "FXNOW:" "Max.com")
     echo_Result ${result} ${array}
-    MediaUnlockTest_TLCGO ${1}
     local result=$(
     MediaUnlockTest_Shudder ${1} &
     MediaUnlockTest_BritBox ${1} &
