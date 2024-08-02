@@ -3910,7 +3910,6 @@ function EU_UnlockTest() {
     local result=$(
     MediaUnlockTest_RakutenTV ${1} &
     MediaUnlockTest_SkyShowTime ${1} &
-    MediaUnlockTest_HBOMax ${1} &
     # MediaUnlockTest_MathsSpot ${1} &
     MediaUnlockTest_Eurosport ${1} &
     MediaUnlockTest_Viaplay ${1} &
@@ -4140,7 +4139,6 @@ function SA_UnlockTest() {
     echo "===========[ South America ]==========="
     local result=$(
     MediaUnlockTest_StarPlus ${1} &
-    MediaUnlockTest_HBOMax ${1} &
     MediaUnlockTest_DirecTVGO ${1} &
     )
     wait
