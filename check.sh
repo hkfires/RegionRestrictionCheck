@@ -1014,18 +1014,19 @@ function MediaUnlockTest_Viu.com() {
 }
 
 function MediaUnlockTest_Niconico() {
-    local tmpresult=$(curl $curlArgs -${1} -sSL --max-time 10 "https://www.nicovideo.jp/watch/so23017073" 2>&1)
-    if [[ "$tmpresult" == "curl"* ]]; then
+    local result=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -sSI -X GET "https://www.nicovideo.jp/watch/so23017073" --write-out %{http_code} --output /dev/null 2>&1)
+    if [[ "$result" == "curl"* ]]; then
         echo -n -e "\r Niconico:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
-    echo $tmpresult | grep '同じ地域' >/dev/null 2>&1
-    if [[ "$?" -eq 0 ]]; then
+    if [[ "$result" == "403" ]]; then
         echo -n -e "\r Niconico:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
         return
-    else
+    elif [[ "$result" == "400" ]]; then
         echo -n -e "\r Niconico:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
         return
+    else
+        echo -n -e "\r Niconico:\t\t\t\t${Font_Red}Failed ($result)${Font_Suffix}\n"
     fi
 
 }
