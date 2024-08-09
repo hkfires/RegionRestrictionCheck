@@ -1816,7 +1816,7 @@ function MediaUnlockTest_RaiPlay() {
 function MediaUnlockTest_TVBAnywhere() {
     local tmpresult=$(curl $curlArgs -${1} -s --max-time 10 "https://uapisfm.tvbanywhere.com.sg/geoip/check/platform/android" 2>&1)
     if [ -z "$tmpresult" ]; then
-        echo -n -e "\r TVBAnywhere+:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        echo -n -e "\r TVBAnywhere+:\t\t\t\t${Font_21Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
     local region=$(echo $tmpresult | python -m json.tool 2>/dev/null | grep 'country' | awk '{print $2}' | head -1 | tr -d "," | tr -d "\"")
@@ -2030,35 +2030,6 @@ function MediaUnlockTest_SkyGo() {
         return
     else
         echo -n -e "\r Sky Go:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
-    fi
-
-}
-
-function MediaUnlockTest_StarPlus() {
-    local starcontent=$(echo "$Media_Cookie" | sed -n '10p')
-    local tmpresult=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -X POST -sSL --max-time 10 "https://star.api.edge.bamgrid.com/graph/v1/device/graphql" -H "authorization: c3RhciZicm93c2VyJjEuMC4w.COknIGCR7I6N0M5PGnlcdbESHGkNv7POwhFNL-_vIdg" -d "$starcontent" 2>&1 )
-    local previewcheck=$(curl $curlArgs -${1} -s -o /dev/null -L --max-time 10 -w '%{url_effective}\n' "https://www.starplus.com/login" 2>&1)
-    local isUnavailable=$(echo $previewcheck | grep unavailable)
-
-    if [[ "$tmpresult" == "curl"* ]]; then
-        echo -n -e "\r Star+:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
-        return
-    fi
-    local region=$(echo $tmpresult | python -m json.tool 2>/dev/null | grep 'countryCode' | cut -f4 -d'"')
-    local inSupportedLocation=$(echo $tmpresult | python -m json.tool 2>/dev/null | grep 'inSupportedLocation' | awk '{print $2}' | cut -f1 -d',')
-
-    if [ -n "$region" ] && [ -z "$isUnavailable" ] && [[ "$inSupportedLocation" == "false" ]]; then
-        echo -n -e "\r Star+:\t\t\t\t\t${Font_Yellow}CDN Relay Available${Font_Suffix}\n"
-        return
-    elif [ -n "$region" ] && [ -n "$isUnavailable" ]; then
-        echo -n -e "\r Star+:\t\t\t\t\t${Font_Red}No${Font_Suffix}\n"
-        return
-    elif [ -n "$region" ] && [[ "$inSupportedLocation" == "true" ]]; then
-        echo -n -e "\r Star+:\t\t\t\t\t${Font_Green}Yes (Region: $region)${Font_Suffix}\n"
-        return
-    elif [ -z "$region" ]; then
-        echo -n -e "\r Star+:\t\t\t\t\t${Font_Red}No${Font_Suffix}\n"
-        return
     fi
 
 }
@@ -4139,7 +4110,6 @@ function Global_UnlockTest() {
 function SA_UnlockTest() {
     echo "===========[ South America ]==========="
     local result=$(
-    MediaUnlockTest_StarPlus ${1} &
     MediaUnlockTest_DirecTVGO ${1} &
     )
     wait
@@ -4279,7 +4249,6 @@ function Sport_UnlockTest() {
     echo "===============[ Sport ]==============="
     local result=$(
     MediaUnlockTest_Dazn ${1} &
-    MediaUnlockTest_StarPlus ${1} &
     MediaUnlockTest_ESPNPlus ${1} &
     MediaUnlockTest_NBATV ${1} &
     MediaUnlockTest_FuboTV ${1} &
