@@ -3511,6 +3511,23 @@ function MediaUnlockTest_JioCinema() {
     echo -n -e "\r Jio Cinema:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
 }
 
+function MediaUnlockTest_Zee5() {
+    local tmpresult=$(curl $curlArgs -sLi 'https://www.zee5.com/' -w "_TAG_%{http_code}_TAG_" -H 'Upgrade-Insecure-Requests: 1' --user-agent "${UA_BROWSER}")
+    local httpCode=$(echo "$tmpresult" | grep '_TAG_' | awk -F'_TAG_' '{print $2}')
+    if [ "$httpCode" == '000' ]; then
+        echo -n -e "\r Zee5:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+
+    local region=$(echo "$tmpresult" | grep -woP 'country=\K[A-Z]{2}' | head -n 1)
+    if [ -n "$region" ]; then
+        echo -n -e "\r Zee5:\t\t\t\t\t${Font_Green}Yes (Region: ${region})${Font_Suffix}\n"
+        return
+    fi
+
+    echo -n -e "\r Zee5:\t\t\t\t\t${Font_Red}Failed (Error: Unknown)${Font_Suffix}\n"
+}
+
 function MediaUnlockTest_HoyTV() {
     local result=$(curl $curlArgs -${1} -SsL --write-out %{http_code} --output /dev/null --max-time 10 "https://hoytv-live-stream.hoy.tv/ch78/index-fhd.m3u8" 2>&1)
 
@@ -3957,6 +3974,7 @@ function HK_UnlockTest() {
 	    MediaUnlockTest_HBOGO_ASIA ${1} &
         MediaUnlockTest_HoyTV ${1} &
         MediaUnlockTest_BahamutAnime ${1} &
+        MediaUnlockTest_NBATV ${1} &
 	    # MediaUnlockTest_BilibiliHKMCTW ${1} &
 	)
     else
@@ -3970,7 +3988,7 @@ function HK_UnlockTest() {
 	)
     fi
     wait
-    local array=("Now E:" "Viu.TV:" "MyTVSuper:" "HBO GO Asia:" "HOY TV" "BiliBili Hongkong/Macau/Taiwan:" "Bahamut Anime:")
+    local array=("Now E:" "Viu.TV:" "MyTVSuper:" "HBO GO Asia:" "HOY TV" "BiliBili Hongkong/Macau/Taiwan:" "Bahamut Anime:" "NBA TV:")
     echo_Result ${result} ${array}
     echo "======================================="
 }
@@ -4238,9 +4256,11 @@ function SEA_UnlockTest(){
     MediaUnlockTest_TataPlay ${1} &
     MediaUnlockTest_SonyLiv ${1} &
     MediaUnlockTest_JioCinema ${1} &
+    MediaUnlockTest_Zee5 ${1} &
+    MediaUnlockTest_NBATV ${1} &
     )
     wait
-    local array=("MXPlayer" "Tata Play" "SonyLiv" "Jio Cinema")
+    local array=("Zee5:" "NBA TV:" "MXPlayer" "Tata Play" "SonyLiv" "Jio Cinema")
     echo_Result ${result} ${array}
     echo "======================================="
 }
