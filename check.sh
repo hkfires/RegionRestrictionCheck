@@ -1354,7 +1354,7 @@ function MediaUnlockTest_LiTV() {
     else
         echo -n -e "\r LiTV:\t\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
         return
-    fi/
+    fi
 
 }
 
