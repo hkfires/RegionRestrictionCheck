@@ -1358,6 +1358,31 @@ function MediaUnlockTest_LiTV() {
 
 }
 
+function MediaUnlockTest_FridayVideo() {
+    local tmpresult=$(curl $curlArgs -${1} -sSL --max-time 10 --user-agent "${UA_Browser}" 'https://video.friday.tw/api2/streaming/get?streamingId=122581&streamingType=2&contentType=4&contentId=1&clientId=' 2>&1)
+    if [[ "$tmpresult" = "curl"* ]]; then
+        echo -n -e "\r Friday Video:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+    result=$(echo $tmpresult | jq .code | tr -d '"')
+    if [[ "$result" != "null" ]]; then
+        if [ "$result" = "1006" ]; then
+            echo -n -e "\r Friday Video:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+            return
+        elif [ "$result" = "0000" ]; then
+            echo -n -e "\r Friday Video:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+            return
+        else
+            echo -n -e "\r Friday Video:\t\t\t\t${Font_Red}Unknown (Code: $result)${Font_Suffix}\n"
+            return
+        fi
+    else
+        echo -n -e "\r Friday Video:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+        return
+    fi
+
+}
+
 function MediaUnlockTest_FuboTV() {
     local radom_num=${RANDOM:0-1}
     local tmpresult=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -sSL --max-time 10 "https://api.fubo.tv/appconfig/v1/homepage?platform=web&client_version=R20230310.${radom_num}&nav=v0"2>&1)
@@ -3975,6 +4000,7 @@ function HK_UnlockTest() {
         MediaUnlockTest_HoyTV ${1} &
         MediaUnlockTest_BahamutAnime ${1} &
         MediaUnlockTest_NBATV ${1} &
+        MediaUnlockTest_FridayVideo ${1} &
 	    # MediaUnlockTest_BilibiliHKMCTW ${1} &
 	)
     else
@@ -3988,7 +4014,7 @@ function HK_UnlockTest() {
 	)
     fi
     wait
-    local array=("Now E:" "Viu.TV:" "MyTVSuper:" "HBO GO Asia:" "HOY TV" "BiliBili Hongkong/Macau/Taiwan:" "Bahamut Anime:" "NBA TV:")
+    local array=("Now E:" "Viu.TV:" "MyTVSuper:" "HBO GO Asia:" "HOY TV" "BiliBili Hongkong/Macau/Taiwan:" "Bahamut Anime:" "NBA TV:" "Friday Video:")
     echo_Result ${result} ${array}
     echo "======================================="
 }
