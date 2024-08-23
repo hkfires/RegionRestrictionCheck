@@ -1844,8 +1844,8 @@ function MediaUnlockTest_TVBAnywhere() {
         echo -n -e "\r TVBAnywhere+:\t\t\t\t${Font_21Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
-    local region=$(echo $tmpresult | python -m json.tool 2>/dev/null | grep 'country' | awk '{print $2}' | head -1 | tr -d "," | tr -d "\"")
-    local result=$(echo $tmpresult | python -m json.tool 2>/dev/null | grep 'allow_in_this_country' | awk '{print $2}' | cut -f1 -d",")
+    local region=$(echo $tmpresult | jq .country | tr -d '"' )
+    local result=$(echo $tmpresult | jq .allow_in_this_country )
     if [[ "$result" == "true" ]]; then
         echo -n -e "\r TVBAnywhere+:\t\t\t\t${Font_Green}Yes (Region: ${region})${Font_Suffix}\n"
         return
