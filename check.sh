@@ -1354,7 +1354,7 @@ function MediaUnlockTest_LiTV() {
     else
         echo -n -e "\r LiTV:\t\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
         return
-    fi
+    fi/
 
 }
 
@@ -4000,7 +4000,6 @@ function HK_UnlockTest() {
         MediaUnlockTest_HoyTV ${1} &
         MediaUnlockTest_BahamutAnime ${1} &
         MediaUnlockTest_NBATV ${1} &
-        MediaUnlockTest_FridayVideo ${1} &
 	    # MediaUnlockTest_BilibiliHKMCTW ${1} &
 	)
     else
@@ -4014,7 +4013,7 @@ function HK_UnlockTest() {
 	)
     fi
     wait
-    local array=("Now E:" "Viu.TV:" "MyTVSuper:" "HBO GO Asia:" "HOY TV" "BiliBili Hongkong/Macau/Taiwan:" "Bahamut Anime:" "NBA TV:" "Friday Video:")
+    local array=("Now E:" "Viu.TV:" "MyTVSuper:" "HBO GO Asia:" "HOY TV" "BiliBili Hongkong/Macau/Taiwan:" "Bahamut Anime:" "NBA TV:")
     echo_Result ${result} ${array}
     echo "======================================="
 }
@@ -4031,11 +4030,12 @@ function TW_UnlockTest() {
     MediaUnlockTest_Catchplay ${1} &
     MediaUnlockTest_HBOGO_ASIA ${1} &
     MediaUnlockTest_BahamutAnime ${1} &
+    MediaUnlockTest_FridayVideo ${1} &
     #MediaUnlockTest_ElevenSportsTW ${1}
     # MediaUnlockTest_BilibiliTW ${1} &
     )
     wait
-    local array=("KKTV:" "LiTV:" "MyVideo:" "4GTV.TV:" "LineTV.TW:" "Hami Video:" "CatchPlay+:" "HBO GO Asia:" "Bahamut Anime:" "Bilibili Taiwan Only:")
+    local array=("KKTV:" "LiTV:" "MyVideo:" "4GTV.TV:" "LineTV.TW:" "Hami Video:" "CatchPlay+:" "HBO GO Asia:" "Bahamut Anime:" "Friday Video:" "Bilibili Taiwan Only:")
     echo_Result ${result} ${array}
     echo "======================================="
 }
