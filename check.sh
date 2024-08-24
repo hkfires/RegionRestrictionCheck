@@ -1019,10 +1019,10 @@ function MediaUnlockTest_Niconico() {
         echo -n -e "\r Niconico:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
-    if [[ "$result" == "403" ]]; then
+    if [[ "$result" == "400" ]]; then
         echo -n -e "\r Niconico:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
         return
-    elif [[ "$result" == "400" ]]; then
+    elif [[ "$result" == "200" ]]; then
         echo -n -e "\r Niconico:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
         return
     else
