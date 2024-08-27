@@ -4120,7 +4120,7 @@ function Global_UnlockTest() {
         MediaUnlockTest_YouTube_CDN ${1} &
         MediaUnlockTest_NetflixCDN ${1} &
         MediaUnlockTest_Spotify ${1} &
-        MediaUnlockTest_Instagram.Music ${1}
+        # MediaUnlockTest_Instagram.Music ${1}
         GameTest_Steam ${1} &
         MediaUnlockTest_Google ${1} &
         MediaUnlockTest_Tiktok ${1} &
@@ -4140,7 +4140,7 @@ function Global_UnlockTest() {
         MediaUnlockTest_YouTube_CDN ${1} &
         MediaUnlockTest_NetflixCDN ${1} &
         MediaUnlockTest_Spotify ${1} &
-        MediaUnlockTest_Instagram.Music ${1}
+        # MediaUnlockTest_Instagram.Music ${1}
         # GameTes t_Steam ${1} &
         MediaUnlockTest_Google ${1} &
         )
