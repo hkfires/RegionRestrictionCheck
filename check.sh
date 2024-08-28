@@ -1785,12 +1785,15 @@ function MediaUnlockTest_Crave() {
 }
 
 function MediaUnlockTest_Amediateka() {
-    local tmpresult=$(curl $curlArgs -${1} -s --max-time 10 "https://www.amediateka.ru/" 2>&1)
-    if [ -z "$tmpresult" ]; then
+    local tmpresult=$(curl $curlArgs -${1} -sSL -I -X GET -w "%{url_effective}" --max-time 10 --output /dev/null "https://www.amediateka.ru/" 2>&1)
+    if [[ "$tmpresult" == *"curl"* ]] && [[ "$1" == "6" ]]; then
+        echo -n -e "\r Amediateka:\t\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
+        return
+    elif [[ "$tmpresult" == *"curl"* ]]; then
         echo -n -e "\r Amediateka:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
-    local result=$(echo $tmpresult | grep 'VPN')
+    local result=$(echo $tmpresult | grep 'unavailable')
     if [ -n "$result" ]; then
         echo -n -e "\r Amediateka:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
         return
