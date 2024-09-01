@@ -3424,11 +3424,11 @@ function MediaUnlockTest_Tiktok() {
         return
     fi
     local region="$(echo "${result1}" | jq ".data.store_region" | tr -d '"' )"
-    if [[ "$result" == *"/explore" ]]; then
-        echo -n -e "\r Tiktok:\t\t\t\t${Font_Green}Yes (Region: ${region^^})${Font_Suffix}\n"
+    if [[ "$result" == *"/about" ]]; then
+        echo -n -e "\r Tiktok:\t\t\t\t${Font_Red}No  (Region: ${region^^})${Font_Suffix}\n"
         return
     else
-        echo -n -e "\r Tiktok:\t\t\t\t${Font_Red}No  (Region: ${region^^})${Font_Suffix}\n"
+        echo -n -e "\r Tiktok:\t\t\t\t${Font_Green}Yes (Region: ${region^^})${Font_Suffix}\n"
         return
     fi
 
