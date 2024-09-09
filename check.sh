@@ -4234,10 +4234,11 @@ function KR_UnlockTest() {
     MediaUnlockTest_Afreeca ${1} &
     MediaUnlockTest_SpotvNow ${1} &
     MediaUnlockTest_KBSDomestic ${1} &
+    MediaUnlockTest_PandaTV ${1} &
     #MediaUnlockTest_KOCOWA ${1} &
     )
     wait
-    local array=("Wavve:" "Tving:" "Coupang Play:" "Naver TV:" "Afreeca TV:" "SPOTV NOW:" "KBS Domestic:")
+    local array=("Wavve:" "Tving:" "Coupang Play:" "Naver TV:" "Afreeca TV:" "SPOTV NOW:" "KBS Domestic:" "PandaTV:")
     echo_Result ${result} ${array}
     echo "======================================="
 }
