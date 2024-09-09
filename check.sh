@@ -2975,6 +2975,24 @@ function MediaUnlockTest_KOCOWA() {
     fi
 }
 
+function MediaUnlockTest_PandaTV() {
+    local result1=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://api.pandalive.co.kr/v1/live/play" 2>&1)
+    if [[ "$result1" == "000" ]] && [ "$1" == "6" ]; then
+        echo -n -e "\r PandaTV:\t\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
+        return
+    elif [[ "$result1" == "000" ]]; then
+        echo -n -e "\r PandaTV:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+    if [[ "$result1" == "400" ]]; then
+        echo -n -e "\r PandaTV:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+    elif [[ "$result1" == "403" ]]; then
+        echo -n -e "\r PandaTV:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+    else
+        echo -n -e "\r PandaTV:\t\t\t\t${Font_Red}Unknown (Code: $result1)${Font_Suffix}\n"
+    fi
+}
+
 function MediaUnlockTest_NBCTV(){
     if [[ "$onetrustresult" == "curl"* ]]; then
         echo -n -e "\r NBC TV:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
