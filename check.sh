@@ -3442,9 +3442,14 @@ function MediaUnlockTest_Tiktok() {
         return
     fi
     local region="$(echo "${result1}" | jq ".data.store_region" | tr -d '"' )"
-    if [[ "$result" == *"/about" ]]; then
-        echo -n -e "\r Tiktok:\t\t\t\t${Font_Red}No  (Region: ${region^^})${Font_Suffix}\n"
-        return
+    if [[ "$result" == *"/about" ]] || [[ "$result" == *"/status"* ]]; then
+        if [[ "$region" == "cn" ]]; then
+            echo -n -e "\r Tiktok:\t\t\t\t${Font_Yellow}Provided by Douyin${Font_Suffix}\n"
+            return
+        else
+            echo -n -e "\r Tiktok:\t\t\t\t${Font_Red}No  (Region: ${region^^})${Font_Suffix}\n"
+            return
+        fi
     else
         echo -n -e "\r Tiktok:\t\t\t\t${Font_Green}Yes (Region: ${region^^})${Font_Suffix}\n"
         return
