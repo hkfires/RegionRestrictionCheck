@@ -851,7 +851,7 @@ function MediaUnlockTest_iQYI_Region() {
         return
     fi
     result=$(echo "$tmpresult" | grep 'mod=' | awk '{print $2}' | cut -f2 -d'=' | cut -f1 -d';')
-    region=$(echo "$tmpresult" | grep 'x-custom-client-ip:' | cut -f3 -d':')
+    region=$(echo "$tmpresult" | grep 'x-custom-client-ip:' | cut -f3 -d':' | sed 's/.$//')
     if [[ "$region" == "cn" ]]; then
             echo -n -e "\r iQyi Oversea:\t\t\t\t${Font_Yellow}Mainland (Region: ${region^^})${Font_Suffix}\n"
             return
