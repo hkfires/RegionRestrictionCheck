@@ -851,17 +851,17 @@ function MediaUnlockTest_iQYI_Region() {
         return
     fi
     result=$(echo "$tmpresult" | grep 'mod=' | awk '{print $2}' | cut -f2 -d'=' | cut -f1 -d';')
-
+    region=$(echo "$tmpresult" | grep 'x-custom-client-ip:' | cut -f3 -d':')
+    if [[ "$region" == "cn" ]]; then
+            echo -n -e "\r iQyi Oversea:\t\t\t\t${Font_Yellow}Mainland (Region: ${region^^})${Font_Suffix}\n"
+            return
+    fi
     if [ -n "$result" ]; then
         if [[ "$result" == "intl" ]]; then
-            echo -n -e "\r iQyi Oversea:\t\t\t\t${Font_Red}No  (Intl)${Font_Suffix}\n"
-        elif [[ "$result" == "ntw" ]]; then
-            result=TW
-            echo -n -e "\r iQyi Oversea:\t\t\t\t${Font_Green}Yes (Region: ${result})${Font_Suffix}\n"
+            echo -n -e "\r iQyi Oversea:\t\t\t\t${Font_Red}No  (Region: ${region^^})${Font_Suffix}\n"
             return
         else
-            result=$(echo $result | tr [:lower:] [:upper:])
-            echo -n -e "\r iQyi Oversea:\t\t\t\t${Font_Green}Yes (Region: ${result})${Font_Suffix}\n"
+            echo -n -e "\r iQyi Oversea:\t\t\t\t${Font_Green}Yes (Region: ${region^^})${Font_Suffix}\n"
             return
         fi
     else
@@ -869,6 +869,7 @@ function MediaUnlockTest_iQYI_Region() {
         return
     fi
 }
+
 
 function MediaUnlockTest_HuluUS() {
     if [[ "$1" == "4" ]]; then
