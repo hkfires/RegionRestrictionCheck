@@ -3647,7 +3647,7 @@ function MediaUnlockTest_Sooka() {
 function MediaUnlockTest_BilibiliAnimeNew() {
     if [[ "$1" == "6" ]];then
         local bili_ip6=$(dig api.bilibili.com AAAA +noall +answer +nottl +subnet=120.232.0.0/24 | grep -E "IN\s*AAAA" | awk '{print $4}' | head -1)
-        if [[ -z "$bili_ip6" ]];then
+        if [ -z "$bili_ip6" ];then
             echo -n -e "\r Bilibili Anime:\t\t\t${Font_Red}Failed (No ECS Support)${Font_Suffix}\n"
             return
         fi
