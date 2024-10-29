@@ -544,7 +544,7 @@ function MediaUnlockTest_Dazn() {
 }
 
 function MediaUnlockTest_HuluJP() {
-    local result=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -s -o /dev/null -L --max-time 10 -w '%{url_effective}\n' "https://id.hulu.jp" 2>&1 | grep 'restrict')
+    local result=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -s -o /dev/null -L --max-time 10 -w '%{url_effective}%{http_code}\n' "https://id.hulu.jp" 2>&1 | grep -E 'restrict|403')
 
     if [ -n "$result" ]; then
         echo -n -e "\r Hulu Japan:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
