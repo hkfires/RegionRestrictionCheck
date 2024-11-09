@@ -783,13 +783,16 @@ function MediaUnlockTest_PlutoTV() {
 }
 
 function MediaUnlockTest_MaxCom() {
-    local tmpresult=$(curl $curlArgs -${1} -sS -o /dev/null -L --max-time 10 -w '%{url_effective}\n' "https://www.max.com/" 2>&1)
-    if [[ "$tmpresult" == "curl"* ]]; then
+    local GetToken=$(curl $curlArgs -${1} -sS "https://default.any-any.prd.api.max.com/token?realm=bolt&deviceId=afbb5daa-c327-461d-9460-d8e4b3ee4a1f"   -H 'x-device-info: beam/5.0.0 (desktop/desktop; Windows/10; afbb5daa-c327-461d-9460-d8e4b3ee4a1f/da0cdd94-5a39-42ef-aa68-54cbc1b852c3)' 2>&1)
+    if [[ "$GetToken" == "curl"* ]]; then
         echo -n -e "\r Max.com:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
-    local isUnavailable=$(echo $tmpresult | grep 'geo-availability')
-    local region=$(echo $tmpresult | cut -f4 -d"/" | tr [:lower:] [:upper:])
+    local Token=$(echo $GetToken | jq .data.attributes.token | tr -d '"' )
+    local tmpresult=$(curl $curlArgs -${1} -sS "https://default.any-any.prd.api.max.com/users/me" -b "st=${Token}" 2>&1)
+    local result=$(echo $tmpresult | jq .data.attributes.currentLocationTerritory | tr -d '"')
+
+
     if [ -n "$isUnavailable" ]; then
         echo -n -e "\r Max.com:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
         return
@@ -1954,9 +1957,9 @@ function MediaUnlockTest_NetflixCDN() {
         local dns_dig="@${Dns}"
     fi
     if [[ "$1" == "6" ]]; then
-        local nf_web_ip=$(dig www.netflix.com AAAA +noall +answer +nottl $dns_dig | grep -E "IN\s*AAAA" | awk '{print $4}' | head -1)
+        local nf_web_ip=$(getent ahostsv6 www.netflix.com | head -1 | awk '{print $1}')
     else
-        local nf_web_ip=$(dig www.netflix.com A +noall +answer +nottl $dns_dig | grep -E "IN\s*A" | awk '{print $4}' | head -1)
+        local nf_web_ip=$(getent ahostsv4 www.netflix.com | head -1 | awk '{print $1}')
     fi
     if [ ! -n "$nf_web_ip" ]; then
         echo -n -e "\r Netflix Preferred CDN:\t\t\t${Font_Red}Null${Font_Suffix}\n"
