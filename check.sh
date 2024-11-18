@@ -791,16 +791,12 @@ function MediaUnlockTest_MaxCom() {
     local Token=$(echo $GetToken | jq .data.attributes.token | tr -d '"' )
     local tmpresult=$(curl $curlArgs -${1} -sS "https://default.any-any.prd.api.max.com/users/me" -b "st=${Token}" 2>&1)
     local result=$(echo $tmpresult | jq .data.attributes.currentLocationTerritory | tr -d '"')
-
-
-    if [ -n "$isUnavailable" ]; then
+    local availableRegion=$(curl $curlArgs -${1} -sSL "https://www.max.com/" 2>&1 | grep -woP '"url":"/[a-z]{2}/[a-z]{2}"' | cut -f4 -d'"' | cut -f2 -d'/' | sort -n | uniq | xargs | tr a-z A-Z)
+    if [[ "$availableRegion" == *"$result"*  ]]; then
+        echo -n -e "\r Max.com:\t\t\t\t${Font_Green}Yes (Region: $result)${Font_Suffix}\n"
+        return
+    else
         echo -n -e "\r Max.com:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
-        return
-    elif [ -z "$isUnavailable" ] && [ -n "$region" ]; then
-        echo -n -e "\r Max.com:\t\t\t\t${Font_Green}Yes (Region: $region)${Font_Suffix}\n"
-        return
-    elif [ -z "$isUnavailable" ] && [ -z "$region" ]; then
-        echo -n -e "\r Max.com:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
         return
     fi
 
