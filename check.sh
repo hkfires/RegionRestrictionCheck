@@ -4029,7 +4029,8 @@ function HK_UnlockTest() {
 	    MediaUnlockTest_NowE ${1} &
 	    MediaUnlockTest_ViuTV ${1} &
 	    MediaUnlockTest_MyTVSuper ${1} &
-	    MediaUnlockTest_HBOGO_ASIA ${1} &
+	    # MediaUnlockTest_HBOGO_ASIA ${1} &
+        MediaUnlockTest_MaxCom ${1} &
         MediaUnlockTest_HoyTV ${1} &
         MediaUnlockTest_BahamutAnime ${1} &
         MediaUnlockTest_NBATV ${1} &
@@ -4046,7 +4047,7 @@ function HK_UnlockTest() {
 	)
     fi
     wait
-    local array=("Now E:" "Viu.TV:" "MyTVSuper:" "HBO GO Asia:" "HOY TV" "BiliBili Hongkong/Macau/Taiwan:" "Bahamut Anime:" "NBA TV:")
+    local array=("Now E:" "Viu.TV:" "MyTVSuper:" "Max.com:" "HOY TV" "BiliBili Hongkong/Macau/Taiwan:" "Bahamut Anime:" "NBA TV:")
     echo_Result ${result} ${array}
     echo "======================================="
 }
@@ -4061,14 +4062,15 @@ function TW_UnlockTest() {
     MediaUnlockTest_LineTV.TW ${1} &
     MediaUnlockTest_HamiVideo ${1} &
     MediaUnlockTest_Catchplay ${1} &
-    MediaUnlockTest_HBOGO_ASIA ${1} &
+    # MediaUnlockTest_HBOGO_ASIA ${1} &
+    MediaUnlockTest_MaxCom ${1} &
     MediaUnlockTest_BahamutAnime ${1} &
     MediaUnlockTest_FridayVideo ${1} &
     #MediaUnlockTest_ElevenSportsTW ${1}
     # MediaUnlockTest_BilibiliTW ${1} &
     )
     wait
-    local array=("KKTV:" "LiTV:" "MyVideo:" "4GTV.TV:" "LineTV.TW:" "Hami Video:" "CatchPlay+:" "HBO GO Asia:" "Bahamut Anime:" "Friday Video:" "Bilibili Taiwan Only:")
+    local array=("KKTV:" "LiTV:" "MyVideo:" "4GTV.TV:" "LineTV.TW:" "Hami Video:" "CatchPlay+:" "Max.com" "Bahamut Anime:" "Friday Video:" "Bilibili Taiwan Only:")
     echo_Result ${result} ${array}
     echo "======================================="
 }
@@ -4259,11 +4261,12 @@ function KR_UnlockTest() {
 function SEA_UnlockTest(){
     echo "==========[ SouthEastAsia ]============"
     local result=$(
-    MediaUnlockTest_HBOGO_ASIA ${1} &
+    # MediaUnlockTest_HBOGO_ASIA ${1} &
+    MediaUnlockTest_MaxCom ${1} &
     MediaUnblockTest_BGlobalSEA ${1} &
     )
     wait
-    local array=("HBO GO Asia:" "B-Global SouthEastAsia:")
+    local array=("Max.com:" "B-Global SouthEastAsia:")
     echo_Result ${result} ${array}
     ShowRegion SG
     local result=$(
