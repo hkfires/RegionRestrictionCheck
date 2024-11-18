@@ -789,10 +789,15 @@ function MediaUnlockTest_MaxCom() {
         return
     fi
     local Token=$(echo $GetToken | jq .data.attributes.token | tr -d '"' )
-    local tmpresult=$(curl $curlArgs -${1} -sS "https://default.any-any.prd.api.max.com/users/me" -b "st=${Token}" 2>&1)
+    local APITemp=$(curl $curlArgs -${1} -sS "https://default.any-any.prd.api.max.com/session-context/headwaiter/v1/bootstrap" -X POST -b "st=${Token}")
+    local domain=$(echo $APITemp | jq .routing.domain | tr -d '"')
+    local tenant=$(echo $APITemp | jq .routing.tenant | tr -d '"')
+    local env=$(echo $APITemp | jq .routing.env | tr -d '"')
+    local homeMarket=$(echo $APITemp | jq .routing.homeMarket | tr -d '"')
+    local tmpresult=$(curl $curlArgs -${1} -sS "https://default.$tenant-$homeMarket.$env.$domain/users/me" -b "st=${Token}" 2>&1)
     local result=$(echo $tmpresult | jq .data.attributes.currentLocationTerritory | tr -d '"')
     local availableRegion=$(curl $curlArgs -${1} -sSL "https://www.max.com/" 2>&1 | grep -woP '"url":"/[a-z]{2}/[a-z]{2}"' | cut -f4 -d'"' | cut -f2 -d'/' | sort -n | uniq | xargs | tr a-z A-Z)
-    if [[ "$availableRegion" == *"$result"*  ]]; then
+    if [[ "$availableRegion" == *"$result"* ]] && [ -n "$result" ]; then
         echo -n -e "\r Max.com:\t\t\t\t${Font_Green}Yes (Region: $result)${Font_Suffix}\n"
         return
     else
