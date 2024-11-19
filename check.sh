@@ -4043,6 +4043,7 @@ function HK_UnlockTest() {
 	    # MediaUnlockTest_MyTVSuper ${1} &
 	    # MediaUnlockTest_HBOGO_ASIA ${1} &
         MediaUnlockTest_HoyTV ${1} &
+        MediaUnlockTest_MaxCom ${1} &
 	    # MediaUnlockTest_BilibiliHKMCTW ${1} &
 	)
     fi
