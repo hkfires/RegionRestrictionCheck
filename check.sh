@@ -876,7 +876,7 @@ function MediaUnlockTest_iQYI_Region() {
 
 
 function MediaUnlockTest_HuluUS() {
-    local tmpresult=$(curl $curlArgs -${1} -L 'https://auth.hulu.com/v4/web/password/authenticate' -H 'cookie: _h_csrf_id=b0b3da20eccdc796dd61d9145a095be4927a2ff56821ad4d3f91804fd6f918ea' --data-raw 'csrf=fdc1427eccde53326e27d7575c436595e28299dc420232ff26075ca06bbb28ed&password=Jam0.5cm~&scenario=web_password_login&user_email=me%40jamchoi.cc' 2>&1)
+    local tmpresult=$(curl $curlArgs -${1}  --user-agent "${UA_Browser}" -SsL 'https://auth.hulu.com/v4/web/password/authenticate' -H 'cookie: _h_csrf_id=b0b3da20eccdc796dd61d9145a095be4927a2ff56821ad4d3f91804fd6f918ea' --data-raw 'csrf=fdc1427eccde53326e27d7575c436595e28299dc420232ff26075ca06bbb28ed&password=Jam0.5cm~&scenario=web_password_login&user_email=me%40jamchoi.cc' 2>&1)
     if [[ "$tmpresult" == "curl"* ]]; then
         echo -n -e "\r Hulu:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
