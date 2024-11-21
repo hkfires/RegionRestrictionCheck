@@ -4243,10 +4243,10 @@ function KR_UnlockTest() {
     MediaUnlockTest_CoupangPlay ${1} &
     MediaUnlockTest_NaverTV ${1} &
     MediaUnlockTest_Afreeca ${1} &
-    MediaUnlockTest_SpotvNow ${1} &
+    # MediaUnlockTest_SpotvNow ${1} &
     MediaUnlockTest_KBSDomestic ${1} &
     MediaUnlockTest_PandaTV ${1} &
-    #MediaUnlockTest_KOCOWA ${1} &
+    MediaUnlockTest_KOCOWA ${1} &
     )
     wait
     local array=("Wavve:" "Tving:" "Coupang Play:" "Naver TV:" "Afreeca TV:" "SPOTV NOW:" "KBS Domestic:" "PandaTV:")
