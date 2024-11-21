@@ -1010,6 +1010,24 @@ function MediaUnlockTest_Niconico() {
 
 }
 
+function MediaUnlockTest_MGStage() {
+    local result=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -sSI -X GET "https://www.mgstage.com/" --write-out %{http_code} --output /dev/null 2>&1)
+    if [[ "$result" == "curl"* ]]; then
+        echo -n -e "\r MGStage:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+    if [[ "$result" == "403" ]]; then
+        echo -n -e "\r MGStage:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        return
+    elif [[ "$result" == "200" ]]; then
+        echo -n -e "\r MGStage:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+        return
+    else
+        echo -n -e "\r MGStage:\t\t\t\t${Font_Red}Failed ($result)${Font_Suffix}\n"
+    fi
+
+}
+
 function MediaUnlockTest_ParamountPlus() {
     local result=$(curl $curlArgs -${1} -Ss -o /dev/null -L --max-time 10 -w '%{url_effective}\n' "https://www.paramountplus.com/" 2>&1)
     if [[ "$result" == "curl"* ]]; then
@@ -3626,9 +3644,9 @@ function MediaUnlockTest_Sooka() {
 
 function MediaUnlockTest_BilibiliAnimeNew() {
     if [[ "$1" == "6" ]];then
-        local bili_ip6="2409:8c54:1841:2002::22"
+        local bili_ip6=$(getent ahostsv6 api.bilibili.com | head -1 | awk '{print $1}')
         if [ -z "$bili_ip6" ];then
-            echo -n -e "\r Bilibili Anime:\t\t\t${Font_Red}Failed (No ECS Support)${Font_Suffix}\n"
+            local bili_ip6="2409:8c54:1841:2002::22"
             return
         fi
         local tmp=$(curl $curlArgs --user-agent "${UA_Browser}" -${1} -fsSL --max-time 10 "https://api.bilibili.com/x/web-interface/zone" --resolve api.bilibili.com:443:[$bili_ip6] 2>&1)
@@ -4079,9 +4097,10 @@ function JP_UnlockTest() {
     MediaUnlockTest_Lemino ${1} &
     MediaUnlockTest_J:COM_ON_DEMAND ${1} &
     MediaUnlockTest_RakutenTVJP ${1} &
+    MediaUnlockTest_MGStage ${1} &
     )
     wait
-    local array=("TVer:" "WOWOW:" "VideoMarket:" "D Anime Store:" "FOD(Fuji TV):" "Radiko:" "Karaoke@DAM:" "J:com On Demand:" "AnimeFesta:" "Lemino:" "Rakuten TV JP:")
+    local array=("TVer:" "WOWOW:" "VideoMarket:" "D Anime Store:" "FOD(Fuji TV):" "Radiko:" "Karaoke@DAM:" "J:com On Demand:" "AnimeFesta:" "Lemino:" "MGStage:" "Rakuten TV JP:")
     echo_Result ${result} ${array}
     ShowRegion Game
     local result=$(
