@@ -185,25 +185,6 @@ checkDependencies() {
         fi
     fi
     
-    if ! command -v dig &>/dev/null; then
-        if [ "$is_debian" == 1 ]; then
-            echo -e "${Font_Green}Installing dnsutils${Font_Suffix}"
-            $InstallMethod update >/dev/null 2>&1
-            $InstallMethod install dnsutils -y >/dev/null 2>&1
-            elif [ "$is_redhat" == 1 ]; then
-            echo -e "${Font_Green}Installing bind-utils${Font_Suffix}"
-            $InstallMethod makecache >/dev/null 2>&1
-            $InstallMethod install bind-utils -y >/dev/null 2>&1
-            elif [ "$is_termux" == 1 ]; then
-            echo -e "${Font_Green}Installing dnsutils${Font_Suffix}"
-            $InstallMethod update -y >/dev/null 2>&1
-            $InstallMethod install dnsutils -y >/dev/null 2>&1
-            elif [ "$is_macos" == 1 ]; then
-            echo -e "${Font_Green}Installing bind${Font_Suffix}"
-            $InstallMethod install bind
-        fi
-    fi
-    
     if ! command -v jq &>/dev/null; then
         if [ "$is_debian" == 1 ]; then
             echo -e "${Font_Green}Installing jq${Font_Suffix}"
@@ -1952,11 +1933,6 @@ function MediaUnlockTest_CineMax() {
 
 function MediaUnlockTest_NetflixCDN() {
     #Detect Hijack
-    if [ -z "$Dns" ]; then
-        local dns_dig=""
-    else
-        local dns_dig="@${Dns}"
-    fi
     if [[ "$1" == "6" ]]; then
         local nf_web_ip=$(getent ahostsv6 www.netflix.com | head -1 | awk '{print $1}')
     else
@@ -3650,7 +3626,7 @@ function MediaUnlockTest_Sooka() {
 
 function MediaUnlockTest_BilibiliAnimeNew() {
     if [[ "$1" == "6" ]];then
-        local bili_ip6=$(dig api.bilibili.com AAAA +noall +answer +nottl +subnet=120.232.0.0/24 | grep -E "IN\s*AAAA" | awk '{print $4}' | head -1)
+        local bili_ip6="2409:8c54:1841:2002::22"
         if [ -z "$bili_ip6" ];then
             echo -n -e "\r Bilibili Anime:\t\t\t${Font_Red}Failed (No ECS Support)${Font_Suffix}\n"
             return
