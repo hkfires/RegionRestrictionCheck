@@ -2902,7 +2902,7 @@ function MediaUnlockTest_KBSDomestic() {
         echo -n -e "\r KBS Domestic:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
-    local result1=$(echo "$tmpresult" | grep "ipck" | grep 'Domestic\\\":true' )
+    local result1=$(echo "$tmpresult" | grep "ipck" | grep 'Domestic\\\":\ true' )
     if [ -z "$result1" ]; then
         echo -n -e "\r KBS Domestic:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
     else
@@ -2935,7 +2935,7 @@ function MediaUnlockTest_SpotvNow() {
 }
 
 function MediaUnlockTest_KBSAmerican() {
-    local tmpresult=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fSsL --max-time 10 "https://vod.kbs.co.kr/index.html?source=episode&sname=vod&stype=vod&program_code=T2022-0690&program_id=PS-2022164275-01-000&broadcast_complete_yn=N&local_station_code=00&section_code=03 " 2>&1)
+    local tmpresult=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fSsL --max-time 10 "https://vod.kbs.co.kr/index.html?source=episode&sname=vod&stype=vod&program_code=T2022-0690&program_id=PS-2022164275-01-000&broadcast_complete_yn=N&local_station_code=00&section_code=03" 2>&1)
     if [[ "$tmpresult" == "curl"* ]] && [ "$1" == "6" ]; then
         echo -n -e "\r KBS American:\t\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
         return
@@ -2943,7 +2943,7 @@ function MediaUnlockTest_KBSAmerican() {
         echo -n -e "\r KBS American:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
-    local result1=$(echo "$tmpresult" | grep "ipck" | grep 'American\\\":true' )
+    local result1=$(echo "$tmpresult" | grep "ipck" | grep 'American\\\":\ true' )
     if [ -z "$result1" ]; then
         echo -n -e "\r KBS American:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
     else
