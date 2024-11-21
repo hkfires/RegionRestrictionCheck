@@ -3696,6 +3696,10 @@ function MediaUnlockTest_ChatGPT() {
             echo -n -e "\r ChatGPT:\t\t\t\t${Font_Red}No (Blocked)${Font_Suffix}\n"
             return
         fi
+        if [[ "$tmpresult1" == *"unsupported_country_region_territory"* ]]; then
+            echo -n -e "\r ChatGPT:\t\t\t\t${Font_Red}No (Unsupported Region)${Font_Suffix}\n"
+            return
+        fi
         if [[ "$cf_details" == *"(1)"* ]]; then
             echo -n -e "\r ChatGPT:\t\t\t\t${Font_Red}No (Disallowed ISP[1])${Font_Suffix}\n"
             return
