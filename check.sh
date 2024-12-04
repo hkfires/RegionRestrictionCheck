@@ -1846,6 +1846,10 @@ function MediaUnlockTest_TVBAnywhere() {
     fi
     local region=$(echo $tmpresult | jq .country | tr -d '"' )
     local result=$(echo $tmpresult | jq .allow_in_this_country )
+    if [[ "$region" == "HK" ]]; then
+        echo -n -e "\r TVBAnywhere+:\t\t\t\t${Font_Yellow}Serviced by MyTvSuper (Region: ${region})${Font_Suffix}\n"
+        return
+    fi
     if [[ "$result" == "true" ]]; then
         echo -n -e "\r TVBAnywhere+:\t\t\t\t${Font_Green}Yes (Region: ${region})${Font_Suffix}\n"
         return
