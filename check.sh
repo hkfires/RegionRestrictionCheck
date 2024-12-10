@@ -3733,7 +3733,7 @@ function MediaUnlockTest_Sora() {
         echo -n -e "\r Sora:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
-    local result1=$(echo "$tmpresult" | grep 'location' )
+    local result1=$(echo "$tmpresult" | grep 'cf-cache-status' )
     if [ ! -n "$result1" ]; then
     	echo -n -e "\r Sora:\t\t\t\t\t${Font_Red}No${Font_Suffix}\n"
     else
