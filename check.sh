@@ -3727,6 +3727,21 @@ function MediaUnlockTest_ChatGPT() {
     fi
 }
 
+function MediaUnlockTest_Sora() {
+    local tmpresult=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -SsLI --max-time 10 "https://sora.com" 2>&1)
+    if [[ "$tmpresult" == "curl"* ]]; then
+        echo -n -e "\r Sora:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+    local result1=$(echo "$tmpresult" | grep 'location' )
+    if [ ! -n "$result1" ]; then
+    	echo -n -e "\r Sora:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+    else
+    	local region1=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -SsL --max-time 10 "https://sora.com/cdn-cgi/trace" 2>&1 | grep "loc=" | awk -F= '{print $2}')
+        echo -n -e "\r Sora:\t\t\t\t${Font_Green}Yes (Region: ${region1})${Font_Suffix}\n"
+    fi
+}
+
 function AIUnlockTest_Gemini_location() {
     local tmp=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -SsL --max-time 10 'https://gemini.google.com/_/BardChatUi/data/batchexecute'   -H 'accept-language: en-US'   --data-raw 'f.req=[[["K4WWud","[[0],[\"en-US\"]]",null,"generic"]]]' 2>&1)
     if [[ "$tmp" == "curl"* ]]; then
@@ -4360,11 +4375,12 @@ function AI_UnlockTest() {
     echo "============[ AI Platform ]============"
     local result=$(
     MediaUnlockTest_ChatGPT ${1} &
+    MediaUnlockTest_Sora ${1} &
     AIUnlockTest_Gemini_location ${1} &
     AIUnlockTest_Copilot ${1} &
     )
     wait
-    local array=("ChatGPT" "Copilot" "Gemini" )
+    local array=("ChatGPT" "Copilot" "Gemini" "Sora:" )
     echo_Result ${result} ${array}
 
     echo "======================================="
