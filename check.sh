@@ -764,7 +764,7 @@ function MediaUnlockTest_PlutoTV() {
 }
 
 function MediaUnlockTest_MaxCom() {
-    local GetToken=$(curl $curlArgs -${1} -sS "https://default.any-any.prd.api.max.com/token?realm=bolt&deviceId=afbb5daa-c327-461d-9460-d8e4b3ee4a1f"   -H 'x-device-info: beam/5.0.0 (desktop/desktop; Windows/10; afbb5daa-c327-461d-9460-d8e4b3ee4a1f/da0cdd94-5a39-42ef-aa68-54cbc1b852c3)' 2>&1)
+    local GetToken=$(curl $curlArgs -${1} -sS "https://default.any-any.prd.api.max.com/token?realm=bolt&deviceId=afbb5daa-c327-461d-9460-d8e4b3ee4a1f"   -H 'x-device-info: beam/5.0.0 (desktop/desktop; Windows/10; afbb5daa-c327-461d-9460-d8e4b3ee4a1f/da0cdd94-5a39-42ef-aa68-54cbc1b852c3)' -H 'x-disco-client: WEB:10:beam:5.2.1' 2>&1)
     if [[ "$GetToken" == "curl"* ]]; then
         echo -n -e "\r Max.com:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
