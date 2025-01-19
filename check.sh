@@ -3446,7 +3446,7 @@ function MediaUnlockTest_Tiktok() {
         return
     fi
     local region="$(echo "${result1}" | jq ".data.store_region" | tr -d '"' )"
-    if [[ "$result" == *"/about" ]] || [[ "$result" == *"/status"* ]]; then
+    if [[ "$result" == *"/about" ]] || [[ "$result" == *"/status"* ]] || [[ "$result" == *"landing"* ]]; then
         if [[ "$region" == "cn" ]]; then
             echo -n -e "\r Tiktok:\t\t\t\t${Font_Yellow}Provided by Douyin${Font_Suffix}\n"
             return
