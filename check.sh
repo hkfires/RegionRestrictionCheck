@@ -3898,6 +3898,26 @@ function MediaUnlockTest_RakutenTVJP(){
     fi
 }
 
+function MediaUnlockTest_ofiii() {
+    local result=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://ntdofifreepc.akamaized.net" 2>&1)
+    if [[ "$result" == "000" ]] && [[ "$1" == "6" ]]; then
+        echo -n -e "\r ofiii:\t\t\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
+        return
+    elif [[ "$result" == "000" ]]; then
+        echo -n -e "\r ofiii:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+    if [[ "$result" == "451" ]]; then
+        echo -n -e "\r ofiii:\t\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+        return
+    else
+        echo -n -e "\r ofiii:\t\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        return
+    fi
+
+    echo -n -e "\r ofiii:\t\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+}
+
 function echo_Result() {
     for((i=0;i<${#array[@]};i++))
     do
@@ -4092,11 +4112,12 @@ function TW_UnlockTest() {
     MediaUnlockTest_MaxCom ${1} &
     MediaUnlockTest_BahamutAnime ${1} &
     MediaUnlockTest_FridayVideo ${1} &
+    MediaUnlockTest_ofiii ${1} &
     #MediaUnlockTest_ElevenSportsTW ${1}
     # MediaUnlockTest_BilibiliTW ${1} &
     )
     wait
-    local array=("KKTV:" "LiTV:" "MyVideo:" "4GTV.TV:" "LineTV.TW:" "Hami Video:" "CatchPlay+:" "Max.com" "Bahamut Anime:" "Friday Video:" "Bilibili Taiwan Only:")
+    local array=("KKTV:" "LiTV:" "ofiii:" "MyVideo:" "4GTV.TV:" "LineTV.TW:" "Hami Video:" "CatchPlay+:" "Max.com" "Bahamut Anime:" "Friday Video:" "Bilibili Taiwan Only:")
     echo_Result ${result} ${array}
     echo "======================================="
 }
