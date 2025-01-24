@@ -1150,22 +1150,25 @@ function MediaUnlockTest_YouTube_CDN() {
         return
     fi
 
-    local iata=$(echo $tmpresult | grep router | cut -f2 -d'"' | cut -f2 -d"." | sed 's/.\{2\}$//' | tr [:lower:] [:upper:])
-    local checkfailed=$(echo $tmpresult | grep "=>")
-    if [ -z "$iata" ] && [ -n "$checkfailed" ]; then
-        CDN_ISP=$(echo $checkfailed | awk '{print $3}' | cut -f1 -d"-" | tr [:lower:] [:upper:])
-        echo -n -e "\r YouTube CDN:\t\t\t\t${Font_Yellow}Associated with [$CDN_ISP]${Font_Suffix}\n"
-        return
-    elif [ -n "$iata" ]; then
-        local lineNo=$(echo "$IATACode" | cut -f3 -d"|" | sed -n "/${iata}/=")
-        local location=$(echo "$IATACode" | awk "NR==${lineNo}" | cut -f1 -d"|" | sed -e 's/^[[:space:]]*//')
-        echo -n -e "\r YouTube CDN:\t\t\t\t${Font_Green}$location${Font_Suffix}\n"
-        return
-    else
-        echo -n -e "\r YouTube CDN:\t\t\t\t${Font_Red}Undetectable${Font_Suffix}\n"
+    local cdn_node=$(echo $tmpresult | awk '{print $3}')
+    if [[ "$cdn_node" == *"-"* ]]; then
+        local CDN_ISP=$(echo $cdn_node | cut -f1 -d"-" | tr [:lower:] [:upper:])
+        local CDN_LOC=$(echo $cdn_node | cut -f2 -d"-" | sed 's/[^a-z]//g')
+        local lineNo=$(echo "${CDN_LOC^^}" | cut -f3 -d"|" | sed -n "/${iata}/=")
+        local location=$(echo "${CDN_LOC^^}" | awk "NR==${lineNo}" | cut -f1 -d"|" | sed -e 's/^[[:space:]]*//')
+        echo -n -e "\r YouTube CDN:\t\t\t\t${Font_Yellow}$CDN_ISP in $location ($cdn_node)${Font_Suffix}\n"
         return
     fi
-
+    if [[ "$cdn_node" == *"."* ]]; then
+        local CDN_LOC=$(echo $cdn_node | cut -f2 -d"-" | cut -c1-3)
+        local lineNo=$(echo "${CDN_LOC^^}" | cut -f3 -d"|" | sed -n "/${iata}/=")
+        local location=$(echo "${CDN_LOC^^}" | awk "NR==${lineNo}" | cut -f1 -d"|" | sed -e 's/^[[:space:]]*//')
+        echo -n -e "\r YouTube CDN:\t\t\t\t${Font_Green}$location ($cdn_node)${Font_Suffix}\n"
+        return
+    fi
+    echo -n -e "\r YouTube CDN:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+    return
+    
 }
 
 function MediaUnlockTest_BritBox() {
