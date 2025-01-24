@@ -1155,14 +1155,14 @@ function MediaUnlockTest_YouTube_CDN() {
         local CDN_ISP=$(echo $cdn_node | cut -f1 -d"-" | tr [:lower:] [:upper:])
         local CDN_LOC=$(echo $cdn_node | cut -f2 -d"-" | sed 's/[^a-z]//g')
         local lineNo=$(echo "${IATACode}" | cut -f3 -d"|" | sed -n "/${CDN_LOC^^}/=")
-        local location=$(echo "${IATACode}" | awk "NR==${lineNo}" | cut -f1 -d"|" | sed -e 's/^[[:space:]]*//')
+        local location=$(echo "${IATACode}" | awk "NR==${lineNo}" | cut -f1 -d"|" | sed -e 's/^[[:space:]]*//' | sed 's/\s*$//')
         echo -n -e "\r YouTube CDN:\t\t\t\t${Font_Yellow}$CDN_ISP in $location ($cdn_node)${Font_Suffix}\n"
         return
     fi
     if [[ "$cdn_node" == *"s"* ]]; then
         local CDN_LOC=$(echo $cdn_node | cut -f2 -d"-" | cut -c1-3)
         local lineNo=$(echo "${IATACode}" | cut -f3 -d"|" | sed -n "/${CDN_LOC^^}/=")
-        local location=$(echo "${IATACode}" | awk "NR==${lineNo}" | cut -f1 -d"|" | sed -e 's/^[[:space:]]*//')
+        local location=$(echo "${IATACode}" | awk "NR==${lineNo}" | cut -f1 -d"|" | sed -e 's/^[[:space:]]*//' | sed 's/\s*$//')
         echo -n -e "\r YouTube CDN:\t\t\t\t${Font_Green}$location ($cdn_node)${Font_Suffix}\n"
         return
     fi
