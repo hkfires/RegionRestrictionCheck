@@ -564,7 +564,10 @@ function MediaUnlockTest_NowE() {
 
     local result=$(curl $curlArgs -${1} -s --max-time 10 -X POST -H "Content-Type: application/json" -d '{"contentId":"202105121370235","contentType":"Vod","pin":"","deviceId":"W-60b8d30a-9294-d251-617b-6oagagn3","deviceType":"WEB"}' "https://webtvapi.nowe.com/16/1/getVodURL" | python -m json.tool 2>/dev/null | grep 'responseCode' | awk '{print $2}' | cut -f2 -d'"' 2>&1)
 
-    if [[ "$result" == "SUCCESS" ]]; then
+    if [[ "$result" == "NOT_LOGIN" ]]; then
+        echo -n -e "\r Now E:\t\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+        return
+    elif [[ "$result" == "SUCCESS" ]]; then
         echo -n -e "\r Now E:\t\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
         return
     elif [[ "$result" == "PRODUCT_INFORMATION_INCOMPLETE" ]]; then
