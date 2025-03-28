@@ -2282,7 +2282,7 @@ function MediaUnlockTest_SkyGONZ() {
         echo -n -e "\r SkyGo NZ:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
         return
     else
-        echo -n -e "\r Starhub TV+:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        echo -n -e "\r SkyGo NZ:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
         return
     fi
     echo -n -e "\r SkyGo NZ:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
