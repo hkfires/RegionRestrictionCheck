@@ -427,10 +427,10 @@ function MediaUnlockTest_Netflix() {
     local region1=$( echo -e "$tmpresult1" | grep 'netflix.reactContext' | awk -F= '{print $2}' | awk -F\; '{print $1}') | tr -d '[:cntrl:]' | jq '.models.geo.data.requestCountry.id' | tr -d '"' )
 
     if [[ "$result1" == "true" ]] || [[ "$result2" == "true" ]]; then
-        echo -n -e "\r Netflix:\t\t\t\t${Font_Green}Yes (Region: ${region})${Font_Suffix}\n"
+        echo -n -e "\r Netflix:\t\t\t\t${Font_Green}Yes (Region: ${region1})${Font_Suffix}\n"
         return
     elif [[ "$result1" == "false" ]] || [[ "$result2" == "false" ]]; then
-        echo -n -e "\r Netflix:\t\t\t\t${Font_Yellow}Originals Only (Region: ${region})${Font_Suffix}\n"
+        echo -n -e "\r Netflix:\t\t\t\t${Font_Yellow}Originals Only (Region: ${region1})${Font_Suffix}\n"
         return
     fi
     echo -n -e "\r Netflix:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
