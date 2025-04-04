@@ -417,7 +417,7 @@ function MediaUnlockTest_BBCiPLAYER() {
 
 function MediaUnlockTest_Netflix() {
     local tmpresult1=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fSsL --max-time 10 --tlsv1.3 "https://www.netflix.com/title/81280792" 2>&1)
-    local tmpresult2=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fSsI --max-time 10 --tlsv1.3 "https://www.netflix.com/title/70143836" 2>&1)
+    local tmpresult2=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fSsL --max-time 10 --tlsv1.3 "https://www.netflix.com/title/70143836" 2>&1)
     if [[ "$tmpresult1" == "curl"* ]] || [[ "$tmpresult2" == "curl"* ]]; then
         echo -n -e "\r Netflix:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
