@@ -3896,15 +3896,12 @@ function MediaUnlockTest_RakutenTVJP(){
 }
 
 function MediaUnlockTest_ofiii() {
-    local result=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://ntdofifreepc.akamaized.net" 2>&1)
-    if [[ "$result" == "000" ]] && [[ "$1" == "6" ]]; then
-        echo -n -e "\r ofiii:\t\t\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
-        return
-    elif [[ "$result" == "000" ]]; then
+    local result=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://cdi.ofiii.com/ofiii_cdi/video/urls?device_type=pc&device_id=450b705c-7a08-49e9-9297-10ec0c8624b0&media_type=comic&asset_id=vod68157-020015M001&project_num=OFWEB00&puid=7a9c18b9-eecc-499b-afd2-e905bf04f5a4" 2>&1)
+    if [[ "$result" == "000" ]]; then
         echo -n -e "\r ofiii:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
-    if [[ "$result" == "451" ]]; then
+    if [[ "$result" == "200" ]]; then
         echo -n -e "\r ofiii:\t\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
         return
     else
