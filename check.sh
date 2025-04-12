@@ -3890,7 +3890,7 @@ function MediaUnlockTest_RakutenTVJP(){
         echo -n -e "\r Rakuten TV JP:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
         return
     else
-        echo -n -e "\r Mora:\t\t\t\t\t${Font_Red}Unknown (Code: $result)${Font_Suffix}\n"
+        echo -n -e "\r Rakuten TV JP:\t\t\t\t${Font_Red}Unknown (Code: $result)${Font_Suffix}\n"
         return
     fi
 }
