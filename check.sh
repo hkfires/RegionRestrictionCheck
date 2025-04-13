@@ -3912,6 +3912,24 @@ function MediaUnlockTest_ofiii() {
     echo -n -e "\r ofiii:\t\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
 }
 
+function MediaUnlockTest_DStv() {
+    local result=$(curl $curlArgs -${1} -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://now.dstv.com/" 2>&1)
+    if [ "$result" = "000" ]; then
+        echo -n -e "\r DStv:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    elif [ "$result" = "451" ]; then
+        echo -n -e "\r DStv:\t\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+        return
+    elif [ "$result" = "200" ]; then
+        echo -n -e "\r DStv:\t\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        return
+    else
+        echo -n -e "\r DStv:\t\t\t\t\t${Font_Red}Failed (Unexpected Result: $result)${Font_Suffix}\n"
+        return
+    fi
+
+}
+
 function echo_Result() {
     for((i=0;i<${#array[@]};i++))
     do
@@ -4371,6 +4389,20 @@ function SEA_UnlockTest(){
     echo "======================================="
 }
 
+function AF_UnlockTest() {
+    echo "==============[ Africa ]=============="
+    local result=$(
+        MediaUnlockTest_DStv &
+        # MediaUnlockTest_Showmax &
+        MediaUnlockTest_Viu.com &
+        # MediaUnlockTest_ParamountPlus &
+    )
+    wait
+    local array=("DSTV:" "Showmax:" "Viu.com:")
+    echo_result ${result} ${array}
+    echo "======================================="
+}
+
 function Sport_UnlockTest() {
     echo "===============[ Sport ]==============="
     local result=$(
@@ -4536,8 +4568,9 @@ function Start() {
         echo -e "${Font_SkyBlue}Input Number  [6]: [ Multination + Europe ]${Font_Suffix}"
         echo -e "${Font_SkyBlue}Input Number  [7]: [ Multination + Oceania ]${Font_Suffix}"
         echo -e "${Font_SkyBlue}Input Number  [8]: [ Multination + Korean ]${Font_Suffix}"
-        echo -e "${Font_SkyBlue}Input Number  [9]: [ Multination + SouthEastAsia ]检测${Font_Suffix}"
-        echo -e "${Font_SkyBlue}Input Number [10]: [ AI Platform ]检测${Font_Suffix}"
+        echo -e "${Font_SkyBlue}Input Number  [9]: [ Multination + SouthEastAsia ]${Font_Suffix}"
+        echo -e "${Font_SkyBlue}Input Number [10]: [ AI Platform ]${Font_Suffix}"
+        echo -e "${Font_SkyBlue}Input Number [11]: [ Multination + Africa ]${Font_Suffix}"
         echo -e "${Font_SkyBlue}Input Number  [0]: [ Multination Only ]${Font_Suffix}"
         echo -e "${Font_SkyBlue}Input Number [99]: [ Sport Platforms ]${Font_Suffix}"
         read -p "Please Input the Correct Number or Press ENTER:" num
@@ -4553,6 +4586,7 @@ function Start() {
         echo -e "${Font_SkyBlue}输入数字  [8]: [ 跨国平台+韩国平台 ]检测${Font_Suffix}"
         echo -e "${Font_SkyBlue}输入数字  [9]: [跨国平台+东南亚平台]检测${Font_Suffix}"
         echo -e "${Font_SkyBlue}输入数字 [10]: [      AI 平台     ]检测${Font_Suffix}"
+        echo -e "${Font_SkyBlue}输入数字 [11]: [ 跨国平台+非洲平台 ]检测${Font_Suffix}"
         echo -e "${Font_SkyBlue}输入数字  [0]: [   只进行跨国平台  ]检测${Font_Suffix}"
         echo -e "${Font_SkyBlue}输入数字 [99]: [   体育直播平台    ]检测${Font_Suffix}"
         read -p "请输入正确数字或直接按回车:" num
@@ -4710,7 +4744,21 @@ function RunScript() {
                 AI_UnlockTest 6
             fi
             Goodbye
-
+            
+        elif [[ "$num" -eq 11 ]]; then
+            clear
+            ScriptTitle
+            CheckV4
+            if [[ "$isv4" -eq 1 ]]; then
+                Global_UnlockTest 4
+                AF_UnlockTest 4
+            fi
+            CheckV6
+            if [[ "$isv6" -eq 1 ]]; then
+                Global_UnlockTest 6
+                AF_UnlockTest 6
+            fi
+            Goodbye
 
         elif [[ "$num" -eq 99 ]]; then
             clear
@@ -4757,6 +4805,9 @@ function RunScript() {
             EU_UnlockTest 4
             OA_UnlockTest 4
             KR_UnlockTest 4
+            SEA_UnlockTest 4
+            AI_UnlockTest 4
+            AF_UnlockTest 4
         fi
         CheckV6
         if [[ "$isv6" -eq 1 ]]; then
@@ -4769,6 +4820,9 @@ function RunScript() {
             EU_UnlockTest 6
             OA_UnlockTest 6
             KR_UnlockTest 6
+            SEA_UnlockTest 6
+            AI_UnlockTest 6
+            AF_UnlockTest 6
         fi
         Goodbye
     fi
