@@ -4399,7 +4399,7 @@ function AF_UnlockTest() {
     )
     wait
     local array=("DSTV:" "Showmax:" "Viu.com:")
-    echo_result ${result} ${array}
+    echo_Result ${result} ${array}
     echo "======================================="
 }
 
