@@ -3909,12 +3909,11 @@ function MediaUnlockTest_RakutenTVJP(){
 }
 
 function MediaUnlockTest_ofiii() {
-    local tmpresult=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fSsL --max-time 10 "https://cdi.ofiii.com/ocean/video/playlist/QsQuMNEHCQA/litv-animation-vod77100-010005M001-video_eng=757125-audio_eng=194289.m3u8" 2>&1)
-    if [[ "$tmpresult" == *"curl"* ]]; then
-        echo -n -e "\r ofiii:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+    local url=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -SsL --max-time 10 "https://cdi.ofiii.com/ocean/video/playlist/QsQuMNEHCQA/litv-animation-vod77100-010005M001-video_eng=757125-audio_eng=194289.m3u8" | grep https | head -1)
+    if [ -z "$url" ]; then
+        echo -n -e "\r ofiii:\t\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
         return
     fi
-    local url=$(echo $tmpresult | grep https | head -1)
     local result=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fsL --write-out %{http_code} --output /dev/null --max-time 10 "$url" 2>&1)
     if [[ "$result" == "000" ]] && [[ "$1" == "6" ]]; then
         echo -n -e "\r ofiii:\t\t\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
