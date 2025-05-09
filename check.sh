@@ -3909,7 +3909,7 @@ function MediaUnlockTest_RakutenTVJP(){
 }
 
 function MediaUnlockTest_ofiii() {
-    local url=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -SsL --max-time 10 "https://cdi.ofiii.com/ocean/video/playlist/QsQuMNEHCQA/litv-animation-vod77100-010005M001-video_eng=757125-audio_eng=194289.m3u8" | grep https | head -1)
+    local url=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -sL --max-time 10 "https://cdi.ofiii.com/ocean/video/playlist/QsQuMNEHCQA/litv-animation-vod77100-010005M001-video_eng=757125-audio_eng=194289.m3u8" | grep https | head -1)
     if [ -z "$url" ]; then
         echo -n -e "\r ofiii:\t\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
         return
