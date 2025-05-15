@@ -3909,16 +3909,8 @@ function MediaUnlockTest_RakutenTVJP(){
 }
 
 function MediaUnlockTest_ofiii() {
-    local url=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -sL --max-time 10 "https://cdi.ofiii.com/ocean/video/playlist/QsQuMNEHCQA/litv-animation-vod77100-010005M001-video_eng=757125-audio_eng=194289.m3u8" | grep https | head -1)
-    if [ -z "$url" ]; then
-        echo -n -e "\r ofiii:\t\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
-        return
-    fi
-    local result=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fsL --write-out %{http_code} --output /dev/null --max-time 10 "$url" 2>&1)
-    if [[ "$result" == "000" ]] && [[ "$1" == "6" ]]; then
-        echo -n -e "\r ofiii:\t\t\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
-        return
-    elif [[ "$result" == "000" ]]; then
+    local result=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://cdi.ofiii.com/ofiii_cdi/video/urls?device_type=pc&device_id=450b705c-7a08-49e9-9297-10ec0c8624b0&media_type=comic&asset_id=vod68157-020015M001&project_num=OFWEB00&puid=7a9c18b9-eecc-499b-afd2-e905bf04f5a4" 2>&1)
+    if [[ "$result" == "000" ]]; then
         echo -n -e "\r ofiii:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
