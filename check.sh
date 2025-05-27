@@ -3930,10 +3930,10 @@ function MediaUnlockTest_DStv() {
     if [ "$result" = "000" ]; then
         echo -n -e "\r DStv:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
-    elif [ "$result" = "451" ]; then
+    elif [ "$result" = "200" ]; then
         echo -n -e "\r DStv:\t\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
         return
-    elif [ "$result" = "200" ]; then
+    elif [ "$result" = "451" ]; then
         echo -n -e "\r DStv:\t\t\t\t\t${Font_Red}No${Font_Suffix}\n"
         return
     else
