@@ -416,28 +416,21 @@ function MediaUnlockTest_BBCiPLAYER() {
 }
 
 function MediaUnlockTest_Netflix() {
-    local result1=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fsLI -X GET --write-out %{http_code} --output /dev/null --max-time 10 --tlsv1.3 "https://www.netflix.com/title/81280792"  2>&1)
-    local result2=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -fsLI -X GET --write-out %{http_code} --output /dev/null --max-time 10 --tlsv1.3 "https://www.netflix.com/title/70143836" 2>&1)
-    local regiontmp=$(curl $curlArgs -${1} -fSsI -X GET --max-time 10 --write-out %{redirect_url} --output /dev/null --tlsv1.3 "https://www.netflix.com/login" 2>&1 )
-    if [[ "$regiontmp" == "curl"* ]]; then
+    local tmpresult1=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -SsL --max-time 10 --tlsv1.3 "https://www.netflix.com/title/81280792" 2>&1)
+    local tmpresult2=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -SsL --max-time 10 --tlsv1.3 "https://www.netflix.com/title/70143836" 2>&1)
+    if [[ "$tmpresult1" == "curl"* ]] || [[ "$tmpresult2" == "curl"* ]]; then
         echo -n -e "\r Netflix:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
-    local region=$(echo $regiontmp | cut -d '/' -f4 | cut -d '-' -f1 | tr [:lower:] [:upper:])
-    if [[ ! -n "$region" ]]; then
-        region="US"
-	fi
-    if [[ "$result1" == "404" ]] && [[ "$result2" == "404" ]]; then
-        echo -n -e "\r Netflix:\t\t\t\t${Font_Yellow}Originals Only (Region: ${region})${Font_Suffix}\n"
+    local result1=$( echo -e $(echo "$tmpresult1" | grep 'netflix.reactContext' | awk -F= '{print $2}' | awk -F\; '{print $1}') | tr -d '[:cntrl:]' | jq '.models.nmTitleGQL.data.metaData.isAvailable' )
+    local result2=$( echo -e $(echo "$tmpresult2" | grep 'netflix.reactContext' | awk -F= '{print $2}' | awk -F\; '{print $1}') | tr -d '[:cntrl:]' | jq '.models.nmTitleGQL.data.metaData.isAvailable' )
+    local region1=$( echo -e $(echo "$tmpresult1" | grep 'netflix.reactContext' | awk -F= '{print $2}' | awk -F\; '{print $1}') | tr -d '[:cntrl:]' | jq '.models.geo.data.requestCountry.id' | tr -d '"' )
+
+    if [[ "$result1" == "true" ]] || [[ "$result2" == "true" ]]; then
+        echo -n -e "\r Netflix:\t\t\t\t${Font_Green}Yes (Region: ${region1})${Font_Suffix}\n"
         return
-    elif [[ "$result1" == "403" ]] && [[ "$result2" == "403" ]]; then
-        echo -n -e "\r Netflix:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
-        return
-    elif [[ "$result1" == "200" ]] || [[ "$result2" == "200" ]]; then
-        echo -n -e "\r Netflix:\t\t\t\t${Font_Green}Yes (Region: ${region})${Font_Suffix}\n"
-        return
-    elif [[ "$result1" == "000" ]]; then
-        echo -n -e "\r Netflix:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+    elif [[ "$result1" == "false" ]] || [[ "$result2" == "false" ]]; then
+        echo -n -e "\r Netflix:\t\t\t\t${Font_Yellow}Originals Only (Region: ${region1})${Font_Suffix}\n"
         return
     fi
     echo -n -e "\r Netflix:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
