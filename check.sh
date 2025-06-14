@@ -89,18 +89,6 @@ UA_Dalvik="Dalvik/2.1.0 (Linux; U; Android 9; ALP-AL00 Build/HUAWEIALP-AL00)"
 Media_Cookie=$(curl -s --retry 3 --max-time 10 "https://raw.githubusercontent.com/1-stream/RegionRestrictionCheck/main/cookies" &)
 IATACode=$(curl -s --retry 3 --max-time 10 "https://raw.githubusercontent.com/1-stream/RegionRestrictionCheck/main/reference/IATACode.txt" &)
 
-countRunTimes() {
-    if [ "$is_busybox" == 1 ]; then
-        count_file=$(mktemp)
-    else
-        count_file=$(mktemp --suffix=RRC)
-    fi
-    RunTimes=$(curl -s --max-time 10 "https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2F1-stream%2FRegionRestrictionCheck&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false" >"${count_file}")
-    TodayRunTimes=$(cat "${count_file}" | tail -3 | head -n 1 | awk '{print $5}')
-    TotalRunTimes=$(($(cat "${count_file}" | tail -3 | head -n 1 | awk '{print $7}') + 0))
-}
-countRunTimes
-
 checkOS() {
     ifTermux=$(echo $PWD | grep termux)
     ifMacOS=$(uname -a | grep Darwin)
@@ -4530,12 +4518,8 @@ function CheckV6() {
 function Goodbye() {
     if [[ "$language" == "e" ]]; then
         echo -e "${Font_Green}Testing Done! Thanks for Using This Script! ${Font_Suffix}"
-        echo -e ""
-        echo -e "${Font_Yellow}Number of Script Runs for Today: ${TodayRunTimes}; Total Number of Script Runs: ${TotalRunTimes} ${Font_Suffix}"
     else
         echo -e "${Font_Green}本次测试已结束，感谢使用此脚本 ${Font_Suffix}"
-        echo -e ""
-        echo -e "${Font_Yellow}检测脚本当天运行次数: ${TodayRunTimes}; 共计运行次数: ${TotalRunTimes} ${Font_Suffix}"
     fi
 }
 
