@@ -4531,279 +4531,279 @@ function Goodbye() {
 
 clear
 
-function ScriptTitle() {
-    if [[ "$language" == "e" ]]; then
-        echo -e " [Stream Platform & Game Region Restriction Test]"
-        echo ""
-        echo -e "${Font_Green}Github Repository:${Font_Suffix} ${Font_Yellow} https://github.com/1-stream/RegionRestrictionCheck ${Font_Suffix}"
-        echo -e "${Font_Purple}Supporting OS: CentOS 6+, Ubuntu 14.04+, Debian 8+, MacOS, Android (Termux), iOS (iSH)${Font_Suffix}"
-        echo ""
-        echo -e " ** Test Starts At: $(date)"
-        echo ""
-    else
-        echo -e " [流媒体平台及游戏区域限制测试]"
-        echo ""
-        echo -e "${Font_Green}项目地址${Font_Suffix} ${Font_Yellow}https://github.com/1-stream/RegionRestrictionCheck ${Font_Suffix}"
-        echo -e "${Font_Green}[商家]TG群组${Font_Suffix} ${Font_Yellow}https://t.me/streamunblock1 ${Font_Suffix}"
-        # echo -e "${Font_Purple}脚本适配OS: IDK${Font_Suffix}"
-        echo ""
-        echo -e " ** 测试时间: $(date '+%Y-%m-%d %H:%M:%S %Z')"
-        echo ""
-    fi
-}
-ScriptTitle
+# function ScriptTitle() {
+#     if [[ "$language" == "e" ]]; then
+#         echo -e " [Stream Platform & Game Region Restriction Test]"
+#         echo ""
+#         echo -e "${Font_Green}Github Repository:${Font_Suffix} ${Font_Yellow} https://github.com/1-stream/RegionRestrictionCheck ${Font_Suffix}"
+#         echo -e "${Font_Purple}Supporting OS: CentOS 6+, Ubuntu 14.04+, Debian 8+, MacOS, Android (Termux), iOS (iSH)${Font_Suffix}"
+#         echo ""
+#         echo -e " ** Test Starts At: $(date)"
+#         echo ""
+#     else
+#         echo -e " [流媒体平台及游戏区域限制测试]"
+#         echo ""
+#         echo -e "${Font_Green}项目地址${Font_Suffix} ${Font_Yellow}https://github.com/1-stream/RegionRestrictionCheck ${Font_Suffix}"
+#         echo -e "${Font_Green}[商家]TG群组${Font_Suffix} ${Font_Yellow}https://t.me/streamunblock1 ${Font_Suffix}"
+#         # echo -e "${Font_Purple}脚本适配OS: IDK${Font_Suffix}"
+#         echo ""
+#         echo -e " ** 测试时间: $(date '+%Y-%m-%d %H:%M:%S %Z')"
+#         echo ""
+#     fi
+# }
+# ScriptTitle
 
-function Start() {
-    if [[ "$language" == "e" ]]; then
-        echo -e "${Font_Blue}Please Select Test Region or Press ENTER to Test All Regions${Font_Suffix}"
-        echo -e "${Font_SkyBlue}Input Number  [1]: [ Multination + Taiwan ]${Font_Suffix}"
-        echo -e "${Font_SkyBlue}Input Number  [2]: [ Multination + Hong Kong ]${Font_Suffix}"
-        echo -e "${Font_SkyBlue}Input Number  [3]: [ Multination + Japan ]${Font_Suffix}"
-        echo -e "${Font_SkyBlue}Input Number  [4]: [ Multination + North America ]${Font_Suffix}"
-        echo -e "${Font_SkyBlue}Input Number  [5]: [ Multination + South America ]${Font_Suffix}"
-        echo -e "${Font_SkyBlue}Input Number  [6]: [ Multination + Europe ]${Font_Suffix}"
-        echo -e "${Font_SkyBlue}Input Number  [7]: [ Multination + Oceania ]${Font_Suffix}"
-        echo -e "${Font_SkyBlue}Input Number  [8]: [ Multination + Korean ]${Font_Suffix}"
-        echo -e "${Font_SkyBlue}Input Number  [9]: [ Multination + SouthEastAsia ]${Font_Suffix}"
-        echo -e "${Font_SkyBlue}Input Number [10]: [ AI Platform ]${Font_Suffix}"
-        echo -e "${Font_SkyBlue}Input Number [11]: [ Multination + Africa ]${Font_Suffix}"
-        echo -e "${Font_SkyBlue}Input Number  [0]: [ Multination Only ]${Font_Suffix}"
-        echo -e "${Font_SkyBlue}Input Number [99]: [ Sport Platforms ]${Font_Suffix}"
-        read -p "Please Input the Correct Number or Press ENTER:" num
-    else
-        echo -e "${Font_Blue}请选择检测项目，直接按回车将进行全区域检测${Font_Suffix}"
-        echo -e "${Font_SkyBlue}输入数字  [1]: [ 跨国平台+台湾平台 ]检测${Font_Suffix}"
-        echo -e "${Font_SkyBlue}输入数字  [2]: [ 跨国平台+香港平台 ]检测${Font_Suffix}"
-        echo -e "${Font_SkyBlue}输入数字  [3]: [ 跨国平台+日本平台 ]检测${Font_Suffix}"
-        echo -e "${Font_SkyBlue}输入数字  [4]: [ 跨国平台+北美平台 ]检测${Font_Suffix}"
-        echo -e "${Font_SkyBlue}输入数字  [5]: [ 跨国平台+南美平台 ]检测${Font_Suffix}"
-        echo -e "${Font_SkyBlue}输入数字  [6]: [ 跨国平台+欧洲平台 ]检测${Font_Suffix}"
-        echo -e "${Font_SkyBlue}输入数字  [7]: [跨国平台+大洋洲平台]检测${Font_Suffix}"
-        echo -e "${Font_SkyBlue}输入数字  [8]: [ 跨国平台+韩国平台 ]检测${Font_Suffix}"
-        echo -e "${Font_SkyBlue}输入数字  [9]: [跨国平台+东南亚平台]检测${Font_Suffix}"
-        echo -e "${Font_SkyBlue}输入数字 [10]: [      AI 平台     ]检测${Font_Suffix}"
-        echo -e "${Font_SkyBlue}输入数字 [11]: [ 跨国平台+非洲平台 ]检测${Font_Suffix}"
-        echo -e "${Font_SkyBlue}输入数字  [0]: [   只进行跨国平台  ]检测${Font_Suffix}"
-        echo -e "${Font_SkyBlue}输入数字 [99]: [   体育直播平台    ]检测${Font_Suffix}"
-        read -p "请输入正确数字或直接按回车:" num
-    fi
-}
-Start
+# function Start() {
+#     if [[ "$language" == "e" ]]; then
+#         echo -e "${Font_Blue}Please Select Test Region or Press ENTER to Test All Regions${Font_Suffix}"
+#         echo -e "${Font_SkyBlue}Input Number  [1]: [ Multination + Taiwan ]${Font_Suffix}"
+#         echo -e "${Font_SkyBlue}Input Number  [2]: [ Multination + Hong Kong ]${Font_Suffix}"
+#         echo -e "${Font_SkyBlue}Input Number  [3]: [ Multination + Japan ]${Font_Suffix}"
+#         echo -e "${Font_SkyBlue}Input Number  [4]: [ Multination + North America ]${Font_Suffix}"
+#         echo -e "${Font_SkyBlue}Input Number  [5]: [ Multination + South America ]${Font_Suffix}"
+#         echo -e "${Font_SkyBlue}Input Number  [6]: [ Multination + Europe ]${Font_Suffix}"
+#         echo -e "${Font_SkyBlue}Input Number  [7]: [ Multination + Oceania ]${Font_Suffix}"
+#         echo -e "${Font_SkyBlue}Input Number  [8]: [ Multination + Korean ]${Font_Suffix}"
+#         echo -e "${Font_SkyBlue}Input Number  [9]: [ Multination + SouthEastAsia ]${Font_Suffix}"
+#         echo -e "${Font_SkyBlue}Input Number [10]: [ AI Platform ]${Font_Suffix}"
+#         echo -e "${Font_SkyBlue}Input Number [11]: [ Multination + Africa ]${Font_Suffix}"
+#         echo -e "${Font_SkyBlue}Input Number  [0]: [ Multination Only ]${Font_Suffix}"
+#         echo -e "${Font_SkyBlue}Input Number [99]: [ Sport Platforms ]${Font_Suffix}"
+#         read -p "Please Input the Correct Number or Press ENTER:" num
+#     else
+#         echo -e "${Font_Blue}请选择检测项目，直接按回车将进行全区域检测${Font_Suffix}"
+#         echo -e "${Font_SkyBlue}输入数字  [1]: [ 跨国平台+台湾平台 ]检测${Font_Suffix}"
+#         echo -e "${Font_SkyBlue}输入数字  [2]: [ 跨国平台+香港平台 ]检测${Font_Suffix}"
+#         echo -e "${Font_SkyBlue}输入数字  [3]: [ 跨国平台+日本平台 ]检测${Font_Suffix}"
+#         echo -e "${Font_SkyBlue}输入数字  [4]: [ 跨国平台+北美平台 ]检测${Font_Suffix}"
+#         echo -e "${Font_SkyBlue}输入数字  [5]: [ 跨国平台+南美平台 ]检测${Font_Suffix}"
+#         echo -e "${Font_SkyBlue}输入数字  [6]: [ 跨国平台+欧洲平台 ]检测${Font_Suffix}"
+#         echo -e "${Font_SkyBlue}输入数字  [7]: [跨国平台+大洋洲平台]检测${Font_Suffix}"
+#         echo -e "${Font_SkyBlue}输入数字  [8]: [ 跨国平台+韩国平台 ]检测${Font_Suffix}"
+#         echo -e "${Font_SkyBlue}输入数字  [9]: [跨国平台+东南亚平台]检测${Font_Suffix}"
+#         echo -e "${Font_SkyBlue}输入数字 [10]: [      AI 平台     ]检测${Font_Suffix}"
+#         echo -e "${Font_SkyBlue}输入数字 [11]: [ 跨国平台+非洲平台 ]检测${Font_Suffix}"
+#         echo -e "${Font_SkyBlue}输入数字  [0]: [   只进行跨国平台  ]检测${Font_Suffix}"
+#         echo -e "${Font_SkyBlue}输入数字 [99]: [   体育直播平台    ]检测${Font_Suffix}"
+#         read -p "请输入正确数字或直接按回车:" num
+#     fi
+# }
+# Start
 
 function RunScript() {
 
-    if [[ -n "${num}" ]]; then
-        if [[ "$num" -eq 1 ]]; then
-            clear
-            ScriptTitle
-            CheckV4
-            if [[ "$isv4" -eq 1 ]]; then
-                Global_UnlockTest 4
-                TW_UnlockTest 4
-            fi
-            CheckV6
-            if [[ "$isv6" -eq 1 ]]; then
-                Global_UnlockTest 6
-                TW_UnlockTest 6
-            fi
-            Goodbye
+    # if [[ -n "${num}" ]]; then
+    #     if [[ "$num" -eq 1 ]]; then
+    #         clear
+    #         ScriptTitle
+    #         CheckV4
+    #         if [[ "$isv4" -eq 1 ]]; then
+    #             Global_UnlockTest 4
+    #             TW_UnlockTest 4
+    #         fi
+    #         CheckV6
+    #         if [[ "$isv6" -eq 1 ]]; then
+    #             Global_UnlockTest 6
+    #             TW_UnlockTest 6
+    #         fi
+    #         Goodbye
 
-        elif [[ "$num" -eq 2 ]]; then
-            clear
-            ScriptTitle
-            CheckV4
-            if [[ "$isv4" -eq 1 ]]; then
-                Global_UnlockTest 4
-                HK_UnlockTest 4
-            fi
-            CheckV6
-            if [[ "$isv6" -eq 1 ]]; then
-                Global_UnlockTest 6
-                HK_UnlockTest 6
-            fi
-            Goodbye
+    #     elif [[ "$num" -eq 2 ]]; then
+    #         clear
+    #         ScriptTitle
+    #         CheckV4
+    #         if [[ "$isv4" -eq 1 ]]; then
+    #             Global_UnlockTest 4
+    #             HK_UnlockTest 4
+    #         fi
+    #         CheckV6
+    #         if [[ "$isv6" -eq 1 ]]; then
+    #             Global_UnlockTest 6
+    #             HK_UnlockTest 6
+    #         fi
+    #         Goodbye
 
-        elif [[ "$num" -eq 3 ]]; then
-            clear
-            ScriptTitle
-            CheckV4
-            if [[ "$isv4" -eq 1 ]]; then
-                Global_UnlockTest 4
-                JP_UnlockTest 4
-            fi
-            CheckV6
-            if [[ "$isv6" -eq 1 ]]; then
-                Global_UnlockTest 6
-                JP_UnlockTest 6
-            fi
-            Goodbye
+    #     elif [[ "$num" -eq 3 ]]; then
+    #         clear
+    #         ScriptTitle
+    #         CheckV4
+    #         if [[ "$isv4" -eq 1 ]]; then
+    #             Global_UnlockTest 4
+    #             JP_UnlockTest 4
+    #         fi
+    #         CheckV6
+    #         if [[ "$isv6" -eq 1 ]]; then
+    #             Global_UnlockTest 6
+    #             JP_UnlockTest 6
+    #         fi
+    #         Goodbye
 
-        elif [[ "$num" -eq 4 ]]; then
-            clear
-            ScriptTitle
-            CheckV4
-            if [[ "$isv4" -eq 1 ]]; then
-                Global_UnlockTest 4
-                NA_UnlockTest 4
-            fi
-            CheckV6
-            if [[ "$isv6" -eq 1 ]]; then
-                Global_UnlockTest 6
-                NA_UnlockTest 6
-            fi
-            Goodbye
+    #     elif [[ "$num" -eq 4 ]]; then
+    #         clear
+    #         ScriptTitle
+    #         CheckV4
+    #         if [[ "$isv4" -eq 1 ]]; then
+    #             Global_UnlockTest 4
+    #             NA_UnlockTest 4
+    #         fi
+    #         CheckV6
+    #         if [[ "$isv6" -eq 1 ]]; then
+    #             Global_UnlockTest 6
+    #             NA_UnlockTest 6
+    #         fi
+    #         Goodbye
 
-        elif [[ "$num" -eq 5 ]]; then
-            clear
-            ScriptTitle
-            CheckV4
-            if [[ "$isv4" -eq 1 ]]; then
-                Global_UnlockTest 4
-                SA_UnlockTest 4
-            fi
-            CheckV6
-            if [[ "$isv6" -eq 1 ]]; then
-                Global_UnlockTest 6
-                SA_UnlockTest 6
-            fi
-            Goodbye
+    #     elif [[ "$num" -eq 5 ]]; then
+    #         clear
+    #         ScriptTitle
+    #         CheckV4
+    #         if [[ "$isv4" -eq 1 ]]; then
+    #             Global_UnlockTest 4
+    #             SA_UnlockTest 4
+    #         fi
+    #         CheckV6
+    #         if [[ "$isv6" -eq 1 ]]; then
+    #             Global_UnlockTest 6
+    #             SA_UnlockTest 6
+    #         fi
+    #         Goodbye
 
-        elif [[ "$num" -eq 6 ]]; then
-            clear
-            ScriptTitle
-            CheckV4
-            if [[ "$isv4" -eq 1 ]]; then
-                Global_UnlockTest 4
-                EU_UnlockTest 4
-            fi
-            CheckV6
-            if [[ "$isv6" -eq 1 ]]; then
-                Global_UnlockTest 6
-                EU_UnlockTest 6
-            fi
-            Goodbye
+    #     elif [[ "$num" -eq 6 ]]; then
+    #         clear
+    #         ScriptTitle
+    #         CheckV4
+    #         if [[ "$isv4" -eq 1 ]]; then
+    #             Global_UnlockTest 4
+    #             EU_UnlockTest 4
+    #         fi
+    #         CheckV6
+    #         if [[ "$isv6" -eq 1 ]]; then
+    #             Global_UnlockTest 6
+    #             EU_UnlockTest 6
+    #         fi
+    #         Goodbye
 
-        elif [[ "$num" -eq 7 ]]; then
-            clear
-            ScriptTitle
-            CheckV4
-            if [[ "$isv4" -eq 1 ]]; then
-                Global_UnlockTest 4
-                OA_UnlockTest 4
-            fi
-            CheckV6
-            if [[ "$isv6" -eq 1 ]]; then
-                Global_UnlockTest 6
-                OA_UnlockTest 6
-            fi
-            Goodbye
+    #     elif [[ "$num" -eq 7 ]]; then
+    #         clear
+    #         ScriptTitle
+    #         CheckV4
+    #         if [[ "$isv4" -eq 1 ]]; then
+    #             Global_UnlockTest 4
+    #             OA_UnlockTest 4
+    #         fi
+    #         CheckV6
+    #         if [[ "$isv6" -eq 1 ]]; then
+    #             Global_UnlockTest 6
+    #             OA_UnlockTest 6
+    #         fi
+    #         Goodbye
 
-        elif [[ "$num" -eq 8 ]]; then
-            clear
-            ScriptTitle
-            CheckV4
-            if [[ "$isv4" -eq 1 ]]; then
-                Global_UnlockTest 4
-                KR_UnlockTest 4
-            fi
-            CheckV6
-            if [[ "$isv6" -eq 1 ]]; then
-                Global_UnlockTest 6
-                KR_UnlockTest 6
-            fi
-            Goodbye
+    #     elif [[ "$num" -eq 8 ]]; then
+    #         clear
+    #         ScriptTitle
+    #         CheckV4
+    #         if [[ "$isv4" -eq 1 ]]; then
+    #             Global_UnlockTest 4
+    #             KR_UnlockTest 4
+    #         fi
+    #         CheckV6
+    #         if [[ "$isv6" -eq 1 ]]; then
+    #             Global_UnlockTest 6
+    #             KR_UnlockTest 6
+    #         fi
+    #         Goodbye
 
-        elif [[ "$num" -eq 9 ]]; then
-            clear
-            ScriptTitle
-            CheckV4
-            if [[ "$isv4" -eq 1 ]]; then
-                Global_UnlockTest 4
-                SEA_UnlockTest 4
-            fi
-            CheckV6
-            if [[ "$isv6" -eq 1 ]]; then
-                Global_UnlockTest 6
-                SEA_UnlockTest 6
-            fi
-            Goodbye
+    #     elif [[ "$num" -eq 9 ]]; then
+    #         clear
+    #         ScriptTitle
+    #         CheckV4
+    #         if [[ "$isv4" -eq 1 ]]; then
+    #             Global_UnlockTest 4
+    #             SEA_UnlockTest 4
+    #         fi
+    #         CheckV6
+    #         if [[ "$isv6" -eq 1 ]]; then
+    #             Global_UnlockTest 6
+    #             SEA_UnlockTest 6
+    #         fi
+    #         Goodbye
 
-        elif [[ "$num" -eq 10 ]]; then
-            clear
-            ScriptTitle
-            CheckV4
-            if [[ "$isv4" -eq 1 ]]; then
-                AI_UnlockTest 4
-            fi
-            CheckV6
-            if [[ "$isv6" -eq 1 ]]; then
-                AI_UnlockTest 6
-            fi
-            Goodbye
+    #     elif [[ "$num" -eq 10 ]]; then
+    #         clear
+    #         ScriptTitle
+    #         CheckV4
+    #         if [[ "$isv4" -eq 1 ]]; then
+    #             AI_UnlockTest 4
+    #         fi
+    #         CheckV6
+    #         if [[ "$isv6" -eq 1 ]]; then
+    #             AI_UnlockTest 6
+    #         fi
+    #         Goodbye
             
-        elif [[ "$num" -eq 11 ]]; then
-            clear
-            ScriptTitle
-            CheckV4
-            if [[ "$isv4" -eq 1 ]]; then
-                Global_UnlockTest 4
-                AF_UnlockTest 4
-            fi
-            CheckV6
-            if [[ "$isv6" -eq 1 ]]; then
-                Global_UnlockTest 6
-                AF_UnlockTest 6
-            fi
-            Goodbye
+    #     elif [[ "$num" -eq 11 ]]; then
+    #         clear
+    #         ScriptTitle
+    #         CheckV4
+    #         if [[ "$isv4" -eq 1 ]]; then
+    #             Global_UnlockTest 4
+    #             AF_UnlockTest 4
+    #         fi
+    #         CheckV6
+    #         if [[ "$isv6" -eq 1 ]]; then
+    #             Global_UnlockTest 6
+    #             AF_UnlockTest 6
+    #         fi
+    #         Goodbye
 
-        elif [[ "$num" -eq 99 ]]; then
-            clear
-            ScriptTitle
-            CheckV4
-            if [[ "$isv4" -eq 1 ]]; then
-                Sport_UnlockTest 4
-            fi
-            CheckV6
-            if [[ "$isv6" -eq 1 ]]; then
-                Sport_UnlockTest 6
-            fi
-            Goodbye
+    #     elif [[ "$num" -eq 99 ]]; then
+    #         clear
+    #         ScriptTitle
+    #         CheckV4
+    #         if [[ "$isv4" -eq 1 ]]; then
+    #             Sport_UnlockTest 4
+    #         fi
+    #         CheckV6
+    #         if [[ "$isv6" -eq 1 ]]; then
+    #             Sport_UnlockTest 6
+    #         fi
+    #         Goodbye
 
-        elif [[ "$num" -eq 0 ]]; then
-            clear
-            ScriptTitle
-            CheckV4
-            if [[ "$isv4" -eq 1 ]]; then
-                Global_UnlockTest 4
-            fi
-            CheckV6
-            if [[ "$isv6" -eq 1 ]]; then
-                Global_UnlockTest 6
-            fi
-            Goodbye
+    #     elif [[ "$num" -eq 0 ]]; then
+    #         clear
+    #         ScriptTitle
+    #         CheckV4
+    #         if [[ "$isv4" -eq 1 ]]; then
+    #             Global_UnlockTest 4
+    #         fi
+    #         CheckV6
+    #         if [[ "$isv6" -eq 1 ]]; then
+    #             Global_UnlockTest 6
+    #         fi
+    #         Goodbye
 
-        else
-            echo -e "${Font_Red}请重新执行脚本并输入正确号码${Font_Suffix}"
-            echo -e "${Font_Red}Please Re-run the Script with Correct Number Input${Font_Suffix}"
-            return
-        fi
-    else
+    #     else
+    #         echo -e "${Font_Red}请重新执行脚本并输入正确号码${Font_Suffix}"
+    #         echo -e "${Font_Red}Please Re-run the Script with Correct Number Input${Font_Suffix}"
+    #         return
+    #     fi
+    # else
         clear
-        ScriptTitle
+        # ScriptTitle
         CheckV4
         if [[ "$isv4" -eq 1 ]]; then
             Global_UnlockTest 4
             TW_UnlockTest 4
             HK_UnlockTest 4
             JP_UnlockTest 4
-            NA_UnlockTest 4
-            SA_UnlockTest 4
-            EU_UnlockTest 4
-            OA_UnlockTest 4
-            KR_UnlockTest 4
-            SEA_UnlockTest 4
+            # NA_UnlockTest 4
+            # SA_UnlockTest 4
+            # EU_UnlockTest 4
+            # OA_UnlockTest 4
+            # KR_UnlockTest 4
+            # SEA_UnlockTest 4
             AI_UnlockTest 4
-            AF_UnlockTest 4
+            # AF_UnlockTest 4
         fi
         CheckV6
         if [[ "$isv6" -eq 1 ]]; then
@@ -4811,17 +4811,17 @@ function RunScript() {
             TW_UnlockTest 6
             HK_UnlockTest 6
             JP_UnlockTest 6
-            NA_UnlockTest 6
-            SA_UnlockTest 6
-            EU_UnlockTest 6
-            OA_UnlockTest 6
-            KR_UnlockTest 6
-            SEA_UnlockTest 6
+            # NA_UnlockTest 6
+            # SA_UnlockTest 6
+            # EU_UnlockTest 6
+            # OA_UnlockTest 6
+            # KR_UnlockTest 6
+            # SEA_UnlockTest 6
             AI_UnlockTest 6
-            AF_UnlockTest 6
+            # AF_UnlockTest 6
         fi
         Goodbye
-    fi
+    # fi
 }
 wait
 RunScript
