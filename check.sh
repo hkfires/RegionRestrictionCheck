@@ -3749,19 +3749,24 @@ function AIUnlockTest_Gemini_location() {
 
 function AIUnlockTest_Copilot() {
     local tmp=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -SsL --max-time 10 "https://copilot.microsoft.com/" 2>&1)
-    local tmp2=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -SsL --max-time 10 "https://copilot.microsoft.com/turing/conversation/chats?bundleVersion=1.1342.3-cplt.12"  2>&1)
     if [[ "$tmp" == "curl"* ]]; then
         echo -n -e "\r Microsoft Copilot:\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         return
     fi
-    local result=$(echo "$tmp2" | jq .result.value  2>&1 | tr -d '"' 2>&1) 
+    local tmp2_with_status=$(curl $curlArgs -${1} --user-agent "${UA_Browser}" -SsL --max-time 10 -w "\n%{http_code}" "https://copilot.microsoft.com/turing/conversation/chats?bundleVersion=1.1342.3-cplt.12" 2>&1)
+    if [[ "$tmp2_with_status" == "curl"* ]]; then
+        echo -n -e "\r Microsoft Copilot:\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        return
+    fi
+    local http_code=$(echo "$tmp2_with_status" | tail -n1)
     local region=$(echo "$tmp" | sed -n 's/.*RevIpCC:"\([^"]*\)".*/\1/p' )
-    if [[ "$result" == "Success" ]];then
+    if [[ "$http_code" == "200" ]];then
         echo -n -e "\r Microsoft Copilot:\t\t\t${Font_Green}Yes (Region: ${region^^})${Font_Suffix}\n"
     else 
-        echo -n -e "\r Microsoft Copilot:\t\t\t${Font_Red}No  (Region: ${region^^})${Font_Suffix}\n"
+        echo -n -e "\r Microsoft Copilot:\t\t\t${Font_Red}No (Region: ${region^^}, Status: ${http_code})${Font_Suffix}\n"
     fi
 }
+
 
 function MediaUnlockTest_RakutenMagazine() {
     local result=$(curl $curlArgs -${1} -sL --write-out %{http_code} --output /dev/null --max-time 10 "https://data-cloudauthoring.magazine.rakuten.co.jp/rem_repository/////////.key" 2>&1)
@@ -4162,14 +4167,15 @@ function JP_UnlockTest() {
     echo_Result ${result} ${array}
     ShowRegion Game
     local result=$(
-    MediaUnlockTest_Kancolle ${1} &
+    # MediaUnlockTest_Kancolle ${1} &
     MediaUnlockTest_UMAJP ${1} &
-    MediaUnlockTest_KonosubaFD ${1} &
+    # MediaUnlockTest_KonosubaFD ${1} &
     MediaUnlockTest_PCRJP ${1} &
     MediaUnlockTest_ProjectSekai ${1} &
     )
     wait
-    local array=("Kancolle Japan:" "Pretty Derby Japan:" "Konosuba Fantastic Days:" "Princess Connect Re:Dive Japan:" "World Flipper Japan:" "Project Sekai: Colorful Stage:")
+    # local array=("Kancolle Japan:" "Pretty Derby Japan:" "Konosuba Fantastic Days:" "Princess Connect Re:Dive Japan:" "World Flipper Japan:" "Project Sekai: Colorful Stage:")
+    local array=("Pretty Derby Japan:" "Princess Connect Re:Dive Japan:" "World Flipper Japan:" "Project Sekai: Colorful Stage:")
     echo_Result ${result} ${array}
     ShowRegion Read
     local result=$(
@@ -4186,8 +4192,8 @@ function JP_UnlockTest() {
     wait
     local array=("Mora:" "music.jp:") 
     echo_Result ${result} ${array}
-    ShowRegion Forum
-    MediaUnlockTest_EroGameSpace ${1}
+    # ShowRegion Forum
+    # MediaUnlockTest_EroGameSpace ${1}
     echo "======================================="
 
 }
