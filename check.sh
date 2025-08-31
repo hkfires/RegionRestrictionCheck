@@ -4160,7 +4160,7 @@ function JP_UnlockTest() {
     MediaUnlockTest_Lemino ${1} &
     MediaUnlockTest_J:COM_ON_DEMAND ${1} &
     MediaUnlockTest_RakutenTVJP ${1} &
-    MediaUnlockTest_MGStage ${1} &
+    # MediaUnlockTest_MGStage ${1} &
     )
     wait
     local array=("TVer:" "WOWOW:" "VideoMarket:" "D Anime Store:" "FOD(Fuji TV):" "Radiko:" "Karaoke@DAM:" "J:com On Demand:" "AnimeFesta:" "Lemino:" "MGStage:" "Rakuten TV JP:")
